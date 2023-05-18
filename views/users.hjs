@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Users</title>
+    <link rel='stylesheet' href='/styles/bootstrap.min.css' />
+    <link rel='stylesheet' href='/styles/style.css' />
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <div>
+    <div>
+    <nav class="navbar navbar-inverse" style="padding-left:130px;">
+      <ul class="nav navbar-nav">
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/stations_example">Stations</a></li>
+        <li class="active"><a href="/users">Users</a></li>
+        <li><a href="/users/add">Add Users</a></li>
+        <li><a href="/">Logout</a></li>  
+      </ul>
+  </nav>
+  </div>
+    <br/>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">id</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Major</th>
+            <th scope="col">Role</th>
+          </tr>
+          {{#users}}
+            <tr>
+              <td>{{id}}</td>
+              <td>{{firstName}}</td>
+              <td>{{lastName}}</td>
+              <td>{{major}}</td>
+              <td>{{roleId}}</td>
+            </tr>
+          {{/users}}
+        </thead>
+      </table>
+    </div>
+  </body>
+  </html>
