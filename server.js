@@ -14,7 +14,7 @@ app.set('view engine', 'hjs');
 app.use(express.static('public'));
 // Config setup to parse JSON payloads from HTTP POST request body
 app.use(express.json());
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({extended:true}));
 
 // All public routes can be accessible without authentication
 // publicViewRoutes(app);
