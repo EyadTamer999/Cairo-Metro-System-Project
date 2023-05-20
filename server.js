@@ -22,7 +22,7 @@ publicApiRoutes(app);
 
 // If the request is not for a public view/api, then it must pass
 // through our authentication middleware first
-// app.use(authMiddleware);
+// app.use(authMiddleware); // uncomment
 
 // The routes/views below can only be accessed if the user is authenticated
 // privateViewRoutes(app);
