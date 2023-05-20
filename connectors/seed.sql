@@ -1,11 +1,11 @@
 -- Insert Roles
-INSERT INTO roles("role")
-	VALUES ('user');
-INSERT INTO roles("role")
-	VALUES ('admin');
-INSERT INTO roles("role")
-	VALUES ('senior');	
+INSERT INTO se_project.roles("role")
+VALUES ('user');
+INSERT INTO se_project.roles("role")
+VALUES ('admin');
+INSERT INTO se_project.roles("role")
+VALUES ('senior');
 -- Set user role as Admin
-UPDATE users
-	SET roleId=2
-	WHERE "email"='desoukya@gmail.com';
+UPDATE se_project.users
+SET roleId=2
+WHERE "email"='desoukya@gmail.com';
