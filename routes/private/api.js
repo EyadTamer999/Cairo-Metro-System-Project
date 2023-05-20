@@ -8,7 +8,7 @@ const getUser = async function (req) {
   if (!sessionToken) {
     return res.status(301).redirect("/");
   }
-
+  console.log("hi",sessionToken);
   const user = await db
     .select("*")
     .from("se_project.sessions")
@@ -23,7 +23,7 @@ const getUser = async function (req) {
       "se_project.users.roleId",
       "se_project.roles.id"
     )
-    .first();
+   .first();
 
   console.log("user =>", user);
   user.isNormal = user.roleId === roles.user;
@@ -36,7 +36,9 @@ module.exports = function (app) {
   // example
   app.put("/users", async function (req, res) {
     try {
-      const user = await getUser(req);
+       const user = await getUser(req);
+     // const {userId}=req.body
+     console.log("hiiiiiiiiiii");
       const users = await db.select('*').from("se_project.users")
         
       return res.status(200).json(users);
@@ -45,6 +47,8 @@ module.exports = function (app) {
       return res.status(400).send("Could not get users");
     }
   });
+ 
+
 
   
 };

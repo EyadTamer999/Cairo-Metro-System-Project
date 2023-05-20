@@ -1,9 +1,9 @@
 const path = require('path');
 const express = require('express');
 const app = express();
-// const authMiddleware = require('./middleware/auth');
+const authMiddleware = require('./middleware/auth');
 const privateApiRoutes = require('./routes/private/api');
-// const publicApiRoutes = require('./routes/public/api');
+const publicApiRoutes = require('./routes/public/api');
 // const publicViewRoutes = require('./routes/public/views');
 // const privateViewRoutes = require('./routes/private/views');
 
@@ -18,11 +18,11 @@ app.use(express.urlencoded({extended:true}));
 
 // All public routes can be accessible without authentication
 // publicViewRoutes(app);
-publicApiRoutes(app);
+publicApiRoutes(app);// uncomment
 
 // If the request is not for a public view/api, then it must pass
 // through our authentication middleware first
-// app.use(authMiddleware); // uncomment
+ app.use(authMiddleware); // uncomment
 
 // The routes/views below can only be accessed if the user is authenticated
 // privateViewRoutes(app);

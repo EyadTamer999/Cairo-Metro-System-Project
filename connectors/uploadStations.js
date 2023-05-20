@@ -100,6 +100,6 @@ async function uploadR() {
     await db("seCS_project.routes").insert(element).returning("*");
   }
 }
-//uploadS();
+uploadS();
 //uploadR();
 //uploadSR();

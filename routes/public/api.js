@@ -62,7 +62,7 @@ app.post("/api/v1/user", async function (req, res) {
     // set the expiry time as 15 minutes after the current time
     const token = v4();
     const currentDateTime = new Date();
-    const expiresAt = new Date(+currentDateTime + 180000); // expire in 3 minutes
+    const expiresAt = new Date(+currentDateTime + 900000); // expire in 15 minutes
 
     // create a session containing information about the user and expiry time
     const session = {

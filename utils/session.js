@@ -1,5 +1,6 @@
 module.exports = {
   getSessionToken(req) {
+ //   console.log(req.headers.cookie)
     if (!req.headers.cookie) {
       return null;
     }
@@ -12,6 +13,8 @@ module.exports = {
     if (!sessionToken) {
       return null;
     }
+    // console.log(req.headers.cookie)
+
     return sessionToken;
   }
 }
