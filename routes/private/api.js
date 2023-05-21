@@ -78,12 +78,17 @@ app.put("/api/v1/password/reset",
 async (req,res)=>{
   try{
 const {newPassword}=req.body;
+pass={newPassword};
 const id=getUser_id(req);
 knex('users').where('id',id).update(
-  {password:newPassword}).then( ()=>
+  {password:pass}).then( ()=>
     Kenx.select().from('users')
     .where('id',id).then((user)=>
-    {  res.send(user);}
+    {  
+      
+      return res.status(201).json(user);
+
+    }
     
     )
   )
@@ -100,7 +105,10 @@ app.get("/api/v1/zones",
 async (req,res)=>{
 try{
 knex.select().from('zones').then((zones)=>
-{res.send(zones);})
+{
+  return res.status(201).json(zones);
+
+})
 
 }
 catch (e) {
@@ -171,6 +179,8 @@ try{
     }=req.body;
 
 
+
+
 } 
 catch (e) {
   console.log(e.message);
@@ -187,6 +197,35 @@ catch (e) {
 
 
 
+
+
+
+
+
+
+// Pay for ticket by subscription
+app.post("/api/v1/tickets/purchase/subscription", async (req, res) => {
+  try {
+    const  { subId, origin, destination, tripDate } = req.body;
+    console.log(req.body);
+    let newPaymentBySubscription = {
+      subId,
+      origin,
+      destination,
+      tripDate
+    };
+    const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets").returning("*"); 
+    console.log(paidBySubscription);
+    return res.status(201).json(paidBySubscription);
+} catch (err) {
+    console.log("Error paying for ticket by subscription", err.message);
+    return res.status(400).send(err.message);
+
+
+}
+});
+
+/////////////////////////////////////////////////////////////
 
 module.exports = function (app) {
   // example
