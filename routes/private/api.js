@@ -48,37 +48,75 @@ module.exports = function (app) {
     }
   });
 
-  app.post("/refund/:ticketId", async (req, res) => {
-    try{
-    const { ticketId } = req.params;
-    //todo refund amount in request refund table
-    const userId = await db.select("userId").from("tickets").where("id" , ticketId) ;  
-    let status = "pending approval or rejection";
-    let newRequest = {
-      status,
-      userId,
-      //refundAmount,
-      ticketId,
-    };
-    const addedRequest = await db("refund_requests").insert(newRequest).returning("*");
-    return res.status(201).json(addedRequest);  
-  } catch (err){
-      console.log("error message ",err.message);
-      return res.status(400).send(err.message);
-    }
-  });
-  app.post("/senior/request", async (req, res)=>{
-    try{
-      const nationalId = req.body;
-      
-    } catch(err){
-        console.log("error message ",err.message);
-        return res.status(400).send(err.message);
-    }
-
-
-
-  })
-
   
-};
+
+
+// Pay for ticket by subscription
+  app.post("/api/v1/tickets/purchase/subscription", async (req, res) => {
+    try {
+      const  { subId, origin, destination, tripDate } = req.body;
+      console.log(req.body);
+      let newPaymentBySubscription = {
+        subId,
+        origin,
+        destination,
+        tripDate
+      };
+      const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets").returning("*"); 
+      console.log(paidBySubscription);
+      return res.status(201).json(paidBySubscription);
+  } catch (err) {
+      console.log("Error paying for ticket by subscription", err.message);
+      return res.status(400).send(err.message);
+
+
+  }
+  });
+
+
+// Check Price:
+// Users can check the price of the ticket by specifying the origin and destination.
+// So, you have to figure a way through the three tables(stations, routes, stationRoutes)
+// Hint visited stations array
+
+  app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) => { 
+    try {
+      const {} =
+        req.body;
+      console.log(req.body);
+      let newPrice = {
+      };
+    
+      const checkedPrice = await db.insert(newPrice).into("").returning("*"); //insert where??
+      console.log(checkedPrice);
+      return res.status(201).json(checkedPrice);
+  } catch (err) {
+      console.log("Error checking price", err.message);
+      return res.status(400).send(err.message);
+
+  }
+  });
+
+// Simulate Ride
+app.put("/api/v1/ride/simulate", async (req, res) => {
+  try{
+    const {origin, destination, tripDate} = req.body;
+    // const { origin, destination } = req.params;
+    const simulateRide = await db("se_project")
+    .where("rides.destination", destination)
+    .where("rides.origin", origin)
+    .where("rides.tripDate", tripDate)
+    .update({
+      origin:string,
+      destination:string,
+      tripDate:dateTime
+    })
+    .returning("*");
+    return res.status(200).json(updateRoute);
+  }
+  catch(err){
+    console.log("Error simulating ride", err.message);
+    return res.status(400).send(err.message);
+  }
+})
+}

@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS zones
     CONSTRAINT zones_pkey PRIMARY KEY (id)
 
 );
-CREATE TABLE IF NOT EXISTS subsription
+CREATE TABLE IF NOT EXISTS subsription --SUBSCRIPTION MISPELLED
 (
     id SERIAL NOT NULL,
     subType text NOT NULL, --annual --month -- quarterly
