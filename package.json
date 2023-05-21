@@ -8,6 +8,7 @@
     "hjs": "0.0.6",
     "knex": "^2.4.2",
     "lodash": "4.17.21",
+    "packages.json": "^0.0.1-security",
     "pg": "8.7.1",
     "uuid": "8.3.2"
   },
