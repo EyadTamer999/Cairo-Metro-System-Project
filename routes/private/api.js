@@ -66,9 +66,6 @@ const Kenx=require("./db");
 const { default: knex } = require("knex");
 
 const app=express();
-//const cors=require("cors");
-
-//app.use(cors());
 app.use(express.json());//to be able to access req.body
 
 
@@ -94,8 +91,8 @@ knex('users').where('id',id).update(
   )
 }
 catch (e) {
-  console.log(e.message);
-  return res.status(400).send("Could not change password");
+  console.log("Could not change password",e.message);
+  return res.status(400).send(e.message);
 }
 }
 );
@@ -112,8 +109,8 @@ knex.select().from('zones').then((zones)=>
 
 }
 catch (e) {
-  console.log(e.message);
-  return res.status(400).send("Could not get zones");
+  console.log("Could not get zones",e.message);
+  return res.status(400).send(e.message);
 }
 
 }
@@ -133,6 +130,8 @@ function get_num_of_tickets(subType)
     return 10;
     
 }
+
+
 //paying for subscription online need work 
 app.post("/api/v1/payment/subscription",
 async (req,res)=>{
@@ -144,26 +143,38 @@ try{
     subType,
     zoneId}=req.body;
     const x=get_num_of_tickets(subType);
-    Kenx('subsription').insert({
+    const uid=getUser_id(req);
+    ret=Kenx('subsription').insert({
       subType:subType,
       zoneId:zoneId,
       noOfTickets:x,
-      //userId:
+      userId:uid
 
 
+    }).returning("*");
 
-    });
+    ret2=Kenx('transactions').insert({
+      amount:payedAmount,
+      userId:uid,
+      purchasedId:purchasedId
+      
 
+    }).returning("*");
+    
+    //TODO what they are used for  creditCardNumber ,holderName
 
+    ret=ret1.innerJoin(ret2);
+    return res.status(201).json(ret);
 
 }
 catch (e) {
-  console.log(e.message);
-  return res.status(400).send("Could not buy online subscription");
+  console.log("Could not buy online subscription",e.message);
+  return res.status(400).send(e.message);
 }
 }
 );
 //POST pay for ticket online
+
 
 //paying for tickets online need work 
 app.post("/api/v1/payment/ticket",
@@ -177,14 +188,37 @@ try{
     destination,//string
     tripDate //dateTime
     }=req.body;
+    
+    const uid=getUser_id(req);
 
+    ret1=Kenx('subsription').insert({
+      origin:origin,
+      destination:destination,
+      subID:null,//as we are paying online without subscription
+      userId:uid,
+      tripDate:tripDate
+
+
+    }).returning("*");
+    ret2=Kenx('transactions').insert({
+      amount:payedAmount,
+      userId:uid,
+      purchasedId:purchasedId
+      
+
+    }).returning("*");
+    
+    //TODO what they are used for  creditCardNumber , holderName
+
+    ret=ret1.innerJoin(ret2);
+    return res.status(201).json(ret);
 
 
 
 } 
 catch (e) {
-  console.log(e.message);
-  return res.status(400).send("Could not buy online tickets");
+  console.log("Could not buy online tickets",e.message);
+  return res.status(400).send(e.message);
 }
 });
 
@@ -196,34 +230,6 @@ catch (e) {
 ///////////////////////////////////////////////////////////////end of changes
 
 
-
-
-
-
-
-
-
-// Pay for ticket by subscription
-app.post("/api/v1/tickets/purchase/subscription", async (req, res) => {
-  try {
-    const  { subId, origin, destination, tripDate } = req.body;
-    console.log(req.body);
-    let newPaymentBySubscription = {
-      subId,
-      origin,
-      destination,
-      tripDate
-    };
-    const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets").returning("*"); 
-    console.log(paidBySubscription);
-    return res.status(201).json(paidBySubscription);
-} catch (err) {
-    console.log("Error paying for ticket by subscription", err.message);
-    return res.status(400).send(err.message);
-
-
-}
-});
 
 /////////////////////////////////////////////////////////////
 
