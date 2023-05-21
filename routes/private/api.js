@@ -94,8 +94,8 @@ module.exports = function (app) {
       .where({ routeName: routeName })
       .select("*")
       .first();
-    if (existRoute) {
-      return res.status(400).send("Route already exists");
+    if (!existRoute) {
+      return res.status(400).send("Route does not exist");
     }
 
     try{
@@ -125,8 +125,8 @@ module.exports = function (app) {
       .where({ routeName: routeName })
       .select("*")
       .first();
-    if (existRoute) {
-      return res.status(400).send("Route already exists");
+    if (!existRoute) {
+      return res.status(400).send("Route does not exist");
     }
 
     try{
