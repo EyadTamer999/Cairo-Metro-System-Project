@@ -6,7 +6,6 @@ const privateApiRoutes = require('./routes/private/api');
 const publicApiRoutes = require('./routes/public/api');
 // const publicViewRoutes = require('./routes/public/views');
 // const privateViewRoutes = require('./routes/private/views');
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hjs');
@@ -27,7 +26,6 @@ publicApiRoutes(app);// uncomment
 // The routes/views below can only be accessed if the user is authenticated
 // privateViewRoutes(app);
 privateApiRoutes(app);
-
 // If request doesn't match any of the above routes then render the 404 page
 app.use(function(req, res, next) {
   return res.status(404).render('404');
