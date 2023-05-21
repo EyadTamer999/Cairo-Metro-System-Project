@@ -47,8 +47,38 @@ module.exports = function (app) {
       return res.status(400).send("Could not get users");
     }
   });
- 
 
+  app.post("/refund/:ticketId", async (req, res) => {
+    try{
+    const { ticketId } = req.params;
+    //todo refund amount in request refund table
+    const userId = await db.select("userId").from("tickets").where("id" , ticketId) ;  
+    let status = "pending approval or rejection";
+    let newRequest = {
+      status,
+      userId,
+      //refundAmount,
+      ticketId,
+    };
+    const addedRequest = await db("refund_requests").insert(newRequest).returning("*");
+    return res.status(201).json(addedRequest);  
+  } catch (err){
+      console.log("error message ",err.message);
+      return res.status(400).send(err.message);
+    }
+  });
+  app.post("/senior/request", async (req, res)=>{
+    try{
+      const nationalId = req.body;
+      
+    } catch(err){
+        console.log("error message ",err.message);
+        return res.status(400).send(err.message);
+    }
+
+
+
+  })
 
   
 };
