@@ -48,7 +48,100 @@ module.exports = function (app) {
     }
   });
  
+  /*
+    Create api endpoints for admin :
+    - Create routes
+    - Update routes
+    - Delete routes
+  */
 
+  // - Create routes:
+  app.post("api/v1/route", async (req, res) => {
+
+    // try to see if the route already exists
+    const existRoute = await db("se_project.route")
+      .where({ routeName: routeName })
+      .select("*")
+      .first();
+    if (existRoute) {
+      return res.status(400).send("Route already exists");
+    }
+
+    try{
+      const {id, routeName, fromStationId, toStationId} = req.body;
+      console.log(req.body);
+      let newRoute = {
+        id,
+        routeName,
+        fromStationId,
+        toStationId
+      };
+      const addedRoute = await db.insert(newRoute).into("se_project.route").returning("*");
+      console.log(addedRoute);
+      return res.status(201).json(addedRoute);
+    }
+    catch(err){
+      console.log("eror message", err.message);
+      return res.status(400).send("Could not create route");
+    }
+  })
+
+  // -Update route
+  app.put("api/v1/route/:routeId", async (req, res) => {
+
+    // try to see if the route already exists
+    const existRoute = await db("se_project.route")
+      .where({ routeName: routeName })
+      .select("*")
+      .first();
+    if (existRoute) {
+      return res.status(400).send("Route already exists");
+    }
+
+    try{
+      const {routeName, fromStationId, toStationId} = req.body;
+      const { routeId } = req.params;
+      const updateRoute = await db("se_project")
+      .where("id", routeId)
+      .update({
+        routeName : routeName,
+        fromStationId : fromStationId,
+        toStationId : toStationId
+      })
+      .returning("*");
+      return res.status(200).json(updateRoute);
+    }
+    catch(err){
+      console.log("eror message", err.message);
+      return res.status(400).send("Could not update route");
+    }
+  })
+
+  // -Delete route
+  app.delete("api/v1/route/:routeId", async (req, res) => {
+
+    // try to see if the route already exists
+    const existRoute = await db("se_project.route")
+      .where({ routeName: routeName })
+      .select("*")
+      .first();
+    if (existRoute) {
+      return res.status(400).send("Route already exists");
+    }
+
+    try{
+      const { routeId } = req.params;
+      const deleteRoute = await db("se_project").where("id", routeId).del().returning("*");
+      console.log("deleted", deleteRoute);
+      return res.status(200).json(deleteRoute);
+    }
+    catch(err){
+      console.log("eror message", err.message);
+      return res.status(400).send("Could not delete route");
+    }
+  })
+
+  
 
   
 };
