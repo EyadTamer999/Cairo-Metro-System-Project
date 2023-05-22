@@ -2,7 +2,8 @@ const { isEmpty } = require("lodash");
 const { v4 } = require("uuid");
 const db = require("../../connectors/db");
 const roles = require("../../constants/roles");
-const { getSessionToken } = require('../../utils/session')
+const { getSessionToken } = require('../../utils/session');
+const { accessSync } = require("fs");
 const getUser = async function (req) {
   const sessionToken = getSessionToken(req);
   if (!sessionToken) {
@@ -73,6 +74,11 @@ module.exports = function (app) {
       console.log("error message", err.message);
       return res.status(400).send("Could not update zone price"); //recheck
     }
+  })
+
+  // -Request refund PUT 
+
+  app.put("/api/v1/requests/senior/:requestId", async (req, res) => {
 
   })
 };
