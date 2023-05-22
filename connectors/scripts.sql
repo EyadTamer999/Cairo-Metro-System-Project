@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS se_project.users
     lastname  text    NOT NULL,
     email     text    NOT NULL,
     password  text    NOT NULL,
-    roleid    integer NOT NULL,
+    roleId    integer NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS se_project.sessions
