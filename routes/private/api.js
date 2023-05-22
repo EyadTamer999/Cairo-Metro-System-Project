@@ -47,36 +47,110 @@ module.exports = function (app) {
         }
     });
 
-  app.post("/refund/:ticketId", async (req, res) => {
+  app.post("/api/v1/refund/:ticketId", async (req, res) => {
     try{
+      //check if ticket date is upcoming or not
     const { ticketId } = req.params;
-    //todo refund amount in request refund table
-    const userId = await db.select("userId").from("tickets").where("id" , ticketId) ;  
-    let status = "pending approval or rejection";
-    let newRequest = {
-      status,
-      userId,
-      //refundAmount,
-      ticketId,
+    if(!ticketId){
+      //todo refund amount in request refund table
+      const userId = await db.select("userId").from("tickets").where("id" , ticketId) ;  
+      let status = "pending";
+      let newRequest = {
+        status,
+        userId,
+        //refundAmount,
+        ticketId,
     };
-    const addedRequest = await db("refund_requests").insert(newRequest).returning("*");
-    return res.status(201).json(addedRequest);  
+      const addedRequest = await db("refund_requests").insert(newRequest).returning("*");
+      return res.status(201).json(addedRequest);
+  }
+     else{
+      return res.status(409).send("there already exists a refund request for this ticket");
+     }
   } catch (err){
       console.log("error message ",err.message);
       return res.status(400).send(err.message);
     }
   });
-  app.post("/senior/request", async (req, res)=>{
+  app.post("/api/v1/senior/request", async (req, res)=>{
     try{
-      const nationalId = req.body;
-      
+      const {nationalId} = req.body;
+      const user = getUser;
+      const userId = user.id;
+      let status = "pending";
+      let newSRequest = {
+        status,
+        userId,
+        nationalId,
+      };
+      const addedSRequest = await db("se_project.senior_requests").insert(newSRequest).returning("*");
+      return res.status(201).json(addedSRequest)
     } catch(err){
         console.log("error message ",err.message);
         return res.status(400).send(err.message);
     }
-
+  
 
 
   })
-
+  app.post("/api/v1/station", async (req, res) => {
+    try{
+      const { stationName } = req.body;
+      if(!stationName){
+      let type = 'normal';
+      let position = null
+      let status = 'new';
+      let newStation = {
+        stationName,
+        type,
+        position,
+        status,
+      };
+      const addedStation = await db("se_project.stations").insert(newStation).returning("*");
+      return res.status(201).json(addedStation);}
+      else{
+        console.log("station already exists")
+        return res.status(409).send("there already exists a station with that name");
+      }
+    }
+    catch(err){
+      console.log("error message ",err.message);
+      return res.status(400).send(err.message);
+    }
+  })  
+  app.put("/api/v1/station/:stationId", async (req, res) => {
+    try{
+      const { stationid } = req.params;
+      if(stationid){
+        const { stationname1 } = req.body;
+        const updatedStation = await db("se_project.stations")
+        .where("id" , stationid)
+        .update({
+          stationname: stationname1,
+        })
+        .returning("*");
+        return res.status(200).json(updatedStation);
+      }
+      else{
+        return res.status(404).send("no station exists with such ID");
+      }
+    }catch(err){
+      console.log("error message ",err.message);
+      return res.status(400).send(err.message);
+    }
+  })
+  app.delete("/api/v1/station/:stationId", async (req,res){
+    try{
+      const { stataionid } = req.params;
+      if(stataionid){
+//todo delete station
+      }
+      else{
+        return res.status(404).send("no station exists with such ID");
+      }
+    }catch(err){
+      console.log("error message ",err.message);
+      return res.status(400).send(err.message);
+    }
+  })
 };
