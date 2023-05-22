@@ -51,7 +51,6 @@ module.exports = function (app) {
 
   // -Request refund PUT 
 
-
   app.put("/api/v1/requests/refund/:requestId", async (req, res) => {
     const { requestId } = req.params;
     const existRequest = await db("se_project.refund_requests")
@@ -79,6 +78,7 @@ module.exports = function (app) {
   });
 
   // -Request Senior PUT
+
   app.put("/api/v1/senior_requests/:requestId/:status", async (req, res) => {
     const { requestId } = req.params;
     const existRequest = await db("se_project.senior_requests")
@@ -105,6 +105,7 @@ module.exports = function (app) {
   });
 
   // -Update zone price PUT 
+  
   app.put("/api/v1/zones/zoneId", async (req, res) => {
     const existZone = await db("se_project.route")
       .where({ id: zoneId })
