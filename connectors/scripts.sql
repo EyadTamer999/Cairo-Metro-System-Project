@@ -1,10 +1,10 @@
 -- DROP TABLE IF EXISTS se_project.users;
--- DROP TABLE IF EXISTS roles;
--- DROP TABLE IF EXISTS faculties;
--- DROP TABLE IF EXISTS courses;
--- DROP TABLE IF EXISTS sessions;
--- DROP TABLE IF EXISTS enrollments;
---- Note in pgadmin columns name will be lowerCase 
+-- DROP TABLE IF EXISTS se_project.roles;
+-- DROP TABLE IF EXISTS se_project.faculties;
+-- DROP TABLE IF EXISTS se_project.courses;
+-- DROP TABLE IF EXISTS se_project.sessions;
+-- DROP TABLE IF EXISTS se_project.enrollments;
+--- Note in pgadmin columns name will be lowerCase
 --so either change them from pgadmin or change in the code to lower
 CREATE SCHEMA IF NOT EXISTS se_project;
 
