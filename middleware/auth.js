@@ -10,7 +10,7 @@ module.exports = async function (req, res, next) {
     }
 
     // We then get the session of the user from our session map
-    // that we set in the signinHandler
+    // that we set in the sign in Handler
     const userSession = await db.select('*').from('se_project.sessions').where('token', sessionToken).first();
     if (!userSession) {
         // If the session token is not present in session map, return an unauthorized error
