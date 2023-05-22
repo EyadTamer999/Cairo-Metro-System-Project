@@ -48,6 +48,62 @@ module.exports = function (app) {
     }
   });
 
+
+  // -Request refund PUT 
+
+
+  app.put("/api/v1/requests/refund/:requestId", async (req, res) => {
+    const { requestId } = req.params;
+    const existRequest = await db("se_project.refund_requests")
+      .where({ id: requestId })
+      .select("*")
+      .first();
+    if (!existRequest) {
+      return res.status(400).send("Refund request does not exist");
+    }
+    try {
+      const { status: refundStatus } = req.body;
+      if (refundStatus !== "accepted" && refundStatus !== "rejected") {
+        return res.status(400).send("Invalid status value");
+      }
+      const updateRequestStatus = await db("se_project.refund_requests")
+        .where("id", requestId)
+        .update({ status: refundStatus })
+        .returning("*");
+      return res.status(200).json(updateRequestStatus);
+    } catch (err) {
+      console.log("error message", err.message);
+      return res.status(400).send("Could not update refund request status");
+    }
+
+  });
+
+  // -Request Senior PUT
+  app.put("/api/v1/senior_requests/:requestId/:status", async (req, res) => {
+    const { requestId } = req.params;
+    const existRequest = await db("se_project.senior_requests")
+      .where({ id: requestId })
+      .select("*")
+      .first();
+    if (!existRequest) {
+      return res.status(400).send("Senior request does not exist");
+    }
+    try {
+      const { status } = req.body;
+      if (status !== "accepted" && status !== "rejected") {
+        return res.status(400).send("Invalid status value");
+      }
+      const updateRequestStatus = await db("se_project.senior_requests")
+        .where("id", requestId)
+        .update({ status: status })
+        .returning("*");
+      return res.status(200).json(updateRequestStatus);
+    } catch (err) {
+      console.log("error message", err.message);
+      return res.status(400).send("Could not update senior request");
+    }
+  });
+
   // -Update zone price PUT 
   app.put("/api/v1/zones/zoneId", async (req, res) => {
     const existZone = await db("se_project.route")
@@ -75,10 +131,4 @@ module.exports = function (app) {
       return res.status(400).send("Could not update zone price"); //recheck
     }
   })
-
-  // -Request refund PUT 
-
-  app.put("/api/v1/requests/senior/:requestId", async (req, res) => {
-
-  })
-};
+}
