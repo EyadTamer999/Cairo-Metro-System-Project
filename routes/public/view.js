@@ -12,9 +12,9 @@ module.exports = function(app) {
     return res.render('register', { stations });
   });
 
-  // example of passing variables with a page
-  app.get('/dashboard', async function(req, res) {
-    //Todo send user info via session to display things like name subscription etc.
-    return res.render('dashboard',{firstName:"still not set"});
-  });
+  // // example of passing variables with a page
+  // app.get('/dashboard', async function(req, res) {
+  //   //Todo send user info via session to display things like name subscription etc. THIS SHOULD BE IN PRIVATE
+  //   return res.render('dashboard',{firstName:"still not set"});
+  // });
 };
