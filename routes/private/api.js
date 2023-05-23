@@ -34,7 +34,6 @@ const getUser = async function (req) {
 };
 
 module.exports = function (app) {
-<<<<<<< HEAD
   // example
   app.put("/users", async function (req, res) {
     try {
@@ -122,20 +121,3 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
   }
 })
 }
-=======
-    // example
-    app.put("/users", async function (req, res) {
-        try {
-            const user = await getUser(req);
-            const users = await db.select('*').from("se_project.users")
-
-            return res.status(200).json(users);
-        } catch (e) {
-            console.log(e.message);
-            return res.status(400).send("Could not get users");
-        }
-    });
-
-
-};
->>>>>>> 3d72db100e0683cb5e60d708f9ac3c348fa30244
