@@ -1,1 +1,11 @@
-http://localhost:3000
+POST http://localhost:3000/api/v1/user
+Content-Type: application/json
+
+{
+  "firstname":"newUserFirst",
+  "lastname": "newUserLast",
+  "email": "test@email.com",
+  "password": "1234",
+  "roleid": 1
+}
+
