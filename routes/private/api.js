@@ -62,8 +62,8 @@ const getUser_id = async function (req) {
 
 //POST pay for subscription online
 const express= require("express");
-const Kenx=require("./db");
-const { default: knex } = require("knex");
+// const db=require("../../connectors/db");
+// const { default: db } = require("db");
 
 const app=express();
 app.use(express.json());//to be able to access req.body
@@ -77,9 +77,9 @@ async (req,res)=>{
 const {newPassword}=req.body;
 pass={newPassword};
 const id=getUser_id(req);
-knex('users').where('id',id).update(
+db('users').where('id',id).update(
   {password:pass}).then( ()=>
-    Kenx.select().from('users')
+    db.select().from('users')
     .where('id',id).then((user)=>
     {  
       
@@ -101,7 +101,7 @@ catch (e) {
 app.get("/api/v1/zones",
 async (req,res)=>{
 try{
-knex.select().from('zones').then((zones)=>
+db.select().from('zones').then((zones)=>
 {
   return res.status(201).json(zones);
 
@@ -143,7 +143,7 @@ try{
     zoneId}=req.body;
     const x=get_num_of_tickets(subType);
     const uid=getUser_id(req);
-    ret=Kenx('subsription').insert({
+    ret=db('subsription').insert({
       subType:subType,
       zoneId:zoneId,
       noOfTickets:x,
@@ -152,7 +152,7 @@ try{
 
     }).returning("*");
 
-    ret2=Kenx('transactions').insert({
+    ret2=db('transactions').insert({
       amount:payedAmount,
       userId:uid,
       purchasedId:purchasedId
@@ -162,7 +162,7 @@ try{
 
 
     
-    ret3=Kenx('creditCardDetails').insert({
+    ret3=db('creditCardDetails').insert({
       holder_name:holderName,
       userId:uid,
       transactions_id:purchasedId,
@@ -201,7 +201,7 @@ try{
     
     const uid=getUser_id(req);
 
-    ret1=Kenx('subsription').insert({
+    ret1=db('subsription').insert({
       origin:origin,
       destination:destination,
       subID:null,//as we are paying online without subscription
@@ -210,7 +210,7 @@ try{
 
 
     }).returning("*");
-    ret2=Kenx('transactions').insert({
+    ret2=db('transactions').insert({
       amount:payedAmount,
       userId:uid,
       purchasedId:purchasedId
@@ -219,7 +219,7 @@ try{
     }).returning("*");
     
 
-    ret3=Kenx('creditCardDetails').insert({
+    ret3=db('creditCardDetails').insert({
       holder_name:holderName,
       userId:uid,
       transactions_id:purchasedId,
