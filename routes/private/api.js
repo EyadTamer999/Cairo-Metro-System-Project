@@ -51,25 +51,16 @@ module.exports = function (app) {
     try{
       //check if ticket date is upcoming or not
     const { ticketId } = req.params;
-    const existTicket = await db("se_project.tickets")
-    .where({id:ticketId})
-    .select("*")
-    .first();  
+    const existTicket = await db.select("*").from("se_project.tickets").where( "id", ticketId) ;
     if(existTicket){
-      const existRequest = await db("se_project.refund_requests")
-      .where({ticketid: ticketId})
-      .select("*")
-      .first();
+      const existRequest = await db.select("*").from("se_project.refund_requests").where( "ticketid", ticketId) ;
       if(!existRequest){
-        const ticketPurchase = await db("se_project.transactions")
-      .where({purchasedIid: ticketId})
-      .select("*")
-      .first();
+        const ticketPurchase =await db.select("amount").from("se_project.transactions").where( "purchasedIid", ticketId) ;
       if(ticketPurchase){
-        refundAmount=ticketPurchase.amount;
+        refundAmount=ticketPurchase;
       }
       else{
-        refundAmount=-1;
+        refundAmount=0;
       }
       const userId = await db.select("userId").from("se_project.tickets").where("id" , ticketId) ;  
       let status = "pending";
@@ -96,11 +87,8 @@ module.exports = function (app) {
   app.post("/api/v1/senior/request", async (req, res)=>{
     try{
       const user = getUser;
-      const userId = user.id;
-      const existReq = await db("se_project.routese_project.senior_requests")
-      .where({ userid: userId })
-      .select("*")
-      .first();
+      const userId = user["id"] ;
+      const existReq = await db.select("*").from("se_project.senior_requests").where( "userid" , userId) ;
     if (existReq) {
       return res.status(409).send("Request already submitted");
     }else{
@@ -126,7 +114,8 @@ module.exports = function (app) {
   app.post("/api/v1/station", async (req, res) => {
     try{
       const { stationName } = req.body;
-      if(!stationName){
+      const existstation = await db.select("*").from("se_project.stations").where( "stationname", stationName) ;
+      if(!existstation){
       let type = 'normal';
       let position = null
       let status = 'new';
@@ -151,7 +140,8 @@ module.exports = function (app) {
   app.put("/api/v1/station/:stationId", async (req, res) => {
     try{
       const { stationid } = req.params;
-      if(stationid){
+      const existstation = await db.select("*").from("se_project.stations").where( "id", stationid) ;
+      if(existstation){
         const { stationname1 } = req.body;
         const updatedStation = await db("se_project.stations")
         .where("id" , stationid)
@@ -171,12 +161,86 @@ module.exports = function (app) {
   })
   app.delete("/api/v1/station/:stationId", async (req,res)=>{
     try{
-      const { stataionid } = req.params;
-      if(stataionid){
-//todo delete station
+      const { stationid } = req.params;
+      const existstation = await db.select("id").from("se_project.stations").where( "id", stationid);
+      if(!existstation){
+        return res.status(404).send("no station exists with such ID");
       }
       else{
-        return res.status(404).send("no station exists with such ID");
+        const stationT = await db.select("stationtype").from("se_project.stations").where( "id", stationid) ;
+        if(stationT==="transfer"){
+          const stationP = await db.select("stationposition").from("se_project.stations").where( "id", stationid) ;
+          if(stationP==="start"){
+            const newStart= await db.select("toStationid").from("se_project.stations").where( "fromStationid" , existstation) ;
+            let newPosition = "start";
+            const updatedStart= await db("se_project.stations")
+            .where({ "id" : newStart})
+            .update({ stationposition: newPosition})
+            .returning("*");
+            const deletedStation = await db("se_project.stations")
+            .where({ "id" : stationid})
+            .del()
+            .returning("*");
+            const deletedRoute = await db("se_project.routes")
+            .where({ "fromStationid" : stationid})
+            .del()
+            .returning("*");
+            return res.status(200).json(deletedStation);
+          }
+          else if(stationP==="end"){
+            const newEnd= await db.select("fromStationid").from("se_project.stations").where( "toStationid" , existstation) ;
+            let newPosition = "end";
+            const updatedEnd= await db("se_project.stations")
+            .where({ "id" : newEnd})
+            .update({ stationposition: newPosition})
+            .returning("*");
+            const deletedStation = await db("se_project.stations")
+            .where({ "id" : stationid})
+            .del()
+            .returning("*");
+            const deletedRoute = await db("se_project.routes")
+            .where({ "toStationid" : stationid})
+            .del()
+            .returning("*");
+            return res.status(200).json(deletedStation);
+          }
+          else{
+            const newRS = await db.select("toStationid").from("se_project.stations").where( "fromStationid" , existstation) ;
+            const newRE = await db.select("fromStationid").from("se_project.stations").where( "toStationid" , existstation) ;
+            let newRName = "new";
+            let newRoute = {
+              newRName,
+              newRS,
+              newRE, 
+            };
+            const addedRoute = await db("se_project.routes").insert(newRoute).returning("id");
+            const deletedStation = await db("se_project.stations")
+            .where({ "id" : stationid})
+            .del()
+            .returning("*");
+            const deletedRoute = await db("se_project.routes")
+            .where({ "toStationid" : stationid})
+            .del()
+            .returning("*");
+            const deletedRoute2 = await db("se_project.routes")
+            .where({ "fromStationid" : stationid})
+            .del()
+            .returning("*");
+            let newRstation={
+              newRS,
+              addedRoute,
+            };
+            let newRstation2={
+              newRE,
+              addedRoute,
+            };
+            const addedRS = await db("se_project.stationroutes").insert(newRstation).returning("*");
+            const addedRS2 = await db("se_project.stationroutes").insert(newRstation2).returning("*");
+            return res.status(200).json(deletedStation);
+          }
+        }else{
+          return res.status(400).send("cannot delete a normal station");
+        }
       }
     }catch(err){
       console.log("error message ",err.message);
