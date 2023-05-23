@@ -58,24 +58,49 @@ module.exports = function (app) {
       .select("*")
       .first();
     if (!existRequest) {
-      return res.status(400).send("Refund request does not exist");
+      return res.status(400).send("Refund request does not exist"); //should this be changed to a return the status??
     }
+
     try {
+      //check if the ticket associated with the refund request has a future trip date
+      const ticket = await db("se_project.tickets")
+        .where({ id: existRequest.ticketid })
+        .select("*")
+        .first();
+      if (ticket.tripdate <= new Date()) {
+        return res.status(400).send("Only future-dated tickets can be refunded");
+      }
+
       const { status: refundStatus } = req.body;
       if (refundStatus !== "accepted" && refundStatus !== "rejected") {
         return res.status(400).send("Invalid status value");
       }
-      const updateRequestStatus = await db("se_project.refund_requests")
+      const updateRefundRequestStatus = await db("se_project.refund_requests")
         .where("id", requestId)
         .update({ status: refundStatus })
         .returning("*");
-      return res.status(200).json(updateRequestStatus);
+
+      // // Check if the user has a subscription
+      // const subscription = await db("se_project.subscription")
+      //   .where({ userid: existRequest.userid })
+      //   .select("*")
+      //   .first();
+      // if (subscription) {
+      //   //refund with subscription
+        
+      // } else {
+      //   //refund with online payment
+        
+      // }
+
+      return res.status(200).json(updateRefundRequestStatus);
     } catch (err) {
       console.log("error message", err.message);
       return res.status(400).send("Could not update refund request status");
     }
-
   });
+
+
 
   // -Request Senior PUT
 
@@ -93,11 +118,11 @@ module.exports = function (app) {
       if (status !== "accepted" && status !== "rejected") {
         return res.status(400).send("Invalid status value");
       }
-      const updateRequestStatus = await db("se_project.senior_requests")
+      const updateSeniorRequestStatus = await db("se_project.senior_requests")
         .where("id", requestId)
         .update({ status: status })
         .returning("*");
-      return res.status(200).json(updateRequestStatus);
+      return res.status(200).json(updateSeniorRequestStatus);
     } catch (err) {
       console.log("error message", err.message);
       return res.status(400).send("Could not update senior request");
@@ -105,7 +130,7 @@ module.exports = function (app) {
   });
 
   // -Update zone price PUT 
-  
+
   app.put("/api/v1/zones/zoneId", async (req, res) => {
     const existZone = await db("se_project.route")
       .where({ id: zoneId })
