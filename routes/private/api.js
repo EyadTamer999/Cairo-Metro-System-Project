@@ -58,7 +58,7 @@ module.exports = function (app) {
       .select("*")
       .first();
     if (!existRequest) {
-      return res.status(400).send("Refund request does not exist"); //should this be changed to a return the status??
+      return res.status(400).send("Refund request does not exist"); 
     }
 
     try {
@@ -68,7 +68,7 @@ module.exports = function (app) {
         .select("*")
         .first();
       if (ticket.tripdate <= new Date()) {
-        return res.status(400).send("Only future-dated tickets can be refunded");
+        return res.status(400).send("Only future-dated tickets can be refunded"); //should this be changed to a return the status??
       }
 
       const { status: refundStatus } = req.body;
