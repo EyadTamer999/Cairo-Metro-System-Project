@@ -51,21 +51,42 @@ module.exports = function (app) {
     try{
       //check if ticket date is upcoming or not
     const { ticketId } = req.params;
-    if(!ticketId){
-      //todo refund amount in request refund table
-      const userId = await db.select("userId").from("tickets").where("id" , ticketId) ;  
+    const existTicket = await db("se_project.tickets")
+    .where({id:ticketId})
+    .select("*")
+    .first();  
+    if(existTicket){
+      const existRequest = await db("se_project.refund_requests")
+      .where({ticketid: ticketId})
+      .select("*")
+      .first();
+      if(!existRequest){
+        const ticketPurchase = await db("se_project.transactions")
+      .where({purchasedIid: ticketId})
+      .select("*")
+      .first();
+      if(ticketPurchase){
+        refundAmount=ticketPurchase.amount;
+      }
+      else{
+        refundAmount=-1;
+      }
+      const userId = await db.select("userId").from("se_project.tickets").where("id" , ticketId) ;  
       let status = "pending";
       let newRequest = {
         status,
         userId,
-        //refundAmount,
+        refundAmount,
         ticketId,
     };
-      const addedRequest = await db("refund_requests").insert(newRequest).returning("*");
+      const addedRequest = await db("se_project.refund_requests").insert(newRequest).returning("*");
       return res.status(201).json(addedRequest);
+  } else{
+    return res.status(409).send("there already exists a refund request for this ticket");
   }
+}
      else{
-      return res.status(409).send("there already exists a refund request for this ticket");
+      return res.status(400).send("there isnt a ticket with such ticket ID");
      }
   } catch (err){
       console.log("error message ",err.message);
@@ -74,9 +95,17 @@ module.exports = function (app) {
   });
   app.post("/api/v1/senior/request", async (req, res)=>{
     try{
-      const {nationalId} = req.body;
       const user = getUser;
       const userId = user.id;
+      const existReq = await db("se_project.routese_project.senior_requests")
+      .where({ userid: userId })
+      .select("*")
+      .first();
+    if (existReq) {
+      return res.status(409).send("Request already submitted");
+    }else{
+      const {nationalId} = req.body;
+      
       let status = "pending";
       let newSRequest = {
         status,
@@ -85,7 +114,8 @@ module.exports = function (app) {
       };
       const addedSRequest = await db("se_project.senior_requests").insert(newSRequest).returning("*");
       return res.status(201).json(addedSRequest)
-    } catch(err){
+    } 
+     }catch(err){
         console.log("error message ",err.message);
         return res.status(400).send(err.message);
     }
@@ -139,7 +169,7 @@ module.exports = function (app) {
       return res.status(400).send(err.message);
     }
   })
-  app.delete("/api/v1/station/:stationId", async (req,res){
+  app.delete("/api/v1/station/:stationId", async (req,res)=>{
     try{
       const { stataionid } = req.params;
       if(stataionid){
