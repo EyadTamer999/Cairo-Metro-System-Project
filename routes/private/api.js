@@ -132,7 +132,6 @@ function get_num_of_tickets(subType)
 }
 
 
-//paying for subscription online need work 
 app.post("/api/v1/payment/subscription",
 async (req,res)=>{
 try{
@@ -160,10 +159,21 @@ try{
       
 
     }).returning("*");
-    
-    //TODO what they are used for  creditCardNumber ,holderName
 
-    ret=ret1.innerJoin(ret2);
+
+    
+    ret3=Kenx('creditCardDetails').insert({
+      holder_name:holderName,
+      userId:uid,
+      transactions_id:purchasedId,
+      creditCardNumber:creditCardNumber
+      
+
+    }).returning("*");
+    
+    
+
+    ret=ret1.innerJoin(ret2).innerJoin(ret3);
     return res.status(201).json(ret);
 
 }
@@ -208,12 +218,20 @@ try{
 
     }).returning("*");
     
-    //TODO what they are used for  creditCardNumber , holderName
 
-    ret=ret1.innerJoin(ret2);
+    ret3=Kenx('creditCardDetails').insert({
+      holder_name:holderName,
+      userId:uid,
+      transactions_id:purchasedId,
+      creditCardNumber:creditCardNumber
+      
+
+    }).returning("*");
+    
+    
+    
+    ret=ret1.innerJoin(ret2).innerJoin(ret3);
     return res.status(201).json(ret);
-
-
 
 } 
 catch (e) {
@@ -221,8 +239,6 @@ catch (e) {
   return res.status(400).send(e.message);
 }
 });
-
-
 
 
 
