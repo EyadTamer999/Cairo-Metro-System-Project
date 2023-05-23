@@ -15,8 +15,8 @@ module.exports = function (app) {
         }
 
         const newUser = {
-            firstname: req.body.firstName,
-            lastname: req.body.lastName,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
             email: req.body.email,
             password: req.body.password,
             roleid: roles.user,
