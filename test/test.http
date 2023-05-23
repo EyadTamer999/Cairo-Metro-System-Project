@@ -18,4 +18,5 @@ Content-Type: application/json
   "password": "1234"
 }
 
-
+###
+PUT http://localhost:3000/user
