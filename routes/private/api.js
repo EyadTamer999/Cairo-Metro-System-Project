@@ -57,6 +57,8 @@ module.exports = function (app) {
     try {
       const  { subId, origin, destination, tripDate } = req.body;
       console.log(req.body);
+      // Retrieve full ticket price, route and transfer stations based on origin and destination
+      const ticketDetails = await getTicketDetails(origin, destination);
       let newPaymentBySubscription = {
         subId,
         origin,
@@ -64,6 +66,8 @@ module.exports = function (app) {
         tripDate
       };
       const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets").returning("*"); 
+      const upcomingRide = await db.insert(newPaymentBySubscription).into("se_project.rides").returning("*"); //should i insert to both or just one?
+
       console.log(paidBySubscription);
       return res.status(201).json(paidBySubscription);
   } catch (err) {
@@ -73,6 +77,15 @@ module.exports = function (app) {
 
   }
   });
+
+  // async function getTicketDetails(origin, destination) {
+  //   //retrieve full ticket price, route and transfer stations based on origin and destination
+  //   // ...
+  //   return {
+  //     price: ...,
+  //     route: ...,
+  //     transferStations: ...
+  //   };
 
 
 // Check Price:
