@@ -135,12 +135,9 @@ CREATE TABLE IF NOT EXISTS se_project.stationroutes
     stationid INTEGER NOT NULL,
     routeid   INTEGER NOT NULL,
     CONSTRAINT stationRoutes_pkey PRIMARY KEY (id),
-<<<<<<< HEAD
     FOREIGN KEY( stationId ) REFERENCES se_project.stations on DELETE CASCADE on UPDATE CASCADE,
     FOREIGN KEY( routeId ) REFERENCES se_project.routes on DELETE CASCADE on UPDATE CASCADE
 );
-
-
 
 CREATE TABLE IF NOT EXISTS se_project.creditCardDetails---------------------------------------------------------
 (
@@ -153,8 +150,3 @@ CREATE TABLE IF NOT EXISTS se_project.creditCardDetails-------------------------
     FOREIGN KEY( userId ) REFERENCES se_project.users,
     CONSTRAINT cc_pkey PRIMARY KEY (id)
 );
-=======
-    FOREIGN KEY (stationid) REFERENCES se_project.stations on DELETE CASCADE on UPDATE CASCADE,
-    FOREIGN KEY (routeid) REFERENCES se_project.routes on DELETE CASCADE on UPDATE CASCADE
-);
->>>>>>> 3d72db100e0683cb5e60d708f9ac3c348fa30244

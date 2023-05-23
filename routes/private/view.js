@@ -43,4 +43,41 @@ module.exports = function (app) {
         return res.render('stations_example', {...user, stations});
     });
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+    app.get('/resetPassword', async function (req, res) {
+        const user = await getUser(req);
+        const stations = await db.select('*').from('se_project.stations');
+        return res.render('index', {...user, stations});
+    });
+
+
+
+    app.get('/subscriptions', async function (req, res) {
+        const user = await getUser(req);
+        const stations = await db.select('*').from('se_project.stations');
+        return res.render('index', {...user, stations});
+    });
+
+
+
+    app.get('/tickets', async function (req, res) {
+        const user = await getUser(req);
+        const stations = await db.select('*').from('se_project.stations');
+        return res.render('index', {...user, stations});
+    });
+*/
+
+    
+
+/*
+/api/v1/password/reset
+/api/v1/zones
+/api/v1/payment/subscription
+/api/v1/payment/ticket
+
+*/
+
+
 };
