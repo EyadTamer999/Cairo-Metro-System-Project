@@ -51,14 +51,14 @@ module.exports = function (app) {
 
   // -Request refund PUT 
 
-  app.put("/api/v1/requests/refund/:requestId", async (req, res) => {
+  app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
     const { requestId } = req.params;
     const existRequest = await db("se_project.refund_requests")
       .where({ id: requestId })
       .select("*")
       .first();
     if (!existRequest) {
-      return res.status(400).send("Refund request does not exist"); 
+      return res.status(400).send("Refund request does not exist");
     }
 
     try {
@@ -80,18 +80,25 @@ module.exports = function (app) {
         .update({ status: refundStatus })
         .returning("*");
 
-      // // Check if the user has a subscription
-      // const subscription = await db("se_project.subscription")
-      //   .where({ userid: existRequest.userid })
-      //   .select("*")
-      //   .first();
-      // if (subscription) {
-      //   //refund with subscription
-        
-      // } else {
-      //   //refund with online payment
-        
-      // }
+      // Check if the user has a subscription
+      const subscription = await db("se_project.subscription")
+        .where({ userid: existRequest.userid })
+        .select("*")
+        .first();
+
+      if (subscription) {
+        //refund with subscription
+        await db("se_project.subscription")
+          .where({ userid: existRequest.userid })
+          .update({ nooftickets: nooftickets + 1 })
+          .returning("*"); //assuming the subscription table has no connection to the 
+      } else {
+        //refund with online payment
+        await db("se_project.transaction")
+          .where({ userid: existRequest.userid })
+          .update({ amount: (-amount) })
+          .returning("*");
+      }
 
       return res.status(200).json(updateRefundRequestStatus);
     } catch (err) {
@@ -104,7 +111,7 @@ module.exports = function (app) {
 
   // -Request Senior PUT
 
-  app.put("/api/v1/senior_requests/:requestId/:status", async (req, res) => {
+  app.put("/api/v1/requests/requests/:requestId/:status", async (req, res) => {
     const { requestId } = req.params;
     const existRequest = await db("se_project.senior_requests")
       .where({ id: requestId })
