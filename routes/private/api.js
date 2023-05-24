@@ -169,20 +169,29 @@ module.exports = function (app) {
       else{
         const stationT = await db.select("stationtype").from("se_project.stations").where( "id", stationid) ;
         if(stationT==="transfer"){
+          const newTransfer = await db.select("fromStationid").from("se_project.routes").where( "toStationid", stationid);
+          let newType = "transfer";
+          const NormToTrans = await db("se_project.stations").where("id",newTransfer).update({stationtype:newType}).returning("*");
+          const updatingTransfer= await db("se_project.routes")
+          .where("fromStationid",stationid)
+          .update({fromStationid:newTransfer})
+          .returning("*");
+          const deletedStation = await db("se_project.stations")
+          .where("id" , stationid)
+          .del()
+          .returning("*");
+          return res.status(200).json(deletedStation);
+        }else{
           const stationP = await db.select("stationposition").from("se_project.stations").where( "id", stationid) ;
           if(stationP==="start"){
             const newStart= await db.select("toStationid").from("se_project.stations").where( "fromStationid" , existstation) ;
             let newPosition = "start";
             const updatedStart= await db("se_project.stations")
-            .where({ "id" : newStart})
+            .where( "id" , newStart)
             .update({ stationposition: newPosition})
             .returning("*");
             const deletedStation = await db("se_project.stations")
-            .where({ "id" : stationid})
-            .del()
-            .returning("*");
-            const deletedRoute = await db("se_project.routes")
-            .where({ "fromStationid" : stationid})
+            .where("id" , stationid)
             .del()
             .returning("*");
             return res.status(200).json(deletedStation);
@@ -191,15 +200,11 @@ module.exports = function (app) {
             const newEnd= await db.select("fromStationid").from("se_project.stations").where( "toStationid" , existstation) ;
             let newPosition = "end";
             const updatedEnd= await db("se_project.stations")
-            .where({ "id" : newEnd})
+            .where( "id" , newEnd)
             .update({ stationposition: newPosition})
             .returning("*");
             const deletedStation = await db("se_project.stations")
-            .where({ "id" : stationid})
-            .del()
-            .returning("*");
-            const deletedRoute = await db("se_project.routes")
-            .where({ "toStationid" : stationid})
+            .where( "id" , stationid)
             .del()
             .returning("*");
             return res.status(200).json(deletedStation);
@@ -215,15 +220,7 @@ module.exports = function (app) {
             };
             const addedRoute = await db("se_project.routes").insert(newRoute).returning("id");
             const deletedStation = await db("se_project.stations")
-            .where({ "id" : stationid})
-            .del()
-            .returning("*");
-            const deletedRoute = await db("se_project.routes")
-            .where({ "toStationid" : stationid})
-            .del()
-            .returning("*");
-            const deletedRoute2 = await db("se_project.routes")
-            .where({ "fromStationid" : stationid})
+            .where( "id" , stationid)
             .del()
             .returning("*");
             let newRstation={
@@ -238,10 +235,8 @@ module.exports = function (app) {
             const addedRS2 = await db("se_project.stationroutes").insert(newRstation2).returning("*");
             return res.status(200).json(deletedStation);
           }
-        }else{
-          return res.status(400).send("cannot delete a normal station");
         }
-      }
+        }
     }catch(err){
       console.log("error message ",err.message);
       return res.status(400).send(err.message);
