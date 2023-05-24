@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS se_project.rides
     ticketid    integer   not null,
     tripdate    timestamp not null,
     FOREIGN KEY (userid) REFERENCES se_project.users,
-    FOREIGN KEY (ticketid) REFERENCES se_project.rides,
+    FOREIGN KEY (ticketid) REFERENCES se_project.rides, --fix this
     CONSTRAINT rides_pkey PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS transactions
