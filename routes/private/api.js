@@ -9,7 +9,7 @@ const getUser = async function (req) {
     if (!sessionToken) {
         return res.status(301).redirect("/");
     }
-    console.log(sessionToken)
+    // console.log(sessionToken)
     const user = await db
         .select("*")
         .from("se_project.sessions")
@@ -26,11 +26,11 @@ const getUser = async function (req) {
         )
         .first();
 
-    console.log("user =>", user);
+    // console.log("user =>", user);
     user.isNormal = user.roleid === roles.user;
     user.isAdmin = user.roleid === roles.admin;
     user.isSenior = user.roleid === roles.senior;
-    console.log("user =>", user)
+    // console.log("user =>", user)
     return user;
 };
 
@@ -52,29 +52,38 @@ module.exports = function (app) {
     //look through el subscription using el user id
     //check if user has sub, if no sub then no pay.
     //if sub then make ticket! 💪🏽
-    app.get("/api/v1/tickets/purchase/subscription", async (req, res) => {
+    app.put("/api/v1/tickets/purchase/subscription", async (req, res) => {
         try {
+            //check on user if there exists a subscription under his/her user id
             const user = await getUser(req);
-            // console.log(user)
-            let userId = user["userid"]
-            // console.log(userId)
-            const userHasSub = await db.select('*').from('se_project.subscription').where("userid", '=', userId) //get row
-            console.log(isEmpty(userHasSub)) //empty therefore no subscription
-            if (isEmpty(userHasSub)) {
+
+            const userSubscription = await db.select('*').from('se_project.subscription').where("userid", '=', user["userid"]) //get row
+            console.log(userSubscription)
+            console.log(isEmpty(userSubscription)) //tru = empty therefore no subscription, false = not empty
+            if (isEmpty(userSubscription)) {
                 console.log("No subscription.")
-                return res.status(404).send("No subscription, choose another payment")
+                return res.status(400).send(userSubscription)
             } else {
-                //     const {subId, origin, destination, tripDate} = req.body;
-                //     console.log(req.body);
-                //     let newPaymentBySubscription = {
-                //         subId,
-                //         origin,
-                //         destination,
-                //         tripDate
-                //     };
-                //     const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets").returning("*");
-                //     console.log(paidBySubscription);
-                //     return res.status(201).json(paidBySubscription);
+                // get the sub id from the user session and getUser
+                // get origin and dest and data from user input
+                const subId = json(userSubscription['id'])
+                console.log(subId)
+                const {origin, destination, tripDate} = req.body;
+                console.log(req.body);
+                let newPaymentBySubscription = {
+                    subId,
+                    origin,
+                    destination,
+                    tripDate
+                };
+                const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets").returning("*");
+                let numOfTickets = db.select('nooftickets').from('se_project.tickets').where('userid', user['userid'])['nooftickets']
+                console.log(paidBySubscription);
+                console.log(numOfTickets)
+                db("se_project.subscription").where('userid', user['userid']).update({
+                    nooftickets: numOfTickets--
+                })
+                return res.status(201).json(paidBySubscription);
             }
         } catch (err) {
             console.log("Error paying for ticket by subscription", err.message);

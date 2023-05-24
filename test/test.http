@@ -22,4 +22,4 @@ Content-Type: application/json
 PUT localhost:3000/users
 
 ###
-GET localhost:3000/api/v1/tickets/purchase/subscription
+PUT localhost:3000/api/v1/tickets/purchase/subscription
