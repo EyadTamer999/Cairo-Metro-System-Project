@@ -5,8 +5,10 @@ async function uploadSR() {
     let SR = [
         {stationid: 1, routeid: 1},
         {stationid: 1, routeid: 2},
+        {stationid: 2, routeid: 1},
         {stationid: 2, routeid: 2},
         {stationid: 2, routeid: 3},
+        {stationid: 2, routeid: 4},
         {stationid: 3, routeid: 3},
         {stationid: 3, routeid: 4},
         {stationid: 3, routeid: 5},
@@ -23,6 +25,8 @@ async function uploadSR() {
         {stationid: 6, routeid: 8},
         {stationid: 6, routeid: 11},
         {stationid: 6, routeid: 12},
+        {stationid: 7, routeid: 11},
+        {stationid: 7, routeid: 12}
     ];
     for (let i = 0; i < SR.length; i++) {
         const element = SR[i];
