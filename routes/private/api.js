@@ -35,31 +35,6 @@ const getUser = async function (req) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////start of changes
 
-const getUser_id = async function (req) {
-  const sessionToken = getSessionToken(req);
-  if (!sessionToken) {
-    return res.status(301).redirect("/");
-  }
-  console.log("hi",sessionToken);
-  const user = await db
-    .select("userId")
-    .from("se_project.sessions")
-    .where("token", sessionToken)
-    .innerJoin(
-      "se_project.users",
-      "se_project.sessions.userId",
-      "se_project.users.id"
-    )
-    .innerJoin(
-      "se_project.roles",
-      "se_project.users.roleId",
-      "se_project.roles.id"
-    )
-    .first();
-    return user;
-  }
-
-
 
 //POST pay for subscription online
 const express= require("express");
@@ -71,6 +46,31 @@ app.use(express.json());//to be able to access req.body
 
 
 
+///////////////////////////////////////////////////////////////end of changes
+
+
+
+/////////////////////////////////////////////////////////////
+
+module.exports = function (app) {
+  // example
+  app.put("/users", async function (req, res) {
+    try {
+     const user = await getUser(req);
+     // const {userId}=req.body
+     console.log("hiiiiiiiiiii");
+    const users = await db.select('*').from("se_project.users")
+        
+      return res.status(200).json(users);
+    } catch (e) {
+      console.log(e.message);
+      return res.status(400).send("Could not get users");
+    }
+  });
+
+
+
+
 //reset password for admin and user PUT 
 //do not forget to edit the commented conditions
 app.put("/api/v1/password/reset",
@@ -79,7 +79,7 @@ async (req,res)=>{
   {
       const pass=req.body.password;
       const user=getUser(req);
-      const id=getUser_id(req);
+      const id=user.id;
       const old_pass=user.password;
       if(pass === old_pass)
           {
@@ -118,7 +118,7 @@ app.get("/api/v1/zones",
 async (req,res)=>{
     try
         {
-        const all_zones=db.select().from('zones').returning("*") ;
+        const all_zones=db.select("*").from('zones').returning("*") ;
         return res.status(201).json(all_zones);
         }
     catch (e) 
@@ -158,7 +158,8 @@ try{
 
   
     const x=get_num_of_tickets(subType);
-    const uid=getUser_id(req);
+    const user=getUser(req);
+    const uid=user.id;
     const existZone = await db("se_project.zones")
     .where({ id: zoneId })
     .select("*")
@@ -255,7 +256,8 @@ try{
     tripDate //dateTime
     }=req.body;
     
-    const uid=getUser_id(req);
+    const user=getUser(req);
+    const uid=user.id;
 
     const user1=getUser(req);
 
@@ -344,27 +346,11 @@ catch (e) {
 
 
 
-///////////////////////////////////////////////////////////////end of changes
 
 
 
-/////////////////////////////////////////////////////////////
 
-module.exports = function (app) {
-  // example
-  app.put("/users", async function (req, res) {
-    try {
-       const user = await getUser(req);
-     // const {userId}=req.body
-     console.log("hiiiiiiiiiii");
-      const users = await db.select('*').from("se_project.users")
-        
-      return res.status(200).json(users);
-    } catch (e) {
-      console.log(e.message);
-      return res.status(400).send("Could not get users");
-    }
-  });
- 
+
+
 
 };
