@@ -78,17 +78,17 @@ async (req,res)=>{
   try
   {
       const pass=req.body.password;
-      //const user=getUser(req);
-      const id=3;//getUser_id(req);
-      const old_pass=req.body.old_password;//user.password;
+      const user=getUser(req);
+      const id=getUser_id(req);
+      const old_pass=user.password;
       if(pass === old_pass)
           {
-            return res.status(400).send("you are entering your old password");
+              return res.status(400).send("you are entering your old password");
 
           }
       else if(pass==="")
           {
-            return res.status(400).send("you have to enter a value to the password");
+          return res.status(400).send("you have to enter a value to the password");
 
           }
       else
