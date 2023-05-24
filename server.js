@@ -17,7 +17,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 // All public routes can be accessible without authentication
-
 // uncomment to view frontend
 publicViewRoutes(app);
 publicApiRoutes(app);// uncomment
