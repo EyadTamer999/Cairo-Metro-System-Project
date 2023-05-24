@@ -12,12 +12,12 @@ const config = {
         user: 'postgres',
         password: '1234',
         database: 'se_project',
+        schema: 'se_project'
     }
 };
 
 // create the connection with postgres
 const db = knex(config);
-
-// expose the created connection so we can
+// expose the created connection, so we can
 // use it in other files to make sql statements
 module.exports = db;

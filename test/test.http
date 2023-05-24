@@ -1,8 +1,8 @@
-POST http://localhost:3000/api/v1/user
+POST localhost:3000/api/v1/user
 Content-Type: application/json
 
 {
-  "firstname":"newUserFirst",
+  "firstname": "newUserFirst",
   "lastname": "newUserLast",
   "email": "test@email.com",
   "password": "1234",
@@ -10,7 +10,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3000/api/v1/user/login
+POST localhost:3000/api/v1/user/login
 Content-Type: application/json
 
 {
@@ -19,4 +19,7 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:3000/user
+PUT localhost:3000/users
+
+###
+GET localhost:3000/api/v1/tickets/purchase/subscription

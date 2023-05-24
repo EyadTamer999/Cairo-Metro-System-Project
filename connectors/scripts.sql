@@ -1,7 +1,7 @@
 -- DROP TABLE IF EXISTS se_project.users;
 -- DROP TABLE IF EXISTS se_project.roles;
 -- DROP TABLE IF EXISTS se_project.faculties;
--- DROP TABLE IF EXISTS se_project.courses;
+-- DROP TABLE IF EXISTS se_project.subsription;
 -- DROP TABLE IF EXISTS se_project.sessions;
 -- DROP TABLE IF EXISTS se_project.enrollments;
 --- Note in pgadmin columns name will be lowerCase
@@ -41,14 +41,14 @@ CREATE TABLE IF NOT EXISTS se_project.zones
     CONSTRAINT zones_pkey PRIMARY KEY (id)
 
 );
-CREATE TABLE IF NOT EXISTS se_project.subsription
+CREATE TABLE IF NOT EXISTS se_project.subscription
 (
     id          SERIAL  NOT NULL,
     subtype     text    NOT NULL, --annual --month -- quarterly
     zoneid      Integer NOT NULL,
     userid      INTEGER NOT NULL,
     nooftickets INTEGER NOT NULL,
-    CONSTRAINT subsription_pkey PRIMARY KEY (id),
+    CONSTRAINT subscriptions PRIMARY KEY (id),
     FOREIGN KEY (userid) REFERENCES se_project.users,
     FOREIGN KEY (zoneid) REFERENCES se_project.zones
 
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS se_project.tickets
     subiD       INTEGER,
     tripdate    timestamp not Null,
     FOREIGN KEY (userid) REFERENCES se_project.users,
-    FOREIGN KEY (subid) REFERENCES se_project.subsription,
+    FOREIGN KEY (subid) REFERENCES se_project.subscription,
     CONSTRAINT tickets_pkey PRIMARY KEY (id)
 );
 
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS se_project.rides
     ticketid    integer   not null,
     tripdate    timestamp not null,
     FOREIGN KEY (userid) REFERENCES se_project.users,
-    FOREIGN KEY (ticketid) REFERENCES se_project.rides,
+    FOREIGN KEY (ticketid) REFERENCES se_project.tickets,
     CONSTRAINT rides_pkey PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS se_project.transactions
