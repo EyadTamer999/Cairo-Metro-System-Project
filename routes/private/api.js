@@ -68,7 +68,7 @@ module.exports = function (app) {
         .select("*")
         .first();
       if (ticket.tripdate <= new Date()) {
-        return res.status(400).send("Only future-dated tickets can be refunded"); //should this be changed to a return the status??
+        return res.status(400).send("Only future-dated tickets can be refunded"); //should i also return rejected with it or not
       }
 
       const { status: refundStatus } = req.body;
@@ -91,13 +91,13 @@ module.exports = function (app) {
         await db("se_project.subscription")
           .where({ userid: existRequest.userid })
           .update({ nooftickets: nooftickets + 1 })
-          .returning("*"); //assuming the subscription table has no connection to the 
+          .returning("*"); //assuming the subscription table has 
       } else {
         //refund with online payment
         await db("se_project.transaction")
           .where({ userid: existRequest.userid })
           .update({ amount: (-amount) })
-          .returning("*");
+          .returning("*"); //or should i make a new transaction where the refund amount is the same as the most previous one 
       }
 
       return res.status(200).json(updateRefundRequestStatus);
@@ -111,7 +111,7 @@ module.exports = function (app) {
 
   // -Request Senior PUT
 
-  app.put("/api/v1/requests/requests/:requestId/:status", async (req, res) => {
+  app.put("/api/v1/requests/senior/:requestId", async (req, res) => {
     const { requestId } = req.params;
     const existRequest = await db("se_project.senior_requests")
       .where({ id: requestId })
@@ -139,7 +139,8 @@ module.exports = function (app) {
   // -Update zone price PUT 
 
   app.put("/api/v1/zones/zoneId", async (req, res) => {
-    const existZone = await db("se_project.route")
+    const { zoneId } = req.params;
+    const existZone = await db("se_project.zones")
       .where({ id: zoneId })
       .select("*")
       .first();
@@ -148,10 +149,8 @@ module.exports = function (app) {
     }
 
     try {
-
       const { price } = req.body;
-      const { zoneId } = req.params;
-      const updateZonePrice = await db("se_project")
+      const updateZonePrice = await db("se_project.zones")
         .where("id", zoneId)
         .update({
           price: price
