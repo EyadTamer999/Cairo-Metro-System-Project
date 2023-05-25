@@ -53,30 +53,30 @@ module.exports = function (app) {
 
 
 // Pay for ticket by subscription
-  app.post("/api/v1/tickets/purchase/subscription", async (req, res) => {
-    try {
-      const  { subId, origin, destination, tripDate } = req.body;
-      console.log(req.body);
-      // Retrieve full ticket price, route and transfer stations based on origin and destination
-      const ticketDetails = await getTicketDetails(origin, destination);
-      let newPaymentBySubscription = {
-        subId,
-        origin,
-        destination,
-        tripDate
-      };
-      const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets").returning("*"); 
-      const upcomingRide = await db.insert(newPaymentBySubscription).into("se_project.rides").returning("*"); //should i insert to both or just one?
+//   app.post("/api/v1/tickets/purchase/subscription", async (req, res) => {
+//     try {
+//       const  { subId, origin, destination, tripDate } = req.body;
+//       console.log(req.body);
+//       // Retrieve full ticket price, route and transfer stations based on origin and destination
+//       const ticketDetails = await getTicketDetails(origin, destination);
+//       let newPaymentBySubscription = {
+//         subId,
+//         origin,
+//         destination,
+//         tripDate
+//       };
+//       const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets").returning("*"); 
+//       const upcomingRide = await db.insert(newPaymentBySubscription).into("se_project.rides").returning("*"); //should i insert to both or just one?
 
-      console.log(paidBySubscription);
-      return res.status(201).json(paidBySubscription);
-  } catch (err) {
-      console.log("Error paying for ticket by subscription", err.message);
-      return res.status(400).send(err.message);
+//       console.log(paidBySubscription);
+//       return res.status(201).json(paidBySubscription);
+//   } catch (err) {
+//       console.log("Error paying for ticket by subscription", err.message);
+//       return res.status(400).send(err.message);
 
 
-  }
-  });
+//   }
+//   });
 
   // async function getTicketDetails(origin, destination) {
   //   //retrieve full ticket price, route and transfer stations based on origin and destination
@@ -133,6 +133,70 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
     return res.status(400).send(err.message);
   }
 })
+
+    // Pay for ticket by subscription
+    //look through el subscription using el user id
+    //check if user has sub, if no sub then no pay.
+    //if sub then make ticket! 💪🏽
+    app.put("/api/v1/tickets/purchase/subscription", async (req, res) => {
+        try {
+            //check on user if there exists a subscription under his/her user id
+            const user = await getUser(req);
+            let userid = user["userid"]
+            const userSubscription = await db
+                .select('*')
+                .from('se_project.subscription')
+                .where("userid", '=', userid)
+
+            // console.log(userSubscription)
+            // console.log(isEmpty(userSubscription))
+
+            if (isEmpty(userSubscription)) {
+                //tru = empty therefore no subscription, false = not empty
+                console.log("No subscription.")
+                return res.status(400).send(userSubscription)
+            } else if (userSubscription[0]['nooftickets'] === 0) {
+                //tickets are finished
+                console.log("Tickets are finished for subscription, renew the subscription or buy normal ticket.")
+                return res.status(400).send(userSubscription)
+            } else {
+
+                // get the sub id from the user session and getUser
+                // get origin and dest and data from user input
+                const subid = userSubscription[0]['id']
+                //userSubscription is in an array, so we need to access that array first then access id
+                // console.log(userSubscription[0]['id'])
+                // console.log(subid)
+                const {origin, destination, tripdate} = req.body;
+
+                let newPaymentBySubscription = {
+                    origin,
+                    destination,
+                    userid,
+                    subid,
+                    tripdate
+                };
+                //store query parameters
+                // console.log(newPaymentBySubscription);
+
+                const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets");
+
+                let newNumOfTickets = userSubscription[0]['nooftickets'] - 1
+
+                let updateTicekts = await db("se_project.subscription").where('userid', '=', userid).update({
+                    nooftickets: newNumOfTickets
+                })
+                console.log(newNumOfTickets)
+
+                return res.status(201).json(updateTicekts);
+            }
+        } catch (err) {
+            console.log("Error paying for ticket by subscription", err.message);
+            return res.status(400).send(err.message);
+        }
+    });
+};
+
 
 
 };
