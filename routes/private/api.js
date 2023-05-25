@@ -172,10 +172,19 @@ module.exports = function (app) {
         if(stationT==="transfer"){
           const newTransfer = await db.select("fromStationid").from("se_project.routes").where( "toStationid", stationid).first();
           let newType = "transfer";
-          const NormToTrans = await db("se_project.stations").where("id",newTransfer).update({stationtype:newType}).returning("*");
+          const NormToTrans = await db("se_project.stations").where("id",newTransfer).update({stationtype:newType}).returning("id");
           const updatingTransfer= await db("se_project.routes")
           .where("fromStationid",stationid)
           .update({fromStationid:NormToTrans})
+          .returning("*");
+          const deleteDupeRoute = await db("se_project.routes")
+          .where("fromStationid" , NormToTrans)
+          .andWhere("toStationid" , NormToTrans)
+          .del()
+          .returning("*");
+          const updateRS = await db("se_project.stationroutes")
+          .where("stationid" , stationid)
+          .update({stationid : NormToTrans})
           .returning("*");
           const deletedStation = await db("se_project.stations")
           .where("id" , stationid)
@@ -191,6 +200,11 @@ module.exports = function (app) {
             .where( "id" , newStart)
             .update({ stationposition: newPosition})
             .returning("*");
+            const unwantedRoute = await db.select("id").from("se_project.routes").where( "fromStationid", stationid).andWhere("toStationid" , stationid) ;
+            const deleteRS  = await db("se_project.stationroutes")
+            .where("routeid" , unwantedRoute)
+            .del()
+            .returning("*");
             const deletedStation = await db("se_project.stations")
             .where("id" , stationid)
             .del()
@@ -203,6 +217,11 @@ module.exports = function (app) {
             const updatedEnd= await db("se_project.stations")
             .where( "id" , newEnd)
             .update({ stationposition: newPosition})
+            .returning("*");
+            const unwantedRoute = await db.select("id").from("se_project.routes").where( "fromStationid", stationid).andWhere("toStationid" , stationid) ;
+            const deleteRS  = await db("se_project.stationroutes")
+            .where("routeid" , unwantedRoute)
+            .del()
             .returning("*");
             const deletedStation = await db("se_project.stations")
             .where( "id" , stationid)
