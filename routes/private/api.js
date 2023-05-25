@@ -295,6 +295,10 @@ try{
             return res.status(400).send("you must enter the name of credit Card holder");
           }
 
+          else if(destination==origin)
+          {
+            return res.status(400).send("invalid trip");
+          }
           else if(payedAmount===null)
           {
             return res.status(400).send("you must enter the paid amount");
