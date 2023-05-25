@@ -54,17 +54,17 @@ module.exports = function (app) {
     - Delete routes
   */
 
-  // - Create routes:  DONE (NEED TESTING)
+  // - Create routes:  DONE 
   app.post("/api/v1/route", async (req, res) => {
-
     // need to check whethter the user is an admin or not
-    if (!getUser.isAdmin) return res.status(403);
+    const user = await getUser(req);
+    if (!user.isAdmin) return res.status(401);
 
-    const { routeName, fromStationId, toStationId } = req.body;
-    
+    const { routename, fromstationid, tostationid } = req.body;
+
     // try to see if the route already exists
     const existRoute = await db("se_project.routes")
-      .where({ routename: routeName })
+      .where({ routename: routename })
       .select("*")
       .first();
     if (existRoute) {
@@ -72,57 +72,74 @@ module.exports = function (app) {
     }
 
     try {
-      let newRoute = {
-        routeName,
-        fromStationId,
-        toStationId,
+      const newRoute = {
+        routename,
+        fromstationid,
+        tostationid,
       };
+
 
       const addedRoute = await db
         .insert(newRoute)
         .into("se_project.routes")
         .returning("*");
+
+        console.log(addedRoute);
+
       const getRouteID = await db("se_project.routes")
         .where({
-          routename: newRoute.routeName,
-          fromstationid: newRoute.fromStationId,
-          tostationid: newRoute.toStationId,
+          routename: newRoute.routename,
+          fromstationid: newRoute.fromstationid,
+          tostationid: newRoute.tostationid,
         })
         .select("id")
         .first();
-      let SR1 = {
-        routeId: getRouteID.id,
-        stationId: newRoute.fromStationId,
+        console.log(getRouteID);
+      const SR1 = {
+        routeid: getRouteID.id,
+        stationid: newRoute.fromstationid,
+      };
+      console.log(SR1);
+
+      const SR2 = {
+        routeid: getRouteID.id,
+        stationid: newRoute.tostationid,
       };
 
-      let SR2 = {
-        routeId: getRouteID.id,
-        stationId: newRoute.toStationId,
-      };
+      console.log(SR2);
 
       const addedSR1 = await db
         .insert(SR1)
         .into("se_project.stationroutes")
         .returning("*");
+        console.log(addedSR1);
+
+
       const addedSR2 = await db
         .insert(SR2)
         .into("se_project.stationroutes")
         .returning("*");
+        console.log(addedSR2);
 
-      return res.status(200).json(addedRoute, addedSR1, addedSR2).send("Added route");
+      return res
+        .status(200)
+        .send("Added route");
     } catch (err) {
       return res.status(400).send("Could not create route");
     }
   });
 
-  // -Update route:  DONE
+  
+  // -Update route:  DONE {Testing}
   app.put("/api/v1/route/:routeId", async (req, res) => {
     // need to check whethter the user is an admin or not
-    if (!getUser.isAdmin) return res.status(403);
+    if (!getUser.isAdmin) return res.status(401);
 
+    const { routename } = req.body;
+    const { routeid } = req.params;
     // try to see if the route already exists
     const existRoute = await db("se_project.routes")
-      .where({ routeName: routeName })
+      .where({ routename: routename , routeid})
       .select("*")
       .first();
     if (!existRoute) {
@@ -130,12 +147,10 @@ module.exports = function (app) {
     }
 
     try {
-      const { routeName } = req.body;
-      const { routeId } = req.params;
       const updateRoute = await db("se_project.routes")
-        .where("id", routeId)
+        .where("id", routeid)
         .update({
-          routeName: routeName,
+          routename: routename,
         })
         .returning("*");
       return res.status(200).json(updateRoute);
@@ -147,24 +162,9 @@ module.exports = function (app) {
 
   // -Delete route: NOT DONE
   app.delete("/api/v1/route/:routeId", async (req, res) => {
-    /*
-    The code down below will need some editing 
-    I will get the route using the routeid then see if the station they have are either start or end
-    if they are start
-      -the first edit is that when deleting in the backwards direction <-:
-        -i will set the start station status as inactive
-        -then i will set the station connected to it as the new start of the route
-    if they are end
-      -the second edit that i will do is when deleting the station forwards ->:
-        -i will set the end station status as inactive
-        -then i will set the station connected to it as the new end of the route
-
-    These changes need to be done ASAP
-    anybody looking at this branch the api endpoint is stil not done implementing
-    */
 
     // need to check whethter the user is an admin or not
-    if (!getUser.isAdmin) return res.status(403);
+    if (!getUser.isAdmin) return res.status(401);
 
     // try to see if the route already exists
     const existRoute = await db("se_project.routes")
