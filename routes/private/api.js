@@ -195,8 +195,5 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
             return res.status(400).send(err.message);
         }
     });
-};
-
-
 
 };
