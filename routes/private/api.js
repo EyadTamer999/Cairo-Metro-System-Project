@@ -65,11 +65,10 @@ module.exports = function (app) {
     }
 });
 
-
+////done
 
 
 //reset password for admin and user PUT 
-//do not forget to edit the commented conditions
 app.put("/api/v1/password/reset",
 async (req,res)=>{
   try
@@ -111,7 +110,7 @@ async (req,res)=>{
 
 
 //            const user = await db("se_project.users").insert(newUser).returning("*");
-
+//done
 //GET subscribtion GET zones Data
 app.get("/api/v1/zones",
 async (req,res)=>{
@@ -127,7 +126,6 @@ async (req,res)=>{
           }
 
 }
-
 
 );
 
@@ -145,6 +143,8 @@ function get_num_of_tickets(subType)
 }
 
 
+
+
 app.post("/api/v1/payment/subscription",
 async (req,res)=>{
 try{
@@ -155,21 +155,25 @@ try{
   const subType=req.body.subType;
   const zoneId=req.body.zoneId;
 
-  
+  console.log(payedAmount);
     const x=get_num_of_tickets(subType);
     const user=await getUser(req);
     const uid=user.userid;
-    const existZone = await db("se_project.zones")
-    .where({ id: zoneId })
-    .select("*")
-    .first();
-  
-    if (!existZone) 
+    const existZone = await db.select("*").from("se_project.zones")
+    .where({ id: zoneId });
+
+    console.log(user.isSenior);
+    if(user.isSenior)
+    {
+      payedAmount=payedAmount*0.9 ;
+    }
+    console.log(payedAmount);
+    if (isEmpty(existZone)) 
     {
     return res.status(400).send("Zone does not exist");
     }
 
-    if(purchasedId===null)
+    else if(purchasedId===null)
     {
       return res.status(400).send("you must entered purchasedId");
     }
@@ -197,35 +201,37 @@ try{
     
 
     else{
-          ret=await db('se_project.subsription').insert({
-            subType:subType,
-            zoneId:zoneId,
-            noOfTickets:x,
-            userId:uid
+
+          ret1=await db('se_project.subsription').insert({
+            subtype:subType,
+            zoneid:zoneId,
+            nooftickets:x,
+            userid:uid
           }).returning("*");
+
+
 
           ret2=await db('se_project.transactions').insert({
             amount:payedAmount,
-            userId:uid,
-            purchasedId:purchasedId
+            userid:uid,
+            purchasedid:purchasedId
             
 
           }).returning("*");
-
-
           
-          ret3=await db('se_project.creditCardDetails').insert({
+
+          ret3=await db('se_project.creditcarddetails').insert({
             holder_name:holderName,
-            userId:uid,
-            transactions_id:purchasedId,
-            creditCardNumber:creditCardNumber
+            userid:uid,
+            creditcardnumber:creditCardNumber
             
 
           }).returning("*");
           
-          
 
-          ret=ret1.innerJoin(ret2).innerJoin(ret3);
+
+
+          ret={subType,zoneId,x,uid,payedAmount,purchasedId,holderName,creditCardNumber};
           return res.status(201).json(ret);
   }
 }
@@ -242,6 +248,9 @@ catch (e) {
 app.post("/api/v1/payment/ticket",
 async (req,res)=>{
 try{
+
+
+
   const {purchasedId,//Integer
     creditCardNumber,//Integer
     holderName,//string
@@ -252,84 +261,98 @@ try{
     tripDate //dateTime
     }=req.body;
     
-    const user=getUser(req);
+    const user=await getUser(req);
     const uid=user.userid;
+    console.log("Daaaaaaaaaaaaaaaaaaaaaaaaaam");
+    console.log(uid);
 
-
-
-    if(purchasedId===null)
+    const existsubsription = await db.select("*").from("se_project.subsription").where('userid',uid);
+    if(!isEmpty(existsubsription))
     {
-      return res.status(400).send("you must entered purchasedId");
-    }
-
-    else if(creditCardNumber===null)
-    {
-      return res.status(400).send("you must entered creditCardNumber");
-    }
-
-    else if(holderName===null)
-    {
-      return res.status(400).send("you must enter the name of credit Card holder");
-    }
-
-    else if(payedAmount===null)
-    {
-      return res.status(400).send("you must enter the paid amount");
-    }
-    
-
-    else if(tripDate===null)
-    {
-      return res.status(400).send("you must enter the trip date");
+      return res.status(400).send("user have subscription");
 
     }
-
-    else if(origin==="")
-    {
-      return res.status(400).send("you must enter the origin");
-
-    }
-
-    else if(destination==="")
-    {
-      return res.status(400).send("you must enter the destination");
-
-    }
-
-    else{
-          ret1=await db('se_project.subsription').insert({
-            origin:origin,
-            destination:destination,
-            subID:null,//as we are paying online without subscription
-            userId:uid,
-            tripDate:tripDate
+  else{  
+          console.log(user.isSenior);
+          if(user.isSenior)
+          {
+            payedAmount=payedAmount*0.9 ;
+          }
 
 
-          }).returning("*");
-          ret2=await db('se_project.transactions').insert({
-            amount:payedAmount,
-            userId:uid,
-            purchasedId:purchasedId
-            
+          if(purchasedId===null)
+          {
+            return res.status(400).send("you must entered purchasedId");
+          }
 
-          }).returning("*");
+          else if(creditCardNumber===null)
+          {
+            return res.status(400).send("you must entered creditCardNumber");
+          }
+
+          else if(holderName===null)
+          {
+            return res.status(400).send("you must enter the name of credit Card holder");
+          }
+
+          else if(payedAmount===null)
+          {
+            return res.status(400).send("you must enter the paid amount");
+          }
           
 
-          ret3=await db('se_project.creditCardDetails').insert({
-            holder_name:holderName,
-            userId:uid,
-            transactions_id:purchasedId,
-            creditCardNumber:creditCardNumber
-            
+          else if(tripDate===null)
+          {
+            return res.status(400).send("you must enter the trip date");
 
-          }).returning("*");
-          
-          
-          
-          ret=ret1.innerJoin(ret2).innerJoin(ret3);
-          return res.status(201).json(ret);
+          }
+
+          else if(origin==="")
+          {
+            return res.status(400).send("you must enter the origin");
+
+          }
+
+          else if(destination==="")
+          {
+            return res.status(400).send("you must enter the destination");
+
+          }
+
+          //TODO checkprice before inserting   
+          else{
+                ret1=await db('se_project.tickets').insert({
+                  origin:origin,
+                  destination:destination,
+                  subid:null,//as we are paying online without subscription
+                  userid:uid,
+                  tripdate:tripDate
+
+
+                }).returning("*");
+                ret2=await db('se_project.transactions').insert({
+                  amount:payedAmount,
+                  userid:uid,
+                  purchasedid:purchasedId
+                  
+
+                }).returning("*");
+                
+
+                ret3=await db('se_project.creditcarddetails').insert({
+                  holder_name:holderName,
+                  userid:uid,
+                  creditcardnumber:creditCardNumber
+                  
+
+                }).returning("*");
+                
+                
+                
+                ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
+                return res.status(201).json(ret);
+        }
   }
-
 
 } 
 catch (e) {
@@ -337,13 +360,6 @@ catch (e) {
   return res.status(400).send(e.message);
 }
 });
-
-
-
-
-
-
-
 
 
 
