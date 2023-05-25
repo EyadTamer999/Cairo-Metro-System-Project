@@ -1,1 +1,25 @@
-http://localhost:3000
+POST localhost:3000/api/v1/user
+Content-Type: application/json
+
+{
+  "firstname": "newUserFirst",
+  "lastname": "newUserLast",
+  "email": "test@email.com",
+  "password": "1234",
+  "roleid": 1
+}
+
+###
+POST localhost:3000/api/v1/user/login
+Content-Type: application/json
+
+{
+  "email": "test@email.com",
+  "password": "1234"
+}
+
+###
+PUT localhost:3000/users
+
+###
+GET localhost:3000/api/v1/tickets/purchase/subscription
