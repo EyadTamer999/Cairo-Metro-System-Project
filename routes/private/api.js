@@ -200,7 +200,7 @@ module.exports = function (app) {
             .where( "id" , newStart)
             .update({ stationposition: newPosition})
             .returning("*");
-            const unwantedRoute = await db.select("id").from("se_project.routes").where( "fromStationid", stationid).andWhere("toStationid" , stationid) ;
+            const unwantedRoute = await db.select("id").from("se_project.routes").where( "fromStationid", stationid).orWhere("toStationid" , stationid) ;
             const deleteRS  = await db("se_project.stationroutes")
             .where("routeid" , unwantedRoute)
             .del()
@@ -218,7 +218,7 @@ module.exports = function (app) {
             .where( "id" , newEnd)
             .update({ stationposition: newPosition})
             .returning("*");
-            const unwantedRoute = await db.select("id").from("se_project.routes").where( "fromStationid", stationid).andWhere("toStationid" , stationid) ;
+            const unwantedRoute = await db.select("id").from("se_project.routes").where( "fromStationid", stationid).orWhere("toStationid" , stationid) ;
             const deleteRS  = await db("se_project.stationroutes")
             .where("routeid" , unwantedRoute)
             .del()
