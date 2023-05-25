@@ -23,3 +23,10 @@ PUT localhost:3000/users
 
 ###
 PUT localhost:3000/api/v1/tickets/purchase/subscription
+Content-Type: application/json
+
+{
+  "origin": "newUserFirst",
+  "destination": "newUserLast",
+  "tripDate": "2/2/2023"
+}

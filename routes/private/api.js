@@ -40,7 +40,7 @@ module.exports = function (app) {
         try {
             const user = await getUser(req);
             const users = await db.select('*').from("se_project.users")
-            return res.status(200).json(users);
+            return res.status(200).json(user);
         } catch (e) {
             console.log(e.message);
             return res.status(400).send("Could not get users");
@@ -56,33 +56,51 @@ module.exports = function (app) {
         try {
             //check on user if there exists a subscription under his/her user id
             const user = await getUser(req);
+            let userid = user["userid"]
+            const userSubscription = await db
+                .select('*')
+                .from('se_project.subscription')
+                .where("userid", '=', userid)
 
-            const userSubscription = await db.select('*').from('se_project.subscription').where("userid", '=', user["userid"]) //get row
             console.log(userSubscription)
-            console.log(isEmpty(userSubscription)) //tru = empty therefore no subscription, false = not empty
+            console.log(isEmpty(userSubscription))
+
             if (isEmpty(userSubscription)) {
+                //tru = empty therefore no subscription, false = not empty
                 console.log("No subscription.")
                 return res.status(400).send(userSubscription)
             } else {
+
                 // get the sub id from the user session and getUser
                 // get origin and dest and data from user input
-                const subId = json(userSubscription['id'])
+                const subId = userSubscription['id']
                 console.log(subId)
                 const {origin, destination, tripDate} = req.body;
-                console.log(req.body);
+
                 let newPaymentBySubscription = {
-                    subId,
                     origin,
                     destination,
+                    userid,
+                    subId,
                     tripDate
                 };
+                console.log(newPaymentBySubscription);
+
                 const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets").returning("*");
-                let numOfTickets = db.select('nooftickets').from('se_project.tickets').where('userid', user['userid'])['nooftickets']
                 console.log(paidBySubscription);
+
+
+                let numOfTickets = db
+                    .select('nooftickets')
+                    .from('se_project.tickets')
+                    .where('userid', userid)['nooftickets']
                 console.log(numOfTickets)
-                db("se_project.subscription").where('userid', user['userid']).update({
+
+                db("se_project.subscription").where('userid', userid).update({
                     nooftickets: numOfTickets--
                 })
+                console.log(numOfTickets)
+
                 return res.status(201).json(paidBySubscription);
             }
         } catch (err) {
