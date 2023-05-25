@@ -130,7 +130,7 @@ module.exports = function (app) {
   });
 
   
-  // -Update route:  NOT DONE {Testing}
+  // -Update route:  DONE 
   app.put("/api/v1/route/:routeid", async (req, res) => {
     // need to check whethter the user is an admin or not
     const user = await getUser(req);
@@ -151,7 +151,7 @@ module.exports = function (app) {
     
     // try to see if the route already exists
     const existRoute = await db("se_project.routes")
-    .where({ routename: routename , id : routeId})
+    .where({id : routeId})
     .select("*")
     .first();
     if (!existRoute) {
