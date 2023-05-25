@@ -1,10 +1,10 @@
 -- DROP TABLE IF EXISTS se_project.users;
--- DROP TABLE IF EXISTS roles;
--- DROP TABLE IF EXISTS faculties;
--- DROP TABLE IF EXISTS courses;
--- DROP TABLE IF EXISTS sessions;
--- DROP TABLE IF EXISTS enrollments;
---- Note in pgadmin columns name will be lowerCase 
+-- DROP TABLE IF EXISTS se_project.roles;
+-- DROP TABLE IF EXISTS se_project.faculties;
+-- DROP TABLE IF EXISTS se_project.subsription;
+-- DROP TABLE IF EXISTS se_project.sessions;
+-- DROP TABLE IF EXISTS se_project.enrollments;
+--- Note in pgadmin columns name will be lowerCase
 --so either change them from pgadmin or change in the code to lower
 CREATE TABLE IF NOT EXISTS users
 (
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS users
     lastname  text    NOT NULL,
     email     text    NOT NULL,
     password  text    NOT NULL,
-    roleid    integer NOT NULL,
+    roleId    integer NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS sessions
@@ -39,14 +39,14 @@ CREATE TABLE IF NOT EXISTS zones
     CONSTRAINT zones_pkey PRIMARY KEY (id)
 
 );
-CREATE TABLE IF NOT EXISTS subsription --SUBSCRIPTION MISPELLED
+CREATE TABLE IF NOT EXISTS subscription
 (
     id          SERIAL  NOT NULL,
     subtype     text    NOT NULL, --annual --month -- quarterly
     zoneid      Integer NOT NULL,
     userid      INTEGER NOT NULL,
     nooftickets INTEGER NOT NULL,
-    CONSTRAINT subsription_pkey PRIMARY KEY (id),
+    CONSTRAINT subscriptions PRIMARY KEY (id),
     FOREIGN KEY (userid) REFERENCES se_project.users,
     FOREIGN KEY (zoneid) REFERENCES se_project.zones
 
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS tickets
     subiD       INTEGER,
     tripdate    timestamp not Null,
     FOREIGN KEY (userid) REFERENCES se_project.users,
-    FOREIGN KEY (subid) REFERENCES se_project.subsription,
+    FOREIGN KEY (subid) REFERENCES se_project.subscription,
     CONSTRAINT tickets_pkey PRIMARY KEY (id)
 );
 
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS se_project.rides
     ticketid    integer   not null,
     tripdate    timestamp not null,
     FOREIGN KEY (userid) REFERENCES se_project.users,
-    FOREIGN KEY (ticketid) REFERENCES se_project.rides, --fix this
+    FOREIGN KEY (ticketid) REFERENCES se_project.tickets,
     CONSTRAINT rides_pkey PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS transactions
