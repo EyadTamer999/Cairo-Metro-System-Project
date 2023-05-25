@@ -86,7 +86,7 @@ module.exports = function (app) {
   });
   app.post("/api/v1/senior/request", async (req, res)=>{
     try{
-      const user = getUser;
+      const user = await getUser(req);
       const userId = user["id"] ;
       const existReq = await db.select("*").from("se_project.senior_requests").where( "userid" , userId) ;
     if (existReq) {
@@ -115,21 +115,22 @@ module.exports = function (app) {
     try{
       const { stationName } = req.body;
       const existstation = await db.select("*").from("se_project.stations").where( "stationname", stationName) ;
-      if(!existstation){
-      let type = 'normal';
-      let position = null
-      let status = 'new';
-      let newStation = {
-        stationName,
-        type,
-        position,
-        status,
-      };
-      const addedStation = await db("se_project.stations").insert(newStation).returning("*");
-      return res.status(201).json(addedStation);}
-      else{
+      if(existstation){
         console.log("station already exists")
         return res.status(409).send("there already exists a station with that name");
+      }
+      else{
+        let type = 'normal';
+        let position = null
+        let status = 'new';
+        let newStation = {
+          stationName,
+          type,
+          position,
+          status,
+      };
+        const addedStation = await db("se_project.stations").insert(newStation).returning("*");
+        return res.status(201).json(addedStation);
       }
     }
     catch(err){
