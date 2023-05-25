@@ -15,22 +15,22 @@ const getUser = async function (req) {
     .where("token", sessionToken)
     .innerJoin(
       "se_project.users",
-      "se_project.sessions.userId",
+      "se_project.sessions.userid",
       "se_project.users.id"
     )
     .innerJoin(
       "se_project.roles",
-      "se_project.users.roleId",
+      "se_project.users.roleid",
       "se_project.roles.id"
     )
    .first();
 
-    console.log("user =>", user);
-    user.isNormal = user.roleid === roles.user;
-    user.isAdmin = user.roleid === roles.admin;
-    user.isSenior = user.roleid === roles.senior;
-    console.log("user =>", user)
-    return user;
+  console.log("user =>", user);
+  user.isNormal = user.roleid === roles.user;
+  user.isAdmin = user.roleid === roles.admin;
+  user.isSenior = user.roleid === roles.senior;
+  console.log("user =>", user)
+  return user;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////start of changes
@@ -56,17 +56,14 @@ module.exports = function (app) {
   // example
   app.put("/users", async function (req, res) {
     try {
-     const user = await getUser(req);
-     // const {userId}=req.body
-     console.log("hiiiiiiiiiii");
-    const users = await db.select('*').from("se_project.users")
-        
-      return res.status(200).json(users);
+        const user = await getUser(req);
+        const users = await db.select('*').from("se_project.users")
+        return res.status(200).json(user);
     } catch (e) {
-      console.log(e.message);
-      return res.status(400).send("Could not get users");
+        console.log(e.message);
+        return res.status(400).send("Could not get users");
     }
-  });
+});
 
 
 
@@ -78,9 +75,11 @@ async (req,res)=>{
   try
   {
       const pass=req.body.password;
-      const user=getUser(req);
-      const id=user.id;
+      const user=await getUser(req);
+      const id=user.userid;
       const old_pass=user.password;
+      console.log(user);
+      
       if(pass === old_pass)
           {
               return res.status(400).send("you are entering your old password");
@@ -94,8 +93,8 @@ async (req,res)=>{
       else
           {
 
-          const user1 = await db('se_project.users').where('id',id).update( {password:pass}).returning("*") ; 
-
+          await db('se_project.users').where('id',id).update( {password:pass});
+          const user1 =await db.select("*").from('se_project.users').where('id',id) ;  
           console.log(user1);                
           return res.status(201).json(user1);
               
@@ -118,8 +117,8 @@ app.get("/api/v1/zones",
 async (req,res)=>{
     try
         {
-        const all_zones=db.select("*").from('zones').returning("*") ;
-        return res.status(201).json(all_zones);
+        const all_zones=await db.select("*").from('se_project.zones').returning("*") ;
+        return res.status(200).json(all_zones);
         }
     catch (e) 
           {
@@ -158,8 +157,8 @@ try{
 
   
     const x=get_num_of_tickets(subType);
-    const user=getUser(req);
-    const uid=user.id;
+    const user=await getUser(req);
+    const uid=user.userid;
     const existZone = await db("se_project.zones")
     .where({ id: zoneId })
     .select("*")
@@ -198,17 +197,14 @@ try{
     
 
     else{
-
-
-
-          ret=db('subsription').insert({
+          ret=await db('se_project.subsription').insert({
             subType:subType,
             zoneId:zoneId,
             noOfTickets:x,
             userId:uid
           }).returning("*");
 
-          ret2=db('transactions').insert({
+          ret2=await db('se_project.transactions').insert({
             amount:payedAmount,
             userId:uid,
             purchasedId:purchasedId
@@ -218,7 +214,7 @@ try{
 
 
           
-          ret3=db('creditCardDetails').insert({
+          ret3=await db('se_project.creditCardDetails').insert({
             holder_name:holderName,
             userId:uid,
             transactions_id:purchasedId,
@@ -257,9 +253,8 @@ try{
     }=req.body;
     
     const user=getUser(req);
-    const uid=user.id;
+    const uid=user.userid;
 
-    const user1=getUser(req);
 
 
     if(purchasedId===null)
@@ -302,7 +297,7 @@ try{
     }
 
     else{
-          ret1=db('subsription').insert({
+          ret1=await db('se_project.subsription').insert({
             origin:origin,
             destination:destination,
             subID:null,//as we are paying online without subscription
@@ -311,7 +306,7 @@ try{
 
 
           }).returning("*");
-          ret2=db('transactions').insert({
+          ret2=await db('se_project.transactions').insert({
             amount:payedAmount,
             userId:uid,
             purchasedId:purchasedId
@@ -320,7 +315,7 @@ try{
           }).returning("*");
           
 
-          ret3=db('creditCardDetails').insert({
+          ret3=await db('se_project.creditCardDetails').insert({
             holder_name:holderName,
             userId:uid,
             transactions_id:purchasedId,

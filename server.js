@@ -28,7 +28,7 @@ app.use(authMiddleware); // uncomment
 // The routes/views below can only be accessed if the user is authenticated
 // uncomment to view frontend
 // privateViewRoutes(app);
-// privateApiRoutes(app);
+privateApiRoutes(app);
 
 // If request doesn't match any of the above routes then render the 404 page
 app.use(function (req, res, next) {
