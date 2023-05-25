@@ -1,4 +1,4 @@
-const { isEmpty } = require("lodash");
+const { isEmpty, get } = require("lodash");
 const { v4 } = require("uuid");
 const db = require("../../connectors/db");
 const roles = require("../../constants/roles");
@@ -130,21 +130,34 @@ module.exports = function (app) {
   });
 
   
-  // -Update route:  DONE {Testing}
-  app.put("/api/v1/route/:routeId", async (req, res) => {
+  // -Update route:  NOT DONE {Testing}
+  app.put("/api/v1/route/:routeid", async (req, res) => {
     // need to check whethter the user is an admin or not
-    if (!getUser.isAdmin) return res.status(401);
-
+    const user = await getUser(req);
+    if (!user.isAdmin) return res.status(401);
+    
     const { routename } = req.body;
     const { routeid } = req.params;
+    console.log(routename);
+    console.log(typeof routename);
+    console.log(routeid);
+    console.log(typeof routeid);
+    // const routeid2 = routeid.slice(1);
+    // console.log(routeid2);
+    // console.log(typeof routeid2);
+    const routeId = parseInt(routeid);
+    console.log(routeId);
+    console.log(typeof routeId);
+    
     // try to see if the route already exists
     const existRoute = await db("se_project.routes")
-      .where({ routename: routename , routeid})
-      .select("*")
-      .first();
+    .where({ routename: routename , id : routeId})
+    .select("*")
+    .first();
     if (!existRoute) {
       return res.status(404).send("Route does not exist");
     }
+    console.log(existRoute);
 
     try {
       const updateRoute = await db("se_project.routes")
@@ -153,18 +166,20 @@ module.exports = function (app) {
           routename: routename,
         })
         .returning("*");
-      return res.status(200).json(updateRoute);
+        console.log(updateRoute);
+      return res.status(200).send("Updated route");
     } catch (err) {
       console.log("eror message", err.message);
       return res.status(400).send("Could not update route");
     }
   });
 
-  // -Delete route: NOT DONE
+  // -Delete route: NOT DONE {Testing}
   app.delete("/api/v1/route/:routeId", async (req, res) => {
 
     // need to check whethter the user is an admin or not
-    if (!getUser.isAdmin) return res.status(401);
+    const user = await getUser(req);
+    if (!user.isAdmin) return res.status(401);
 
     // try to see if the route already exists
     const existRoute = await db("se_project.routes")
