@@ -49,51 +49,9 @@ module.exports = function (app) {
     }
   });
 
-  
 
-
-// Pay for ticket by subscription
-//   app.post("/api/v1/tickets/purchase/subscription", async (req, res) => {
-//     try {
-//       const  { subId, origin, destination, tripDate } = req.body;
-//       console.log(req.body);
-//       // Retrieve full ticket price, route and transfer stations based on origin and destination
-//       const ticketDetails = await getTicketDetails(origin, destination);
-//       let newPaymentBySubscription = {
-//         subId,
-//         origin,
-//         destination,
-//         tripDate
-//       };
-//       const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets").returning("*"); 
-//       const upcomingRide = await db.insert(newPaymentBySubscription).into("se_project.rides").returning("*"); //should i insert to both or just one?
-
-//       console.log(paidBySubscription);
-//       return res.status(201).json(paidBySubscription);
-//   } catch (err) {
-//       console.log("Error paying for ticket by subscription", err.message);
-//       return res.status(400).send(err.message);
-
-
-//   }
-//   });
-
-  // async function getTicketDetails(origin, destination) {
-  //   //retrieve full ticket price, route and transfer stations based on origin and destination
-  //   // ...
-  //   return {
-  //     price: ...,
-  //     route: ...,
-  //     transferStations: ...
-  //   };
-
-//------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 // Check Price:
-// Users can check the price of the ticket by specifying the origin and destination.
-// So, you have to figure a way through the three tables(stations, routes, stationRoutes)
-// Hint visited stations array
-
-
 app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) => { 
     try{
         const { originId, destinationId } = req.params;
@@ -117,53 +75,33 @@ app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) =>
 
                     if(stationCount == 9){
                         price = await db('zones.price')
-                        .where('stationroutes.stationid', originId)
-                        .where('stationroutes.stationid', destinationId)
-                        .select('stationsroutes.routeid');
+                        .where('zones.zonetype', '9')
                     }
                     else if(stationCount>=10 && stationCount<16){
-
+                        price = await db('zones.price')
+                        .where('zones.zonetype', '10-16')
                     }
                     else if(stationCount==16){
-
+                        price = await db('zones.price')
+                        .where('zones.zonetype', '16')
                     }
                     else{
+                        console.log("Error matching stations with price", err.message);
+                        return res.status(400).send(err.message);
 
                     }
-            
-
+                
+                    return res.status(201).send(price);
         }
     }
         catch{
-
+            console.log("Error checking price", err.message);
+            return res.status(400).send(err.message);
         }
 });
 
 
 
-
-
-
-
-//------------------------------------------------------------------
-
-  app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) => { 
-    try {
-      const {} =
-        req.body;
-      console.log(req.body);
-      let newPrice = {
-      };
-    
-      const checkedPrice = await db.insert(newPrice).into("").returning("*"); //insert where??
-      console.log(checkedPrice);
-      return res.status(201).json(checkedPrice);
-  } catch (err) {
-      console.log("Error checking price", err.message);
-      return res.status(400).send(err.message);
-
-  }
-  });
 //------------------------------------------------------------------------
     // Simulate Ride
     app.put("/api/v1/ride/simulate", async (req, res) => {
@@ -188,6 +126,7 @@ app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) =>
     }
     })
 
+//-----------------------------------------------------------------
     // Pay for ticket by subscription
     //look through el subscription using el user id
     //check if user has sub, if no sub then no pay.
@@ -270,13 +209,7 @@ app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) =>
 
                   //return price,route , transfer stations
                   //ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
-                //   return res.status(201).json(ret);
-
-
-
-
-
-
+                //return res.status(201).json(ret);
 
                 console.log(newNumOfTickets)
 
@@ -292,12 +225,6 @@ app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) =>
             console.log("Error paying for ticket by subscription", err.message);
             return res.status(400).send(err.message);
         }
-
-
-        
-
-
-
  })
 
 };
