@@ -65,7 +65,8 @@ app.post("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => {
           }
           else{
               const routeId = await db('stationroutes')
-              .where('stationid', 1)
+              .where('stationid', originId)
+              .where('stationid', destinationId)
               .select('routeid');
               
               const stationCount = await db('stationroutes')
