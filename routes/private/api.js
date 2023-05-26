@@ -92,7 +92,11 @@ module.exports = function (app) {
 // Users can check the price of the ticket by specifying the origin and destination.
 // So, you have to figure a way through the three tables(stations, routes, stationRoutes)
 // Hint visited stations array
+
+
 app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) => { 
+    const {} = req.body;
+
     // Find route and transfer stations
     const originStationId = await db('stations')
         .where('stationname', origin)
@@ -259,7 +263,7 @@ app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) =>
                   //get route
 
                   //get transfer stations
-                  
+
                   //return price,route , transfer stations
                   //ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
                 //   return res.status(201).json(ret);
