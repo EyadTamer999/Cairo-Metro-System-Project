@@ -54,13 +54,20 @@ module.exports = function (app) {
     - Delete routes
   */
 
-  // - Create routes:  DONE 
+  // - Create routes:  DONE
   app.post("/api/v1/route", async (req, res) => {
+    // need to add some defensibe programming
     // need to check whethter the user is an admin or not
     const user = await getUser(req);
     if (!user.isAdmin) return res.status(401);
 
     const { routename, fromstationid, tostationid } = req.body;
+
+    if (!routename) return res.status(422).send("Missing route name.");
+
+    if (!fromstationid) return res.status(422).send("Missing from station ID.");
+
+    if (!tostationid) return res.status(422).send("Missing to station ID.");
 
     // try to see if the route already exists
     const existRoute = await db("se_project.routes")
@@ -78,13 +85,10 @@ module.exports = function (app) {
         tostationid,
       };
 
-
       const addedRoute = await db
         .insert(newRoute)
         .into("se_project.routes")
         .returning("*");
-
-        console.log(addedRoute);
 
       const getRouteID = await db("se_project.routes")
         .where({
@@ -94,100 +98,45 @@ module.exports = function (app) {
         })
         .select("id")
         .first();
-        console.log(getRouteID);
+
       const SR1 = {
         routeid: getRouteID.id,
         stationid: newRoute.fromstationid,
       };
-      console.log(SR1);
 
       const SR2 = {
         routeid: getRouteID.id,
         stationid: newRoute.tostationid,
       };
 
-      console.log(SR2);
-
       const addedSR1 = await db
         .insert(SR1)
         .into("se_project.stationroutes")
         .returning("*");
-        console.log(addedSR1);
-
 
       const addedSR2 = await db
         .insert(SR2)
         .into("se_project.stationroutes")
         .returning("*");
-        console.log(addedSR2);
 
-      return res
-        .status(200)
-        .send("Added route");
+      return res.status(200).send("Added route");
     } catch (err) {
       return res.status(400).send("Could not create route");
     }
   });
 
-  
-  // -Update route:  DONE 
+  // -Update route:  DONE
   app.put("/api/v1/route/:routeid", async (req, res) => {
     // need to check whethter the user is an admin or not
     const user = await getUser(req);
     if (!user.isAdmin) return res.status(401);
-    
+
     const { routename } = req.body;
-    const { routeid } = req.params;
-    console.log(routename);
-    console.log(typeof routename);
-    console.log(routeid);
-    console.log(typeof routeid);
-    // const routeid2 = routeid.slice(1);
-    // console.log(routeid2);
-    // console.log(typeof routeid2);
-    const routeId = parseInt(routeid);
-    console.log(routeId);
-    console.log(typeof routeId);
-    
-    // try to see if the route already exists
-    const existRoute = await db("se_project.routes")
-    .where({id : routeId})
-    .select("*")
-    .first();
-    if (!existRoute) {
-      return res.status(404).send("Route does not exist");
-    }
-    console.log(existRoute);
 
-    try {
-      const updateRoute = await db("se_project.routes")
-        .where("id", routeid)
-        .update({
-          routename: routename,
-        })
-        .returning("*");
-        console.log(updateRoute);
-      return res.status(200).send("Updated route");
-    } catch (err) {
-      console.log("eror message", err.message);
-      return res.status(400).send("Could not update route");
-    }
-  });
-
-  // -Delete route: NOT DONE {Testing}
-  app.delete("/api/v1/route/:routeid", async (req, res) => {
-
-    // need to check whethter the user is an admin or not
-    const user = await getUser(req);
-    if (!user.isAdmin) return res.status(401);
+    if (!routename) return res.status(422).send("Missing route name.");
 
     const { routeid } = req.params;
-    console.log(routeid);
-    console.log(typeof routeid);
-
     const routeId = parseInt(routeid);
-    console.log(routeId);
-    console.log(typeof routeId);
 
     // try to see if the route already exists
     const existRoute = await db("se_project.routes")
@@ -198,45 +147,62 @@ module.exports = function (app) {
       return res.status(404).send("Route does not exist");
     }
 
+    try {
+      const updateRoute = await db("se_project.routes")
+        .where("id", routeid)
+        .update({
+          routename: routename,
+        })
+        .returning("*");
+
+      return res.status(200).json(updateRoute).send("Updated route");
+    } catch (err) {
+      console.log("eror message", err.message);
+      return res.status(400).send("Could not update route");
+    }
+  });
+
+  // -Delete route: NOT DONE {Testing}
+  app.delete("/api/v1/route/:routeid", async (req, res) => {
+    // need to check whethter the user is an admin or not
+    const user = await getUser(req);
+    if (!user.isAdmin) return res.status(401);
+
+    const { routeid } = req.params;
+
+    const routeId = parseInt(routeid);
+
+    // try to see if the route already exists
+    const existRoute = await db("se_project.routes")
+      .where({ id: routeId })
+      .select("*")
+      .first();
+    if (!existRoute) {
+      return res.status(404).send("Route does not exist");
+    }
 
     const fromST = await db("se_project.routes")
       .where({ id: routeId })
       .select("fromstationid")
       .first();
-      console.log(fromST);
-      console.log(typeof fromST);
-      const fromSTid = fromST.fromstationid;
-      console.log(fromSTid);
-      console.log(typeof fromSTid);
+    const fromSTid = fromST.fromstationid;
     const toST = await db("se_project.routes")
       .where({ id: routeId })
       .select("tostationid")
       .first();
-      console.log(toST);
-      console.log(typeof toST);
-      const toSTid = toST.tostationid;
-      console.log(toSTid);
-      console.log(typeof toSTid);
+    const toSTid = toST.tostationid;
 
     const fstation = await db("se_project.stations")
       .where({ id: fromSTid })
       .select("stationposition")
       .first();
-      console.log(fstation);
-      console.log(typeof fstation);
-      const fstationpos = fstation.stationposition;
-      console.log(fstationpos);
-      console.log(typeof fstationpos);
+    const fstationpos = fstation.stationposition;
 
     const tstation = await db("se_project.stations")
       .where({ id: toSTid })
       .select("stationposition")
       .first();
-      console.log(tstation);
-      console.log(typeof tstation);
-      const tstationpos = tstation.stationposition;
-      console.log(tstationpos);
-      console.log(typeof tstationpos);
+    const tstationpos = tstation.stationposition;
 
     //case for the start
     if (fstationpos === "start") {
@@ -281,15 +247,18 @@ module.exports = function (app) {
       }
     }
 
-    try {
-      const deleteRoute = await db("se_project.routes")
-        .where({ id: routeId })
-        .del()
-        .returning("*");
-      return res.status(200).json(deleteRoute);
-    } catch (err) {
-      console.log("eror message", err.message);
-      return res.status(400).send("Could not delete route");
+    if (fstationpos === "start" || tstationpos === "end") {
+      try {
+        const deleteRoute = await db("se_project.routes")
+          .where({ id: routeId })
+          .del()
+          .returning("*");
+        return res.status(200).json(deleteRoute);
+      } catch (err) {
+        console.log("eror message", err.message);
+        return res.status(400).send("Can not delete route");
+      }
     }
+    else return res.status(400).send("Can not delete route");
   });
 };
