@@ -89,9 +89,6 @@ module.exports = function (app) {
                     subid,
                     tripdate
                 };
-                //store query parameters
-                // console.log(newPaymentBySubscription);
-                //todo insert fel rides
 
                 const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets");
 
