@@ -87,16 +87,22 @@ module.exports = function (app) {
         .first();
 
       if (subscription) {
+        const numberoftickets = await db("se_project.subscription")
+        .where({ userid: existRequest.userid })
+        .returning("nooftickets");
         //refund with subscription
         await db("se_project.subscription")
           .where({ userid: existRequest.userid })
-          .update({ nooftickets: nooftickets + 1 })
+          .update({ nooftickets: numberoftickets + 1 })
           .returning("*"); //assuming the subscription table has 
       } else {
+        const refundamount = await db("se_project.transaction")
+        .where({ userid: existRequest.userid })
+        .returning("amount");
         //refund with online payment
         await db("se_project.transaction")
           .where({ userid: existRequest.userid })
-          .update({ amount: (-amount) })
+          .update({ amount: (-refundamount) })
           .returning("*"); //or should i make a new transaction where the refund amount is the same as the most previous one 
       }
 
