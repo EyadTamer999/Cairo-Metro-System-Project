@@ -47,7 +47,6 @@ module.exports = function (app) {
         }
     });
 
-
     // Pay for ticket by subscription
     //look through el subscription using el user id
     //check if user has sub, if no sub then no pay.
@@ -92,6 +91,7 @@ module.exports = function (app) {
                 };
                 //store query parameters
                 // console.log(newPaymentBySubscription);
+                //todo insert fel rides
 
                 const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets");
 
@@ -100,9 +100,9 @@ module.exports = function (app) {
                 let updateTicekts = await db("se_project.subscription").where('userid', '=', userid).update({
                     nooftickets: newNumOfTickets
                 })
-                console.log(newNumOfTickets)
-
-                return res.status(201).json(updateTicekts);
+                // console.log(newNumOfTickets)
+                //todo  the system should indicate the full ticket price, route, and transfer stations
+                return res.status(201).json(newPaymentBySubscription);
             }
         } catch (err) {
             console.log("Error paying for ticket by subscription", err.message);

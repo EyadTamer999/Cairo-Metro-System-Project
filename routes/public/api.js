@@ -83,4 +83,12 @@ module.exports = function (app) {
             return res.status(400).send("Could not register user");
         }
     });
+
+    //calculate the price of ride from origin to destination
+    app.get("/api/v1/tickets/price/:originId&:destinationId", async function (req, res) {
+
+        const {origin, dest} = req.params;
+
+        return res.status(200)
+    });
 }
