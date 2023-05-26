@@ -111,28 +111,28 @@ module.exports = function (app) {
   }
   });
 
-// Simulate Ride
-app.put("/api/v1/ride/simulate", async (req, res) => {
-  try{
-    const {origin, destination, tripDate} = req.body;
-    // const { origin, destination } = req.params;
-    const simulateRide = await db("se_project")
-    .where("rides.destination", destination)
-    .where("rides.origin", origin)
-    .where("rides.tripDate", tripDate)
-    .update({
-      origin:string,
-      destination:string,
-      tripDate:dateTime
+    // Simulate Ride
+    app.put("/api/v1/ride/simulate", async (req, res) => {
+    try{
+        const {origin, destination, tripDate} = req.body;
+        // const { origin, destination } = req.params;
+        const simulateRide = await db("se_project")
+        .where("rides.destination", destination)
+        .where("rides.origin", origin)
+        .where("rides.tripDate", tripDate)
+        .update({
+        origin:string,
+        destination:string,
+        tripDate:dateTime
+        })
+        .returning("*");
+        return res.status(200).json(updateRoute);
+    }
+    catch(err){
+        console.log("Error simulating ride", err.message);
+        return res.status(400).send(err.message);
+    }
     })
-    .returning("*");
-    return res.status(200).json(updateRoute);
-  }
-  catch(err){
-    console.log("Error simulating ride", err.message);
-    return res.status(400).send(err.message);
-  }
-})
 
     // Pay for ticket by subscription
     //look through el subscription using el user id
@@ -227,7 +227,7 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
 
                 //send new data
                 //full ticket price
-                //rout
+                //routes
                 //transfer stations
 
             }
@@ -239,46 +239,6 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
 
 
 
-        //    if(creditCardNumber===null)
-        //   {
-        //     return res.status(400).send("you must entered creditCardNumber");
-        //   }
-
-        //   else if(holderName===null)
-        //   {
-        //     return res.status(400).send("you must enter the name of credit Card holder");
-        //   }
-
-        //   else if(destination==origin)
-        //   {
-        //     return res.status(400).send("invalid trip");
-        //   }
-        //   else if(payedAmount===null)
-        //   {
-        //     return res.status(400).send("you must enter the paid amount");
-        //   }
-          
-
-        //   else if(tripDate===null)
-        //   {
-        //     return res.status(400).send("you must enter the trip date");
-
-        //   }
-
-        //   else if(origin==="")
-        //   {
-        //     return res.status(400).send("you must enter the origin");
-
-        //   }
-
-        //   else if(destination==="")
-        //   {
-        //     return res.status(400).send("you must enter the destination");
-
-        //   }
-
-
-
-    };
+ })
 
 };
