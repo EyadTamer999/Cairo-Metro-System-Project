@@ -354,7 +354,7 @@ try{
 
 
 
-                const id_trip=Number(ret1.id);
+                const id_trip=Number(ret1[0]["id"]);
                 console.log("i am vegence");
                 console.log(id_trip);
                 
@@ -364,7 +364,7 @@ try{
                   destination:destination,
                   userid:uid,
                 //TODO HOW to get ticketid
-                  ticketid:Number(ret1.id),
+                  ticketid:id_trip,
                   tripdate:tripDate
                   
                 }).returning("*");
