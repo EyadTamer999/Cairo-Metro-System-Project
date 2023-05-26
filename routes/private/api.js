@@ -334,6 +334,7 @@ try{
 
 
                 }).returning("*");
+                console.log(ret1);
                 ret2=await db('se_project.transactions').insert({
                   amount:payedAmount,
                   userid:uid,
@@ -347,6 +348,21 @@ try{
                   holder_name:holderName,
                   userid:uid,
                   creditcardnumber:creditCardNumber
+                  
+
+                }).returning("*");
+
+
+
+                
+                ret4=await db('se_project.rides').insert({
+                  status:"activated",
+                  origin:origin,
+                  destination:destination,
+                  userid:uid,
+                //TODO HOW to get ticketid
+                  ticketid:ret1.id,
+                  tripdate:tripDate
                   
 
                 }).returning("*");
