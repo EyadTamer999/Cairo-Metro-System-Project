@@ -85,10 +85,55 @@ module.exports = function (app) {
     });
 
     //calculate the price of ride from origin to destination
-    app.get("/api/v1/tickets/price/:originId&:destinationId", async function (req, res) {
+//---------------------------------------------------------------------------
+// Check Price:
+    app.post("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => {
+        //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
+        try {
+            const {originId, destinationId} = req.params;
+            const existStation1 = await db.select("id").from("se_project.stations").where("id", originId);
+            const existStation2 = await db.select("id").from("se_project.stations").where("id", destinationId);
+            if (!existStation1) {
+                return res.status(404).send("Origin station doesn't exist");
+            } else if (!existStation2) {
+                return res.status(404).send("Destination station doesn't exist");
+            } else {
+                const routeId = await db('stationroutes')
+                    .where('stationid', originId)
+                    //   .where('stationid', destinationId)
+                    .select('routeid')
+                    .first();
 
-        const {origin, dest} = req.params;
 
-        return res.status(200)
+                const stationCount = await db('stationroutes')
+                    .where('routeid', routeId)
+                    .count();
+
+                if (stationCount == 9) {
+                    price = await db('zones')
+                        .where('zonetype', '9')
+                        .select('price')
+                } else if (stationCount >= 10 && stationCount < 16) {
+                    price = await db('zones')
+                        .where('zonetype', '10-16')
+                        .select('price')
+
+                } else if (stationCount == 16) {
+                    price = await db('zones')
+                        .where('zonetype', '16')
+                        .select('price')
+
+                } else {
+                    console.log("Error matching stations with price", err.message);
+                    return res.status(400).send(err.message);
+
+                }
+
+                return res.status(201).send(price);
+            }
+        } catch (err) {
+            console.log("Error checking price", err.message);
+            return res.status(400).send(err.message);
+        }
     });
 }
