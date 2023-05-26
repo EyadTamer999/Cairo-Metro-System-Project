@@ -145,7 +145,7 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
             let userid = user["userid"]
             const userSubscription = await db
                 .select('*')
-                .from('se_project.subsription')
+                .from('se_project.subscription')
                 .where("userid", '=', userid)
 
             // console.log(userSubscription)
@@ -189,6 +189,9 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
                 console.log(newNumOfTickets)
 
                 return res.status(201).json(updateTicekts);
+
+                //add new data
+                
             }
         } catch (err) {
             console.log("Error paying for ticket by subscription", err.message);
