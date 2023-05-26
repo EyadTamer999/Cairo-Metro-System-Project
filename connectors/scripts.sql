@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS se_project.senior_requests
     id         SERIAL  NOT NULL,
     status     text    NOT NULL,
     userid     Integer NOT NULL,
-    nationalid INTEGER not null,
+    nationalid text not null,
     FOREIGN KEY (userid) REFERENCES se_project.users,
     CONSTRAINT senior_requests_pkey PRIMARY KEY (id)
 );
