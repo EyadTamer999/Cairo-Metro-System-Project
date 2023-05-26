@@ -109,6 +109,6 @@ async function uploadR() {
     }
 }
 
-//uploadS(); //first to run
+uploadS(); //first to run
 //uploadR(); //second
 //uploadSR(); //third
