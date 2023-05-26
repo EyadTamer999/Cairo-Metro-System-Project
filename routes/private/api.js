@@ -63,27 +63,31 @@ app.post("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => {
         else if(!existstation2){
             return res.status(404).send("Destination station doesn't exist");
           }
-        else{
-                    const routeId = await db('stationroutes.routeid')
-                    .where('stationroutes.stationid', originId)
-                    .where('stationroutes.stationid', destinationId)
-                    .select('stationsroutes.routeid');
-
-                    const stationCount = await db('stationroutes')
-                    .where('stationsroutes.routeid', routeId)
-                    .count();
-
+          else{
+              const routeId = await db('stationroutes')
+              .where('stationid', 1)
+              .select('routeid');
+              
+              const stationCount = await db('stationroutes')
+              .where('routeid', routeId)
+              .count();
+              
                     if(stationCount == 9){
-                        price = await db('zones.price')
-                        .where('zones.zonetype', '9')
+                        price = await db('zones')
+                        .where('zonetype', '9')
+                        .select('price')
                     }
                     else if(stationCount>=10 && stationCount<16){
-                        price = await db('zones.price')
-                        .where('zones.zonetype', '10-16')
+                        price = await db('zones')
+                        .where('zonetype', '10-16')
+                        .select('price')
+
                     }
                     else if(stationCount==16){
-                        price = await db('zones.price')
-                        .where('zones.zonetype', '16')
+                        price = await db('zones')
+                        .where('zonetype', '16')
+                        .select('price')
+
                     }
                     else{
                         console.log("Error matching stations with price", err.message);
