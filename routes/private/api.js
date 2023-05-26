@@ -96,9 +96,9 @@ module.exports = function (app) {
 
 app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) => { 
     try{
-        const { originid, destinationid } = req.params;
-        const existstation1 = await db.select("id").from("se_project.stations").where( "id", originid);
-        const existstation2 = await db.select("id").from("se_project.stations").where( "id", destinationid);
+        const { originId, destinationId } = req.params;
+        const existstation1 = await db.select("id").from("se_project.stations").where( "id", originId);
+        const existstation2 = await db.select("id").from("se_project.stations").where( "id", destinationId);
         if(!existstation1){
           return res.status(404).send("Origin station doesn't exist");
         }
@@ -106,8 +106,32 @@ app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) =>
             return res.status(404).send("Destination station doesn't exist");
           }
         else{
+                    const routeId = await db('stationroutes.routeid')
+                    .where('stationroutes.stationid', originId)
+                    .where('stationroutes.stationid', destinationId)
+                    .select('stationsroutes.routeid');
 
-    return price;
+                    const stationCount = await db('stationroutes')
+                    .where('stationsroutes.routeid', routeId)
+                    .count();
+
+                    if(stationCount == 9){
+                        price = await db('zones.price')
+                        .where('stationroutes.stationid', originId)
+                        .where('stationroutes.stationid', destinationId)
+                        .select('stationsroutes.routeid');
+                    }
+                    else if(stationCount>=10 && stationCount<16){
+
+                    }
+                    else if(stationCount==16){
+
+                    }
+                    else{
+
+                    }
+            
+
         }
     }
         catch{
