@@ -260,7 +260,8 @@ app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) =>
 
                   //get transfer stations
                   
-                  ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
+                  //return price,route , transfer stations
+                  //ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
                 //   return res.status(201).json(ret);
 
 
