@@ -51,7 +51,7 @@ module.exports = function (app) {
     //look through el subscription using el user id
     //check if user has sub, if no sub then no pay.
     //if sub then make ticket! 💪🏽
-    app.put("/api/v1/tickets/purchase/subscription", async (req, res) => {
+    app.post("/api/v1/tickets/purchase/subscription", async (req, res) => {
         try {
             //check on user if there exists a subscription under his/her user id
             const user = await getUser(req);
@@ -97,11 +97,27 @@ module.exports = function (app) {
 
                 let newNumOfTickets = userSubscription[0]['nooftickets'] - 1
 
-                let updateTicekts = await db("se_project.subscription").where('userid', '=', userid).update({
+                let updateTickets = await db("se_project.subscription").where('userid', '=', userid).update({
                     nooftickets: newNumOfTickets
                 })
+
+                let ticketid = await db.select('*')
+                    .from('se_project.tickets')
+                    .where("userid", '=', userid)
+                    .andWhere('origin', '=', origin)
+                    .andWhere('destination', '=', destination)
+
+                //insert upcoming ride in rides table
+                let newRide = await db('se_project.rides').insert({
+                    status: 'upcoming',
+                    origin: origin,
+                    destination: destination,
+                    userid: userid,
+                    ticketid: ticketid[0]['id'],
+                    tripdate: tripdate
+                })
+
                 // console.log(newNumOfTickets)
-                //todo  the system should indicate the full ticket price, route, and transfer stations
                 return res.status(201).json(newPaymentBySubscription);
             }
         } catch (err) {
