@@ -183,14 +183,24 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
 
                 let newNumOfTickets = userSubscription[0]['nooftickets'] - 1
 
-                let updateTicekts = await db("se_project.subscription").where('userid', '=', userid).update({
+                let updateTickets = await db("se_project.subscription").where('userid', '=', userid).update({
                     nooftickets: newNumOfTickets
                 })
+
+                
+                let updateRides = await db("se_project.rides").where('userid', '=', userid).update({
+                    nooftickets: newNumOfTickets
+                })
+
+
                 console.log(newNumOfTickets)
 
-                return res.status(201).json(updateTicekts);
+                return res.status(201).json(updateTickets);
 
-                //add new data
+                //send new data
+                //full ticket price
+                //rout
+                //transfer stations
 
             }
         } catch (err) {
