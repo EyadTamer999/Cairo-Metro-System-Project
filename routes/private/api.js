@@ -77,7 +77,6 @@ async (req,res)=>{
       const user=await getUser(req);
       const id=user.userid;
       const old_pass=user.password;
-      console.log(user);
       
       if(pass === old_pass)
           {
@@ -94,7 +93,6 @@ async (req,res)=>{
 
           await db('se_project.users').where('id',id).update( {password:pass});
           const user1 =await db.select("*").from('se_project.users').where('id',id) ;  
-          console.log(user1);                
           return res.status(201).json(user1);
               
           }
@@ -155,19 +153,16 @@ try{
   const subType=req.body.subType;
   const zoneId=req.body.zoneId;
 
-  console.log(payedAmount);
     const x=get_num_of_tickets(subType);
     const user=await getUser(req);
     const uid=user.userid;
     const existZone = await db.select("*").from("se_project.zones")
     .where({ id: zoneId });
 
-    console.log(user.isSenior);
     if(user.isSenior)
     {
       payedAmount=payedAmount*0.9 ;
     }
-    console.log(payedAmount);
     if (isEmpty(existZone)) 
     {
     return res.status(400).send("Zone does not exist");
@@ -263,8 +258,7 @@ try{
     
     const user=await getUser(req);
     const uid=user.userid;
-    console.log("Daaaaaaaaaaaaaaaaaaaaaaaaaam");
-    console.log(uid);
+    
 
     const existsubsription = await db.select("*").from("se_project.subsription").where('userid',uid);
     if(!isEmpty(existsubsription))
@@ -273,7 +267,6 @@ try{
 
     }
   else{  
-          console.log(user.isSenior);
           if(user.isSenior)
           {
             payedAmount=payedAmount*0.9 ;
@@ -334,7 +327,6 @@ try{
 
 
                 }).returning("*");
-                console.log(typeof ret1.id);
                 const  ret2=await db('se_project.transactions').insert({
                   amount:payedAmount,
                   userid:uid,
@@ -355,8 +347,6 @@ try{
 
 
                 const id_trip=Number(ret1[0]["id"]);
-                console.log("i am vegence");
-                console.log(id_trip);
                 
                 const  ret4=await db('se_project.rides').insert({
                   status:"activated",
