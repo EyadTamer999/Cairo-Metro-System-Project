@@ -33,3 +33,14 @@ Content-Type: application/json
   "destination": "2",
   "tripdate": "2023-12-22"
 }
+
+###
+POST localhost:3000/api/v1/user/login
+Content-Type: application/json
+
+{
+  "email": "senior",
+  "password": "1234"
+}
+###
+PUT localhost:3000/api/v1/requests/senior/1
