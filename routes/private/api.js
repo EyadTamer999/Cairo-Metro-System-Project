@@ -187,10 +187,38 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
                     nooftickets: newNumOfTickets
                 })
 
-                
-                let updateRides = await db("se_project.rides").where('userid', '=', userid).update({
-                    nooftickets: newNumOfTickets
-                })
+                //reference remix
+                //insert in ticket table
+                ret1=await db('se_project.tickets').insert({
+                    origin:origin,
+                    destination:destination,
+                    subid:subid,
+                    userid:uid,
+                    tripdate:tripdate
+          
+          
+                  }).returning("*");
+                  //
+                  ret2=await db('se_project.rides').insert({
+                    status:'upcoming',
+                    origin:origin,
+                    destination:destination,
+                    userid:userid,
+                    ticketid:ret1[0].id,
+                    tripdate: tripdate
+                    
+          
+                  }).returning("*");
+                  
+                  
+                  
+                  ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
+                //   return res.status(201).json(ret);
+
+
+
+
+
 
 
                 console.log(newNumOfTickets)
@@ -207,6 +235,50 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
             console.log("Error paying for ticket by subscription", err.message);
             return res.status(400).send(err.message);
         }
-    });
+        
+
+
+
+        //    if(creditCardNumber===null)
+        //   {
+        //     return res.status(400).send("you must entered creditCardNumber");
+        //   }
+
+        //   else if(holderName===null)
+        //   {
+        //     return res.status(400).send("you must enter the name of credit Card holder");
+        //   }
+
+        //   else if(destination==origin)
+        //   {
+        //     return res.status(400).send("invalid trip");
+        //   }
+        //   else if(payedAmount===null)
+        //   {
+        //     return res.status(400).send("you must enter the paid amount");
+        //   }
+          
+
+        //   else if(tripDate===null)
+        //   {
+        //     return res.status(400).send("you must enter the trip date");
+
+        //   }
+
+        //   else if(origin==="")
+        //   {
+        //     return res.status(400).send("you must enter the origin");
+
+        //   }
+
+        //   else if(destination==="")
+        //   {
+        //     return res.status(400).send("you must enter the destination");
+
+        //   }
+
+
+
+    };
 
 };
