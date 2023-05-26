@@ -202,7 +202,7 @@ try{
 
     else{
 
-          ret1=await db('se_project.subsription').insert({
+      const ret1=await db('se_project.subsription').insert({
             subtype:subType,
             zoneid:zoneId,
             nooftickets:x,
@@ -211,7 +211,7 @@ try{
 
 
 
-          ret2=await db('se_project.transactions').insert({
+          const ret2=await db('se_project.transactions').insert({
             amount:payedAmount,
             userid:uid,
             purchasedid:purchasedId
@@ -220,7 +220,7 @@ try{
           }).returning("*");
           
 
-          ret3=await db('se_project.creditcarddetails').insert({
+          const  ret3=await db('se_project.creditcarddetails').insert({
             holder_name:holderName,
             userid:uid,
             creditcardnumber:creditCardNumber
@@ -231,7 +231,7 @@ try{
 
 
 
-          ret={subType,zoneId,x,uid,payedAmount,purchasedId,holderName,creditCardNumber};
+          const ret={subType,zoneId,x,uid,payedAmount,purchasedId,holderName,creditCardNumber};
           return res.status(201).json(ret);
   }
 }
@@ -325,7 +325,7 @@ try{
 
           //TODO checkprice before inserting   
           else{
-                ret1=await db('se_project.tickets').insert({
+                const ret1=await db('se_project.tickets').insert({
                   origin:origin,
                   destination:destination,
                   subid:null,//as we are paying online without subscription
@@ -334,8 +334,8 @@ try{
 
 
                 }).returning("*");
-                console.log(ret1);
-                ret2=await db('se_project.transactions').insert({
+                console.log(typeof ret1.id);
+                const  ret2=await db('se_project.transactions').insert({
                   amount:payedAmount,
                   userid:uid,
                   purchasedid:purchasedId
@@ -344,7 +344,7 @@ try{
                 }).returning("*");
                 
 
-                ret3=await db('se_project.creditcarddetails').insert({
+                const ret3=await db('se_project.creditcarddetails').insert({
                   holder_name:holderName,
                   userid:uid,
                   creditcardnumber:creditCardNumber
@@ -354,22 +354,24 @@ try{
 
 
 
+                const id_trip=Number(ret1.id);
+                console.log("i am vegence");
+                console.log(id_trip);
                 
-                ret4=await db('se_project.rides').insert({
+                const  ret4=await db('se_project.rides').insert({
                   status:"activated",
                   origin:origin,
                   destination:destination,
                   userid:uid,
                 //TODO HOW to get ticketid
-                  ticketid:ret1.id,
+                  ticketid:Number(ret1.id),
                   tripdate:tripDate
                   
-
                 }).returning("*");
                 
                 
                 
-                ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
+                const ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
                 return res.status(201).json(ret);
         }
   }
