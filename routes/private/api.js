@@ -95,44 +95,24 @@ module.exports = function (app) {
 
 
 app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) => { 
-    const {} = req.body;
-
-    // Find route and transfer stations
-    const originStationId = await db('stations')
-        .where('stationname', origin)
-        .select('id')
-        .then(rows => rows[0].id);
-    const destinationStationId = await db('stations')
-        .where('stationname', destination)
-        .select('id')
-        .then(rows => rows[0].id);
-    const originRouteIds = await db('stationroutes')
-        .where('stationid', originStationId)
-        .select('routeid')
-        .then(rows => rows.map(row => row.routeid));
-    const destinationRouteIds = await db('stationroutes')
-        .where('stationid', destinationStationId)
-        .select('routeid')
-        .then(rows => rows.map(row => row.routeid));
-    const commonRouteId = originRouteIds.find(routeId => destinationRouteIds.includes(routeId));
-    const visitedStations = await db('routes')
-        .join('stationroutes', 'routes.id', '=', 'stationroutes.routeid')
-        .join('stations', 'stationroutes.stationid', '=', 'stations.id')
-        .where({
-            'routes.id': commonRouteId,
-            'stations.stationtype': 'transfer'
-        })
-        .select('stations.id');
-
-    // Find zoneid and price based on number of visited stations
-    const price = await db('zones')
-        .where({
-            zonetype: visitedStations.length
-        })
-        .select('price')
-        .then(rows => rows[0].price);
+    try{
+        const { originid, destinationid } = req.params;
+        const existstation1 = await db.select("id").from("se_project.stations").where( "id", originid);
+        const existstation2 = await db.select("id").from("se_project.stations").where( "id", destinationid);
+        if(!existstation1){
+          return res.status(404).send("Origin station doesn't exist");
+        }
+        else if(!existstation2){
+            return res.status(404).send("Destination station doesn't exist");
+          }
+        else{
 
     return price;
+        }
+    }
+        catch{
+
+        }
 });
 
 
