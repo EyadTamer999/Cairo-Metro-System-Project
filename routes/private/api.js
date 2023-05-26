@@ -155,30 +155,34 @@ module.exports = function (app) {
             console.log(seniorUser)
             let userNID = seniorUser[0]['nationalid'].toString();
             // console.log(userNID)
-            let userBYear = parseInt("19" + userNID.substring(1, 3));
-            // console.log(userBYear)
+            if (userNID[0] < 3) {
+                let userBYear = parseInt("19" + userNID.substring(1, 3));
 
-            //year has to be less than 63
-            thisYear = parseInt(new Date().getFullYear())
-            if (thisYear - userBYear >= 60) {
-                //kda checks out and he's a senior
-                status = 'accepted'
+                // console.log(userBYear)
 
-                const updateUserRoleToSenior = await db("se_project.users").where('id', '=', user['userid']).update({
-                    roleid: 3
-                })
+                //year has to be less than 63
+                thisYear = parseInt(new Date().getFullYear())
+                if (thisYear - userBYear >= 60) {
+                    //kda checks out and he's a senior
+                    status = 'accepted'
+
+                    const updateUserRoleToSenior = await db("se_project.users").where('id', '=', user['userid']).update({
+                        roleid: 3
+                    })
 
 
+                } else {
+                    status = 'rejected'
+                }
             } else {
                 status = 'rejected'
             }
-
             const updateSeniorRequestStatus = await db("se_project.senior_requests")
                 .where("id", requestId)
                 .update({status: status})
                 .returning("*");
-
             return res.status(200).json(status);
+
         } catch (err) {
             console.log("error message", err.message);
             return res.status(400).send("Could not update senior request");
