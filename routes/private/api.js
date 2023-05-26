@@ -94,7 +94,7 @@ app.post("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => {
                     return res.status(201).send(price);
         }
     }
-        catch{
+        catch(err){
             console.log("Error checking price", err.message);
             return res.status(400).send(err.message);
         }
