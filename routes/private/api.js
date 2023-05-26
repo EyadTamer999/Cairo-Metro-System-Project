@@ -187,9 +187,8 @@ module.exports = function (app) {
                     nooftickets: newNumOfTickets
                 })
 
-                //reference remix
                 //insert in ticket table
-                ret1=await db('se_project.tickets').insert({
+                let newTicket =await db('se_project.tickets').insert({
                     origin:origin,
                     destination:destination,
                     subid:subid,
@@ -198,8 +197,8 @@ module.exports = function (app) {
           
           
                   }).returning("*");
-                  //
-                  ret2=await db('se_project.rides').insert({
+                  //insert upcoming ride in rides table
+                  let newRide = await db('se_project.rides').insert({
                     status:'upcoming',
                     origin:origin,
                     destination:destination,
@@ -210,7 +209,8 @@ module.exports = function (app) {
           
                   }).returning("*");
                   
-                  
+                  //TODO implement checkprice
+                  //
                   
                   ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
                 //   return res.status(201).json(ret);
