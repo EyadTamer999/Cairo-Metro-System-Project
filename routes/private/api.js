@@ -138,14 +138,14 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
     //look through el subscription using el user id
     //check if user has sub, if no sub then no pay.
     //if sub then make ticket! 💪🏽
-    app.put("/api/v1/tickets/purchase/subscription", async (req, res) => {
+    app.post("/api/v1/tickets/purchase/subscription", async (req, res) => {
         try {
             //check on user if there exists a subscription under his/her user id
             const user = await getUser(req);
             let userid = user["userid"]
             const userSubscription = await db
                 .select('*')
-                .from('se_project.subscription')
+                .from('se_project.subsription')
                 .where("userid", '=', userid)
 
             // console.log(userSubscription)
@@ -183,7 +183,7 @@ app.put("/api/v1/ride/simulate", async (req, res) => {
 
                 let newNumOfTickets = userSubscription[0]['nooftickets'] - 1
 
-                let updateTicekts = await db("se_project.subscription").where('userid', '=', userid).update({
+                let updateTicekts = await db("se_project.subsription").where('userid', '=', userid).update({
                     nooftickets: newNumOfTickets
                 })
                 console.log(newNumOfTickets)
