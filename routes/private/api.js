@@ -87,11 +87,57 @@ module.exports = function (app) {
   //     transferStations: ...
   //   };
 
-
+//------------------------------------------------------------------------------------
 // Check Price:
 // Users can check the price of the ticket by specifying the origin and destination.
 // So, you have to figure a way through the three tables(stations, routes, stationRoutes)
 // Hint visited stations array
+app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) => { 
+    // Find route and transfer stations
+    const originStationId = await db('stations')
+        .where('stationname', origin)
+        .select('id')
+        .then(rows => rows[0].id);
+    const destinationStationId = await db('stations')
+        .where('stationname', destination)
+        .select('id')
+        .then(rows => rows[0].id);
+    const originRouteIds = await db('stationroutes')
+        .where('stationid', originStationId)
+        .select('routeid')
+        .then(rows => rows.map(row => row.routeid));
+    const destinationRouteIds = await db('stationroutes')
+        .where('stationid', destinationStationId)
+        .select('routeid')
+        .then(rows => rows.map(row => row.routeid));
+    const commonRouteId = originRouteIds.find(routeId => destinationRouteIds.includes(routeId));
+    const visitedStations = await db('routes')
+        .join('stationroutes', 'routes.id', '=', 'stationroutes.routeid')
+        .join('stations', 'stationroutes.stationid', '=', 'stations.id')
+        .where({
+            'routes.id': commonRouteId,
+            'stations.stationtype': 'transfer'
+        })
+        .select('stations.id');
+
+    // Find zoneid and price based on number of visited stations
+    const price = await db('zones')
+        .where({
+            zonetype: visitedStations.length
+        })
+        .select('price')
+        .then(rows => rows[0].price);
+
+    return price;
+});
+
+
+
+
+
+
+
+//------------------------------------------------------------------
 
   app.post("/api/v1/tickets/price/:originId & :destinationId", async (req, res) => { 
     try {
@@ -110,7 +156,7 @@ module.exports = function (app) {
 
   }
   });
-
+//------------------------------------------------------------------------
     // Simulate Ride
     app.put("/api/v1/ride/simulate", async (req, res) => {
     try{
@@ -210,7 +256,9 @@ module.exports = function (app) {
                   }).returning("*");
                   
                   //TODO implement checkprice
-                  //
+                  //get route
+
+                  //get transfer stations
                   
                   ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
                 //   return res.status(201).json(ret);
@@ -235,6 +283,8 @@ module.exports = function (app) {
             console.log("Error paying for ticket by subscription", err.message);
             return res.status(400).send(err.message);
         }
+
+
         
 
 
