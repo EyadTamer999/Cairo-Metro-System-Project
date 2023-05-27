@@ -85,8 +85,9 @@ module.exports = function (app) {
     });
 
     //calculate the price of ride from origin to destination
-//---------------------------------------------------------------------------
-// Check Price:
+    //notice that the price will differ.. if user is a subscriber, then it'll cost 1 ticket, else if is senior then apply discount
+    //---------------------------------------------------------------------------
+    // Check Price:
     app.post("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => {
         //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
         try {
