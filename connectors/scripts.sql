@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS se_project.rides
 CREATE TABLE IF NOT EXISTS se_project.transactions
 (
     id           SERIAL  NOT NULL,
-    amount       INTEGER NOT NULL,
+    amount       FLOAT NOT NULL, --should be FLOATs
     userid       INTEGER NOT NULL,
     purchasedIid text    NOT NULL,
     purchasetype text    NOT NULL, --cash or subscription
