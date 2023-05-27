@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS se_project.zones
     CONSTRAINT zones_pkey PRIMARY KEY (id)
 
 );
-CREATE TABLE IF NOT EXISTS se_project.subsription
+CREATE TABLE IF NOT EXISTS se_project.subscription
 (
     id SERIAL NOT NULL,
     subtype text NOT NULL, --annual --month -- quarterly
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS se_project.tickets
     subiD INTEGER,
     tripdate timestamp not Null,
     FOREIGN KEY( userid ) REFERENCES se_project.users,
-    FOREIGN KEY( subid ) REFERENCES se_project.subsription,
+    FOREIGN KEY( subid ) REFERENCES se_project.subscription,
     CONSTRAINT tickets_pkey PRIMARY KEY (id)
 );
 
@@ -82,9 +82,10 @@ CREATE TABLE IF NOT EXISTS se_project.rides
 CREATE TABLE IF NOT EXISTS se_project.transactions
 (
     id SERIAL NOT NULL,
-    amount INTEGER NOT NULL,
+    amount FLOAT NOT NULL,
     userid INTEGER NOT NULL,
-    purchasedid text NOT NULL, 
+    purchasedid text NOT NULL,
+    purchasetype text NOT NULL, --0 for subspcription and 1 for ticket
     FOREIGN KEY( userid ) REFERENCES se_project.users,
     CONSTRAINT transactions_pkey PRIMARY KEY (id)
 );

@@ -146,14 +146,13 @@ function get_num_of_tickets(subType)
 app.post("/api/v1/payment/subscription",
 async (req,res)=>{
 try{
-  const purchasedId=req.body.purchasedId;
   const creditCardNumber=req.body.creditCardNumber;
   const holderName=req.body.holderName;
   const payedAmount=req.body.payedAmount;
   const subType=req.body.subType;
   const zoneId=req.body.zoneId;
 
-    const x=get_num_of_tickets(subType);
+    const num_of_tickets=get_num_of_tickets(subType);
     const user=await getUser(req);
     const uid=user.userid;
     const existZone = await db.select("*").from("se_project.zones")
@@ -166,11 +165,6 @@ try{
     if (isEmpty(existZone)) 
     {
     return res.status(400).send("Zone does not exist");
-    }
-
-    else if(purchasedId===null)
-    {
-      return res.status(400).send("you must entered purchasedId");
     }
 
     else if(creditCardNumber===null)
@@ -197,20 +191,21 @@ try{
 
     else{
 
-      const ret1=await db('se_project.subsription').insert({
+      const ret1=await db('se_project.subscription').insert({
             subtype:subType,
             zoneid:zoneId,
-            nooftickets:x,
+            nooftickets:num_of_tickets,
             userid:uid
           }).returning("*");
 
 
+          const id_trip=Number(ret1[0]["id"]);
 
           const ret2=await db('se_project.transactions').insert({
             amount:payedAmount,
             userid:uid,
-            purchasedid:purchasedId
-            
+            purchasedid:toString(id_trip),
+            purchasetype:"subscription"           
 
           }).returning("*");
           
@@ -226,7 +221,7 @@ try{
 
 
 
-          const ret={subType,zoneId,x,uid,payedAmount,purchasedId,holderName,creditCardNumber};
+          const ret={num_of_tickets};
           return res.status(201).json(ret);
   }
 }
@@ -246,7 +241,7 @@ try{
 
 
 
-  const {purchasedId,//Integer
+  const {
     creditCardNumber,//Integer
     holderName,//string
     payedAmount,//integer
@@ -260,7 +255,7 @@ try{
     const uid=user.userid;
     
 
-    const existsubsription = await db.select("*").from("se_project.subsription").where('userid',uid);
+    const existsubsription = await db.select("*").from("se_project.subscription").where('userid',uid);
     if(!isEmpty(existsubsription))
     {
       return res.status(400).send("user have subscription");
@@ -273,10 +268,6 @@ try{
           }
 
 
-          if(purchasedId===null)
-          {
-            return res.status(400).send("you must entered purchasedId");
-          }
 
           else if(creditCardNumber===null)
           {
@@ -327,10 +318,15 @@ try{
 
 
                 }).returning("*");
+
+
+                const id_trip=Number(ret1[0]["id"]);
+
                 const  ret2=await db('se_project.transactions').insert({
                   amount:payedAmount,
                   userid:uid,
-                  purchasedid:purchasedId
+                  purchasedid:toString(id_trip),
+                  purchasetype:"ticket"        
                   
 
                 }).returning("*");
@@ -346,22 +342,31 @@ try{
 
 
 
-                const id_trip=Number(ret1[0]["id"]);
                 
                 const  ret4=await db('se_project.rides').insert({
                   status:"activated",
                   origin:origin,
                   destination:destination,
                   userid:uid,
-                //TODO HOW to get ticketid
                   ticketid:id_trip,
                   tripdate:tripDate
                   
                 }).returning("*");
+
                 
-                
-                
-                const ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
+                const origin_id=await db.select("id").from('se_project.stations').where('stationname',origin) ;
+                const des_id=await db.select("id").from('se_project.stations').where('stationname',destination) ;
+                const potential_routs_data=await db.select("*").from('se_project.routes').where('toStationid',des_id && 'fromStationid',origin_id) ;//ret1
+                const t="transfer";
+                const transfer_stations=await db.select("stationname").from('se_project.stations').where('stationtype',t) ;//ret2
+                const upcome_rides=await db.select("*").from('se_project.rides').where('tripDate',t    ) ;//TODO ret3 not finished
+
+                //1-full ticket price, check price
+                //2-route 
+                //3-transfer stations, 
+                //4-upcoming ride on the date of the ticket
+
+                const ret={potential_routs_data,transfer_stations ,upcome_rides  };//and add the pricecheck price
                 return res.status(201).json(ret);
         }
   }
@@ -374,6 +379,50 @@ catch (e) {
 });
 
 
+/*
 
+    origin,//string
+    destination,//string
+    tripDate //dateTime
+
+
+
+CREATE TABLE IF NOT EXISTS se_project.rides
+(
+    id SERIAL NOT NULL,
+    status text NOT NULL,
+    origin text NOT NULL, 
+    destination text NOT NULL, 
+    userid INTEGER NOT NULL,
+    ticketid integer not null,
+    tripdate timestamp not null,
+    FOREIGN KEY( userid ) REFERENCES se_project.users,
+    FOREIGN KEY( ticketid ) REFERENCES se_project.tickets,
+    CONSTRAINT rides_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS se_project.routes
+(
+    id SERIAL NOT NULL,
+    routename text Not null,
+    fromStationid INTEGER NOT NULL,
+    toStationid INTEGER NOT NULL, 
+    CONSTRAINT routes_pkey PRIMARY KEY (id),
+    FOREIGN KEY( fromStationid ) REFERENCES se_project.stations on DELETE CASCADE on UPDATE CASCADE,
+    FOREIGN KEY( toStationid ) REFERENCES se_project.stations  on DELETE CASCADE on UPDATE CASCADE
+
+);
+
+CREATE TABLE IF NOT EXISTS se_project.stations
+(
+    id SERIAL NOT NULL,
+    stationname text NOT NULL,
+    stationtype text NOT NULL, -- normal or transfer
+    stationposition text, -- start middle end
+    stationstatus text not null, -- new created or not
+    CONSTRAINT stations_pkey PRIMARY KEY (id)
+);
+
+*/ 
 
 };
