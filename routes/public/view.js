@@ -2,9 +2,15 @@
 const db = require('../../connectors/db');
 
 module.exports = function(app) {
+
   //Register HTTP endpoint to render /index page
-  app.get('/', function(req, res) {
+  app.get('/landing', function(req, res) {
     return res.render('index', {title: "Cairo Metro"});
+  });
+
+  //Register HTTP endpoint to render /login page
+  app.get('/', function(req, res) {
+    return res.render('login', {title: "Cairo Metro"});
   });
 // example of passing variables with a page
   app.get('/register', async function(req, res) {

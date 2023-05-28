@@ -89,6 +89,11 @@ module.exports = function (app) {
     //---------------------------------------------------------------------------
     // Check Price:
     app.post("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => {
+        // < 9 stations = 5 gneh,
+        // 10 - 16 stations = 7 gneh
+        // > 16 stations = 10 gneh
+        // 50% discount law senior
+        //
         //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
         try {
             const {originId, destinationId} = req.params;
