@@ -8,7 +8,7 @@
       <link rel='stylesheet' href='/styles/bootstrap.min.css'/>
       <link rel='stylesheet' href='/styles/style.css'/>
       <title>{{title}}</title>
-      <link rel="icon" type="png" href="/images/webtab_icon.png">
+      <link rel="icon" type="png" href="/images/icon.png">
       <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
       <script src="/js/bootstrap.min.js" type="text/javascript"></script>
     </head>
@@ -16,14 +16,14 @@
   <body>
 <div class="container bg-[url('/images/background.jpg')] min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
     <nav class="flex items-center bg-white bg-opacity-25 rounded-2xl px-2 h-[100px]">
-        <img src="/images/webtab_icon.png" alt="logo" class="w-40 cursor-pointer">
+        <img src="/images/icon.png" alt="logo" class="w-40 cursor-pointer">
         <ul class="flex-1 text-center">
             <li class="list-none inline-block px-5"><a href="#" class="no-underline text-4xl text-black px-12 duration-300 hover:text-6xl">Home</a></li>
-            <li class="list-none inline-block px-5"><a href="#" class="no-underline text-4xl text-black px-12 duration-300 hover:text-6xl">About</a></li>
             <li class="list-none inline-block px-5"><a href="#" class="no-underline text-4xl text-black px-12 duration-300 hover:text-6xl">Features</a></li>
             <li class="list-none inline-block px-5"><a href="#" class="no-underline text-4xl text-black px-12 duration-300 hover:text-6xl">Contact</a></li>
+            <li class="list-none inline-block px-5"><a href="#" class="no-underline text-4xl text-black px-12 duration-300 hover:text-6xl">About</a></li>
         </ul>
-        <img src="/images/user.png" alt="Login" class="w-16 mr-8 duration-300 hover:w-24 cursor-pointer">
+        <a href="/"><img src="/images/user.png" alt="Login" class="w-16 mr-8 duration-300 hover:w-24 cursor-pointer"></a>
     </nav>
 
     <div class="bg-black rounded-2xl bg-opacity-50 text-white mt-48 max-w-lg">
@@ -32,7 +32,7 @@
         Embark on an unforgettable metro experience: Seamless journeys, modern comfort, and friendly staff await.
         Discover the joy of effortless travel and let our station be your gateway to city adventures.
         </p>
-        <div class="mt-10">
+        <div class="mt-10 ml-3">
             <a href="#" class="text-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Sign Up Now!</a>
             <a href="#" class="text-white bg-blue-950 rounded-3xl py-2.5 px-8 font-medium inline-block mr-4 hover:bg-blue-600 hover:border-blue-950 hover:text-black duration-300 hover:border border border-transparent">Download App <span class="text-xl">&#10515</span></a>
         </div>

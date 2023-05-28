@@ -5,7 +5,7 @@
       <link rel='stylesheet' href='/styles/bootstrap.min.css' />
       <link rel='stylesheet' href='/styles/style.css' />
       <title>{{title}}</title>
-      <link rel="icon" type="png" href="/images/webtab_icon.png">
+      <link rel="icon" type="png" href="/images/icon.png">
       <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
       <script src="/js/bootstrap.min.js" type="text/javascript"></script>
     </head>
