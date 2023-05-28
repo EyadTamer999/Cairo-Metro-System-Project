@@ -24,7 +24,7 @@ const getUser = async function(req) {
 }
 
 module.exports = function(app) {
-  // Register HTTP endpoint to render /users page
+  // Register HTTP endpoint to render /dashboard page
   app.get('/dashboard', async function(req, res) {
     const user = await getUser(req);
     return res.render('dashboard', user);
@@ -36,11 +36,21 @@ module.exports = function(app) {
     return res.render('users', { users });
   });
 
-  // Register HTTP endpoint to render /courses page
+  // Register HTTP endpoint to render /stations page
   app.get('/stations', async function(req, res) {
     const user = await getUser(req);
     const stations = await db.select('*').from('se_project.stations');
     return res.render('stations_example', { ...user, stations });
   });
 
+  /*
+  Comment date : 28/5/2023
+  A list of things that I need to do to work on the frontend:
+    1. I need to study the files and the examples and find out how to link the backend to the frontend correctly
+    2. need to implement the basic html for part of my web page
+    3. need to then style it.
+    4. after completing these tasks I will try to help out my team with the rest.
+  The deadline for completing the first two tasks is to do it before the weekend
+  the third task needs to implemented within a week
+  */
 };

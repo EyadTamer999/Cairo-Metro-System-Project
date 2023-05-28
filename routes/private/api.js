@@ -47,6 +47,149 @@ module.exports = function (app) {
     }
   });
 
+  // -Request refund PUT 
+  app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
+    const { requestId } = req.params;
+    const existRequest = await db("se_project.refund_requests")
+      .where({ id: requestId })
+      .select("*")
+      .first();
+    if (!existRequest) {
+      return res.status(400).send("Refund request does not exist");
+    }
+
+    try {
+      //check if the ticket associated with the refund request has a future trip date
+      const ticket = await db("se_project.tickets")
+        .where({ id: existRequest.ticketid })
+        .select("*")
+        .first();
+      if (ticket.tripdate <= new Date()) {
+        return res.status(400).send("Only future-dated tickets can be refunded"); //should i also return rejected with it or not
+      }
+
+      const { status: refundStatus } = req.body;
+      if (refundStatus !== "accepted" && refundStatus !== "rejected") {
+        return res.status(400).send("Invalid status value");
+      }
+      const stat = await db("se_project.refund_requests")
+        .where("id", requestId)
+        .returning("status")
+
+      const updateRefundRequestStatus = await db("se_project.refund_requests")
+        .where("id", requestId)
+        .update({ status: refundStatus })
+        .returning("*");
+      if (stat === "accepted") {
+        return res.status(400).send("Request has already been accepted");
+      }
+      if (stat === "rejected") {
+        return res.status(400).send("Request has already been accepted");
+      }
+
+      // Check if the user has a subscription
+      const subscription = await db("se_project.subscription")
+        .where({ userid: existRequest.userid })
+        .select("*")
+        .first();
+
+      if (subscription) {
+        //get the number of tickets and insert it into a variable 
+        const numberoftickets = await db("se_project.subscription")
+          .where({ userid: existRequest.userid })
+          .returning("nooftickets");
+
+        //refund with subscription
+
+        //getting remaining values
+        const refundamount = await db("se_project.transaction")
+          .where({ userid: existRequest.userid })
+          .returning("amount");
+
+        const purchasedIid = await db("se_project.transaction")
+          .where({ userid: existRequest.userid })
+          .returning("purchaseIid");
+
+        await db('se_project.transactions').insert({
+          amount: (numberoftickets + 1),
+          userid: existRequest.userid,
+          purchasedIid: purchasedIid,
+          purchasetype: "subscription"
+        })
+          .returning('*');
+          
+        } else {
+        //refund with online payment
+
+        await db('se_project.transactions').insert({
+          amount: (-refundamount),
+          userid: existRequest.userid,
+          purchasedIid: purchasedIid,
+          purchasetype: "transaction"
+        })
+          .returning('*');
+
+      }
+
+      return res.status(200).json(updateRefundRequestStatus);
+    } catch (err) {
+      console.log("error message", err.message);
+      return res.status(400).send("Could not update refund request status");
+    }
+  });
+
+  // -Request Senior PUT
+  app.put("/api/v1/requests/senior/:requestId", async (req, res) => {
+    const { requestId } = req.params;
+    const existRequest = await db("se_project.senior_requests")
+      .where({ id: requestId })
+      .select("*")
+      .first();
+    if (!existRequest) {
+      return res.status(400).send("Senior request does not exist");
+    }
+    try {
+      const { status } = req.body;
+      if (status !== "accepted" && status !== "rejected") {
+        return res.status(400).send("Invalid status value");
+      }
+      const updateSeniorRequestStatus = await db("se_project.senior_requests")
+        .where("id", requestId)
+        .update({ status: status })
+        .returning("*");
+      return res.status(200).json(updateSeniorRequestStatus);
+    } catch (err) {
+      console.log("error message", err.message);
+      return res.status(400).send("Could not update senior request");
+    }
+  });
+
+  // -Update zone price PUT
+  app.put("/api/v1/zones/:zoneId", async (req, res) => {
+    const { zoneId } = req.params;
+    const existZone = await db("se_project.zones")
+      .where({ id: zoneId })
+      .select("*")
+      .first();
+    if (!existZone) {
+      return res.status(400).send("Zone does not exist");
+    }
+
+    try {
+      const { price } = req.body;
+      const updateZonePrice = await db("se_project.zones")
+        .where("id", zoneId)
+        .update({
+          price: price,
+        })
+        .returning("*");
+      return res.status(200).json(updateZonePrice);
+    } catch (err) {
+      console.log("error message", err.message);
+      return res.status(400).send("Could not update zone price"); //recheck
+    }
+  });
+
   /*
     Create api endpoints for admin :
     - Create routes
@@ -162,8 +305,10 @@ module.exports = function (app) {
     }
   });
 
-  // -Delete route: NOT DONE {Testing}
+  // -Delete route: DONE 
   app.delete("/api/v1/route/:routeid", async (req, res) => {
+    //still need to adjust for the missing cases as to contradict my old logic
+
     // need to check whethter the user is an admin or not
     const user = await getUser(req);
     if (!user.isAdmin) return res.status(401);
@@ -205,49 +350,98 @@ module.exports = function (app) {
     const tstationpos = tstation.stationposition;
 
     //case for the start
-    if (fstationpos === "start") {
-      const othRoute = await db("se_project.routes")
-        .where({ id: routeId, tostationid: fromSTid })
-        .select("*")
-        .first();
+    if (fstationpos === "start" || tstationpos === "start") {
+      if (fstation === "start") {
+        const othRoute = await db("se_project.routes")
+          .where({ id: routeId, tostationid: fromSTid })
+          .select("*")
+          .first();
 
-      if (!othRoute) {
-        try {
-          await db("se_project.stations")
-            .where({ id: fromSTid })
-            .update({ stationstatus: "inactive" })
-            .returning("*");
-          //change the position of the connected station
-          await db("se_project.stations")
-            .where({ id: toSTid })
-            .update({ stationposition: fstationpos })
-            .returning("*");
-        } catch (error) {
-          return res.status(500).send(error);
+        if (!othRoute) {
+          try {
+            await db("se_project.stations")
+              .where({ id: fromSTid })
+              .update({ stationstatus: "inactive" })
+              .returning("*");
+            //change the position of the connected station
+            await db("se_project.stations")
+              .where({ id: toSTid })
+              .update({ stationposition: fstationpos })
+              .returning("*");
+          } catch (error) {
+            return res.status(500).send(error);
+          }
+        }
+      }
+      if (tstation === "start") {
+        const othRoute = await db("se_project.routes")
+          .where({ id: routeId, fromstationid: toSTid })
+          .select("*")
+          .first();
+
+        if (!othRoute) {
+          try {
+            await db("se_project.stations")
+              .where({ id: toST })
+              .update({ stationstatus: "inactive" })
+              .returning("*");
+            //change the position of the connected station
+            await db("se_project.stations")
+              .where({ id: fromSTid })
+              .update({ stationposition: fstationpos })
+              .returning("*");
+          } catch (error) {
+            return res.status(500).send(error);
+          }
         }
       }
     }
     //case for the end
-    if (tstationpos === "end") {
-      const othRoute = db("se_project.routes")
-        .where({ id: routeId, fromstationid: toSTid })
-        .select("*")
-        .first();
+    if (tstationpos === "end" || fstationpos === "end") {
+      if (tstationpos === "end") {
+        const othRoute = db("se_project.routes")
+          .where({ id: routeId, fromstationid: toSTid })
+          .select("*")
+          .first();
 
-      if (!othRoute) {
-        db("se_project.stations")
-          .where({ id: toSTid })
-          .update({ stationstatus: "inactive" })
-          .returning("*");
-        //change the position of the connected station
-        db("se_project.stations")
-          .where({ id: fromSTid })
-          .update({ stationposition: tstationpos })
-          .returning("*");
+        if (!othRoute) {
+          db("se_project.stations")
+            .where({ id: toSTid })
+            .update({ stationstatus: "inactive" })
+            .returning("*");
+          //change the position of the connected station
+          db("se_project.stations")
+            .where({ id: fromSTid })
+            .update({ stationposition: tstationpos })
+            .returning("*");
+        }
+      }
+      if (fstationpos === "end") {
+        const othRoute = db("se_project.routes")
+          .where({ id: routeId, tostationid: fromSTid })
+          .select("*")
+          .first();
+
+        if (!othRoute) {
+          db("se_project.stations")
+            .where({ id: fromSTid })
+            .update({ stationstatus: "inactive" })
+            .returning("*");
+          //change the position of the connected station
+          db("se_project.stations")
+            .where({ id: toSTid })
+            .update({ stationposition: fstationpos })
+            .returning("*");
+        }
       }
     }
 
-    if (fstationpos === "start" || tstationpos === "end") {
+    if (
+      fstationpos === "start" ||
+      tstationpos === "start" ||
+      tstationpos === "end" ||
+      fstationpos === "end"
+    ) {
       try {
         const deleteRoute = await db("se_project.routes")
           .where({ id: routeId })
@@ -258,7 +452,6 @@ module.exports = function (app) {
         console.log("eror message", err.message);
         return res.status(400).send("Can not delete route");
       }
-    }
-    else return res.status(400).send("Can not delete route");
+    } else return res.status(400).send("Can not delete route");
   });
 };
