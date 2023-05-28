@@ -114,18 +114,13 @@ app.post("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => {
     app.put("/api/v1/ride/simulate", async (req, res) => {
     try{
         const {origin, destination, tripDate} = req.body;
-        // const { origin, destination } = req.params;
-        const simulateRide = await db("se_project")
+        const simulateRide = await db('se_project.rides')
         .where("rides.destination", destination)
         .where("rides.origin", origin)
         .where("rides.tripDate", tripDate)
-        .update({
-        origin:string,
-        destination:string,
-        tripDate:dateTime
-        })
+        .update("rides.status", 'Completed')
         .returning("*");
-        return res.status(200).json(updateRoute);
+        return res.status(200).json(simulateRide);
     }
     catch(err){
         console.log("Error simulating ride", err.message);

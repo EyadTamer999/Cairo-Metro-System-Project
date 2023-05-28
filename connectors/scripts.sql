@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS se_project.rides
     destination text      NOT NULL,
     userid      INTEGER   NOT NULL,
     ticketid    integer   not null,
-    tripdate    timestamp not null,
+    tripdate    datetime not null,
     FOREIGN KEY (userid) REFERENCES se_project.users,
     FOREIGN KEY (ticketid) REFERENCES se_project.tickets,
     CONSTRAINT rides_pkey PRIMARY KEY (id)
