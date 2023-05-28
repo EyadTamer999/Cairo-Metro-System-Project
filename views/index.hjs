@@ -23,20 +23,20 @@
             <li class="list-none inline-block px-5"><a href="#" class="no-underline text-4xl text-black px-12 duration-300 hover:text-6xl">Features</a></li>
             <li class="list-none inline-block px-5"><a href="#" class="no-underline text-4xl text-black px-12 duration-300 hover:text-6xl">Contact</a></li>
         </ul>
-        <img src="/images/user.png" alt="Login" class="w-16 mr-8 cursor-pointer">
+        <img src="/images/user.png" alt="Login" class="w-16 mr-8 duration-300 hover:w-24 cursor-pointer">
     </nav>
 
     <div class="bg-black rounded-2xl bg-opacity-50 text-white mt-48 max-w-lg">
-        <h1 class="pl-5 text-6xl font-semibold leading-normal">Embrace the Energy: <br>Ride the <span class="font-light opacity-90 text-red-400">Metro!</span></h1>
+        <h1 class="pl-5 text-6xl font-semibold leading-normal">Embrace the Energy: <br>Ride the <span class="font-light text-red-950 opacity-90">Metro!</span></h1>
         <p class="pl-5 text-white/80 mr-10">
         Embark on an unforgettable metro experience: Seamless journeys, modern comfort, and friendly staff await.
         Discover the joy of effortless travel and let our station be your gateway to city adventures.
         </p>
         <div class="mt-10">
-            <a href="#" class="text-black bg-red-300 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Sign Up Now!</a>
+            <a href="#" class="text-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Sign Up Now!</a>
             <a href="#" class="text-white bg-blue-950 rounded-3xl py-2.5 px-8 font-medium inline-block mr-4 hover:bg-blue-600 hover:border-blue-950 hover:text-black duration-300 hover:border border border-transparent">Download App <span class="text-xl">&#10515</span></a>
         </div>
-        <img src="/images/map.png" alt="man" class="bg-white bg-opacity-80 rounded-2xl w-full xl:w-2/5 xl:absolute bottom-0 right-20">
+        <img src="/images/map.png" alt="man" class="bg-white bg-opacity-80 rounded-2xl w-full xl:w-1/4 xl:absolute bottom-0 right-28 duration-300 hover:w-2/5">
     </div>
 </div>
   </body>
