@@ -52,7 +52,7 @@ module.exports = function (app) {
 
 //---------------------------------------------------------------------------
 // Check Price:
-app.post("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => {  //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
+app.get("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => {  //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
     try{
         const { originId, destinationId } = req.params;
         const existstation1 = await db.select("id").from("se_project.stations").where( "id", originId);
