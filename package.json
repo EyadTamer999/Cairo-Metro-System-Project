@@ -6,6 +6,7 @@
   "dependencies": {
     "express": "4.18.2",
     "hjs": "0.0.6",
+    "jquery": "^3.7.0",
     "knex": "^2.4.2",
     "lodash": "4.17.21",
     "pg": "8.7.1",
