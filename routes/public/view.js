@@ -4,7 +4,7 @@ const db = require('../../connectors/db');
 module.exports = function(app) {
 
   //Register HTTP endpoint to render /index page
-  app.get('/landing', function(req, res) {
+  app.get('/home', function(req, res) {
     return res.render('index', {title: "Cairo Metro"});
   });
 
