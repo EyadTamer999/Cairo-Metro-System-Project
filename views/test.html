@@ -16,11 +16,11 @@
 <div class="container bg-[url('/images/background.jpg')] min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
 
     <nav id="navbar"
-         class="flex items-center bg-white bg-opacity-25 rounded-2xl px-2 h-[100px] sticky top-0 z-50 shadow-2xl">
+         class="flex items-center bg-white bg-opacity-25 rounded-2xl px-2 h-fit shadow-2xl duration-300">
         <img src="/images/icon.png" alt="logo" class="w-40 cursor-pointer">
         <ul class="flex-1 text-center">
             <li class="list-none inline-block px-5">
-                <a href="#" class="no-underline text-4xl text-black px-12 duration-300 hover:text-6xl">Home</a>
+                <a href="#Home" class="no-underline text-4xl text-black px-12 duration-300 hover:text-6xl">Home</a>
             </li>
             <li class="list-none inline-block px-5">
                 <a href="#Features"
@@ -37,7 +37,36 @@
         </ul>
         <a href="/login"><img src="/images/user.png" alt="Login"
                               class="w-16 mr-8 duration-300 hover:w-24 cursor-pointer"></a>
+
+        <script>
+            $(function () {
+                var scroll = $(document).scrollTop();
+                var navHeight = $('#navbar').outerHeight();
+
+                $(window).scroll(function () {
+                    var scrolled = $(document).scrollTop();
+
+                    if (scrolled > navHeight) {
+                        $('#navbar').addClass('animate');
+                    } else {
+
+                        $('#navbar').removeClass('animate');
+                    }
+
+                    if (scrolled > scroll) {
+                        $('#navbar').removeClass('sticky');
+                    } else {
+                        $('#navbar').addClass('sticky');
+                    }
+
+                    scroll = $(document).scrollTop();
+
+                });
+            });
+        </script>
     </nav>
+
+
     <section id="Home" class="flex flex-row">
 
 
@@ -64,7 +93,7 @@
             </p>
 
             <div class="mt-10 ml-3 mb-10">
-                <a href="#"
+                <a href="/register"
                    class="text-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Sign
                     Up Now!</a>
                 <a href="#"
@@ -118,7 +147,7 @@
                                 elementum. Donec a ullamcorper diam.
                             </p>
                             <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light"
-                               class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Read
+                               class="text-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Read
                                 more</a>
                         </div>
                     </div>
@@ -139,14 +168,14 @@
                             </div>
                         </div>
                         <div class="p-6">
-                            <h5 class="font-bold text-lg mb-3">A lonely bench</h5>
+                            <h5 class="font-bold text-lg mb-3">Ride to your comfort</h5>
                             <p class="mb-4 pb-2">
                                 Suspendisse in volutpat massa. Nulla facilisi. Sed aliquet
                                 diam orci, nec ornare metus semper sed. Integer volutpat
                                 ornare erat sit amet rutrum.
                             </p>
                             <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light"
-                               class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Read
+                               class="itext-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Read
                                 more</a>
                         </div>
                     </div>
@@ -174,7 +203,7 @@
                                 massa volutpat feugiat. Donec.
                             </p>
                             <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light"
-                               class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Read
+                               class="text-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Read
                                 more</a>
                         </div>
                     </div>
@@ -186,12 +215,9 @@
                     <div class="mt-12 lg:mt-0">
                         <h1 class="text-4xl md:text-5xl xl:text-6xl font-bold tracking-tight mb-12">SIGN UP
                             NOW!<br/><span class="text-red-600">for Cairo Metro</span></h1>
-                        <div class="md:flex flex-row">
-                            <button type="submit"
-                                    class="px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-300 ease-in-out"
-                                    data-mdb-ripple="true" data-mdb-ripple-color="light">Sign Up
-                            </button>
-                        </div>
+                        <a href="/register"
+                           class="text-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Sign
+                            Up Now!</a>
                     </div>
                     <div class="mb-12 lg:mb-0">
                         <div
