@@ -353,20 +353,21 @@ try{
                   
                 }).returning("*");
 
-                
+                const subscribtion_cost=1;//TODO call CheckPrice
                 const origin_id=await db.select("id").from('se_project.stations').where('stationname',origin) ;
                 const des_id=await db.select("id").from('se_project.stations').where('stationname',destination) ;
-                const potential_routs_data=await db.select("*").from('se_project.routes').where('toStationid',des_id && 'fromStationid',origin_id) ;//ret1
+                const potential_routs_data=await db.select("*").from('se_project.routes').where('toStationid',des_id && 'fromStationid',origin_id) ;//ret2
                 const t="transfer";
-                const transfer_stations=await db.select("stationname").from('se_project.stations').where('stationtype',t) ;//ret2
-                const upcome_rides=await db.select("*").from('se_project.rides').where('tripDate',t    ) ;//TODO ret3 not finished
+                const transfer_stations=await db.select("stationname").from('se_project.stations').where('stationtype',t) ;//ret3
+                const upcome_rides=await db.select("*").from('se_project.rides').where('tripdate',t    ) ;//TODO ret4 not finished
 
+                //  { tripdate >= currentdate}   
                 //1-full ticket price, check price
                 //2-route 
                 //3-transfer stations, 
                 //4-upcoming ride on the date of the ticket
 
-                const ret={potential_routs_data,transfer_stations ,upcome_rides  };//and add the pricecheck price
+                const ret={subscribtion_cost,potential_routs_data,transfer_stations ,upcome_rides  };//and add the pricecheck price
                 return res.status(201).json(ret);
         }
   }
@@ -378,7 +379,194 @@ catch (e) {
 }
 });
 
+//ok so, the purchasetype is set to cash or subscription rather than 0 or 1 in your code and also any purchase made with a
+// subscription should always have an amount of 1
+  // -Request refund PUT 
 
+  app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
+    const { requestId } = req.params;
+    const existRequest = await db("se_project.refund_requests")
+      .where({ id: requestId })
+      .select("*")
+      .first();
+    if (!existRequest) {
+      return res.status(400).send("Refund request does not exist");
+    }
+
+    try {
+      //check if the ticket associated with the refund request has a future trip date
+      const ticket = await db("se_project.tickets")
+        .where({ id: existRequest.ticketid })
+        .select("*")
+        .first();
+      if (ticket.tripdate <= new Date()) {
+        return res.status(400).send("Only future-dated tickets can be refunded"); //should i also return rejected with it or not
+      }
+
+      const { status: refundStatus } = req.body;
+      if (refundStatus !== "accepted" && refundStatus !== "rejected") {
+        return res.status(400).send("Invalid status value");
+      }
+      const stat = await db("se_project.refund_requests")
+        .where("id", requestId)
+        .returning("status")
+
+      const updateRefundRequestStatus = await db("se_project.refund_requests")
+        .where("id", requestId)
+        .update({ status: refundStatus })
+        .returning("*");
+      if (stat === "accepted") {
+        return res.status(400).send("Request has already been accepted");
+      }
+      if (stat === "rejected") {
+        return res.status(400).send("Request has already been accepted");
+      }
+
+      // Check if the user has a subscription
+      const subscription = await db("se_project.subscription")
+        .where({ userid: existRequest.userid })
+        .select("*")
+        .first();
+
+      if (subscription) {
+        //get the number of tickets and insert it into a variable 
+        const numberoftickets = await db("se_project.subscription")
+          .where({ userid: existRequest.userid })
+          .returning("nooftickets");
+
+        //refund with subscription
+
+        //getting remaining values
+        const refundamount = await db("se_project.transaction")
+          .where({ userid: existRequest.userid })
+          .returning("amount");
+
+        const purchasedIid = await db("se_project.transaction")
+          .where({ userid: existRequest.userid })
+          .returning("purchasedid");
+
+        await db('se_project.transactions').insert({
+          amount: (numberoftickets + 1),
+          userid: existRequest.userid,
+          purchasedIid: purchasedIid,
+          purchasetype: "subscription"
+        })
+          .returning('*');
+          
+        } else {
+        //refund with online payment
+
+        await db('se_project.transactions').insert({
+          amount: (-refundamount),
+          userid: existRequest.userid,
+          purchasedid: purchasedIid,
+          purchasetype: "transaction"
+        })
+          .returning('*');
+
+      }
+
+      return res.status(200).json(updateRefundRequestStatus);
+    } catch (err) {
+      console.log("error message", err.message);
+      return res.status(400).send("Could not update refund request status");
+    }
+  });
+
+
+// -Request Senior PUT
+
+    app.put("/api/v1/requests/senior/:requestId", async (req, res) => {
+        const {requestId} = req.params;
+
+        let status = await db("se_project.senior_requests")
+            .where({id: requestId})
+            .select("status")
+            .first();
+
+        if (status['status'] === 'accepted') {
+            return res.status(400).send("Senior request has already been accepted");
+        }
+        if (status['status'] === 'rejected') {
+            return res.status(400).send("Senior request has already been rejected");
+        }
+
+        const existRequest = await db("se_project.senior_requests")
+            .where({id: requestId})
+            .select("*")
+            .first();
+        if (!existRequest) {
+            return res.status(400).send("Senior request does not exist");
+        }
+        try {
+            const user = await getUser(req);
+            // console.log(user)
+            const seniorUser = await db.select('*').from('se_project.senior_requests').where('userid', '=', user['userid'])
+            console.log(seniorUser)
+            let userNID = seniorUser[0]['nationalid'].toString();
+            // console.log(userNID)
+            if (userNID[0] < 3) {
+                let userBYear = parseInt("19" + userNID.substring(1, 3));
+
+                // console.log(userBYear)
+
+                //year has to be less than 63
+                thisYear = parseInt(new Date().getFullYear())
+                if (thisYear - userBYear >= 60) {
+                    //kda checks out and he's a senior
+                    status = 'accepted'
+
+                    const updateUserRoleToSenior = await db("se_project.users").where('id', '=', user['userid']).update({
+                        roleid: 3
+                    })
+
+
+                } else {
+                    status = 'rejected'
+                }
+            } else {
+                status = 'rejected'
+            }
+            const updateSeniorRequestStatus = await db("se_project.senior_requests")
+                .where("id", requestId)
+                .update({status: status})
+                .returning("*");
+            return res.status(200).json(status);
+
+        } catch (err) {
+            console.log("error message", err.message);
+            return res.status(400).send("Could not update senior request");
+        }
+    });
+
+
+  // -Update zone price PUT 
+
+  app.put("/api/v1/zones/zoneId", async (req, res) => {
+    const { zoneId } = req.params;
+    const existZone = await db("se_project.zones")
+      .where({ id: zoneId })
+      .select("*")
+      .first();
+    if (!existZone) {
+      return res.status(400).send("Zone does not exist");
+    }
+
+    try {
+      const { price } = req.body;
+      const updateZonePrice = await db("se_project.zones")
+        .where("id", zoneId)
+        .update({
+          price: price
+        }).returning("*");
+      return res.status(200).json(updateZonePrice);
+
+    }
+    catch (err) {
+      console.log("error message", err.message);
+      return res.status(400).send("Could not update zone price"); //recheck
+    }
+  })
 /*
 
     origin,//string
