@@ -94,6 +94,43 @@ module.exports = function (app) {
         // > 16 stations = 10 gneh
         // 50% discount law senior
         //
+
+        //run shortest path algo
+        //select the stations and save them in an array, select the routes and save them in an array, and select the stations routes and save them in an array,
+        //we need to mark where we can start.
+        // https://www.geeksforgeeks.org/implementation-graph-javascript/
+        /*
+
+        // Using the above implemented graph class
+        var g = new Graph(6);
+        var vertices = [ 'A', 'B', 'C', 'D', 'E', 'F' ];
+
+        // adding vertices
+        for (var i = 0; i < vertices.length; i++) {
+            g.addVertex(vertices[i]);
+        }
+
+        // adding edges
+        g.addEdge('A', 'B');
+        g.addEdge('A', 'D');
+        g.addEdge('A', 'E');
+        g.addEdge('B', 'C');
+        g.addEdge('D', 'E');
+        g.addEdge('E', 'F');
+        g.addEdge('E', 'C');
+        g.addEdge('C', 'F');
+
+        // prints all vertex and
+        // its adjacency list
+        // A -> B D E
+        // B -> A C
+        // C -> B E F
+        // D -> A E
+        // E -> A D F C
+        // F -> E C
+        g.printGraph();
+
+        */
         //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
         try {
             const {originId, destinationId} = req.params;
