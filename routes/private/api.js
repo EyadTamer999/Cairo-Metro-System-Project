@@ -454,4 +454,153 @@ module.exports = function (app) {
       }
     } else return res.status(400).send("Can not delete route");
   });
+
+  //Check price and payment endpoints------------------------------------------------------------------------------------
+
+  async function helper(fromStationId, toStationId, distances, previous, count, tempcount){
+    const stations = await db("se_project.routes")
+      .select("*")
+      .where({ fromstationid: fromStationId });
+    for (let j in stations) {
+        if (previous.contains(stations.tostationid[j])) continue;
+         else {
+          const toStations = await db("se_project.routes")
+            .select("tostationid")
+            .where({ fromstationid: stations[j].id });
+         if (toStations.length() === 1) continue;
+          else {
+            const station = stations[j];
+            count++;
+            if (fromStationId === toStationId) {
+              distances.append(count);
+            } else {
+              helper(
+                station.id,
+                toStationId,
+                distances,
+                previous,
+                count
+              );
+            }
+          }
+          count = tempcount;
+        }
+      }
+  }
+
+  async function calculateShortestPath(
+    fromStationId,
+    toStationId,
+    distances,
+    previous,
+    count
+  ) {
+    const stations = await db("se_project.routes")
+      .select("*")
+      .where({ fromstationid: fromStationId });
+     for (let i in stations.tostationid) {
+      const stationss = await db("se_project.stations")
+        .select("*")
+        .where({ id: stations.fromstationid[i]})
+        .first();
+      if (stationss.stationtype[i] === "transfer") {
+        let tempcount = count;
+        helper(stationss.id, toStationId, distances, previous, count, tempcount);
+      } else {
+        if (previous.contains(stations.tostationid[i])) {
+          continue;
+        } else {
+          const toStations = await db("se_project.routes")
+            .select("tostationid")
+            .where({ fromstationid: stations[i].id });
+          if (toStations.length() === 1) continue;
+          else {
+            const station = stations[i];
+            count++;
+            if (station.fromstationid === toStationId) {
+              distances.append(count);
+            } else {
+              calculateShortestPath(
+                station.id,
+                toStationId,
+                distances,
+                previous,
+                count
+              );
+            }
+          }
+          count = 0;
+        }
+      }
+    }
+    let minSoFar = distances[0];
+    for (let i in distances) {
+      if (distances[i] < minSoFar) minSoFar = distances[i];
+    }
+
+    return minSoFar;
+
+    //test tomorrow
+    //arrival
+
+    /*
+        we will add the stations stopped by in the previous array
+        if we find one of the tostations in the previous array we will not execute recursion with it
+        we will increment the count with visiting a station
+        if we find the destination : increment the count in the distance array and break from the recursion
+        else : recusion with the tostations
+        for edge stations if the tostations is 1 only
+        choose the min from the distances
+        */
+    // Fetch all stations from the database
+
+    // Initialize distances with infinity, except for the source station which is 0
+  }
+
+  //calculate the price of ride from origin to destination
+  //notice that the price will differ.. if user is a subscriber, then it'll cost 1 ticket, else if is senior then apply discount
+  //---------------------------------------------------------------------------
+  // Check Price:
+  app.post(
+    "/api/v1/tickets/price/:originId/:destinationId",
+    async (req, res) => {
+      // < 9 stations = 5 gneh,
+      // 10 - 16 stations = 7 gneh
+      // > 16 stations = 10 gneh
+      // 50% discount law senior
+      //
+      //run shortest path algo
+      //select the stations and save them in an array, select the routes and save them in an array, and select the stations routes and save them in an array,
+      //we need to mark where we can start.
+      // https://www.geeksforgeeks.org/implementation-graph-javascript/
+      // https://github.com/dagrejs/graphlib/wiki
+      // https://www.npmjs.com/package/graphlib?activeTab=readme
+      //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
+      try {
+        const { originId, destinationId } = req.params;
+        let startStation = await db
+          .select("*")
+          .from("se_project.stations")
+          .where("id", "=", originId);
+        let endStation = await db
+          .select("*")
+          .from("se_project.stations")
+          .where("id", "=", destinationId);
+
+        //calculate the shortest path
+        let shortestPath = await calculateShortestPath(
+          startStation,
+          endStation
+        );
+
+        console.log(shortestPath);
+        console.log(shortestPath.path);
+
+        return res.status(200).send("success");
+      } catch (err) {
+        console.log("Error checking price", err.message);
+        return res.status(400).send(err.message);
+      }
+    }
+  );
 };
