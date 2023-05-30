@@ -14,10 +14,4 @@ module.exports = function(app) {
   app.get('/register', async function(req, res) {
     return res.render('register.html', {title: "Register"});
   });
-
-  // example of passing variables with a page
-  app.get('/dashboard', async function(req, res) {
-    //Todo send user info via session to display things like name subscription etc. THIS SHOULD BE IN PRIVATE
-    return res.render('dashboard.html');
-  });
 };
