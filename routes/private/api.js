@@ -38,6 +38,7 @@ const getUser = async function (req) {
 
 //POST pay for subscription online
 const express= require("express");
+const { log } = require("console");
 // const db=require("../../connectors/db");
 // const { default: db } = require("db");
 
@@ -356,10 +357,24 @@ try{
                 const subscribtion_cost=1;//TODO call CheckPrice
                 const origin_id=await db.select("id").from('se_project.stations').where('stationname',origin) ;
                 const des_id=await db.select("id").from('se_project.stations').where('stationname',destination) ;
-                const potential_routs_data=await db.select("*").from('se_project.routes').where('toStationid',des_id && 'fromStationid',origin_id) ;//ret2
+                console.log("ya ana mabdoon");
+                console.log(des_id);
+                
+                console.log(origin_id);
+                console.log("ya ana mabdoon");
+
+                if(!isEmpty(origin_id) && !isEmpty(des_id) ){
+                const potential_routs_data=await db.select("*").from('se_project.routes').where('toStationid',des_id  ).where('fromStationid',origin_id) ;//ret2
+              
+                
                 const t="transfer";
+
+               // const day=tripDate.getDay();
+                
                 const transfer_stations=await db.select("stationname").from('se_project.stations').where('stationtype',t) ;//ret3
-                const upcome_rides=await db.select("*").from('se_project.rides').where('tripdate',t    ) ;//TODO ret4 not finished
+                //const todayCloseDate = DF.format(new Date(), 'yyyy-MM-dd');
+
+                //const upcome_rides=await db.select("*").from('se_project.rides').where('tripdate',t    ) ;//TODO ret4 not finished
 
                 //  { tripdate >= currentdate}   
                 //1-full ticket price, check price
@@ -367,8 +382,14 @@ try{
                 //3-transfer stations, 
                 //4-upcoming ride on the date of the ticket
 
-                const ret={subscribtion_cost,potential_routs_data,transfer_stations ,upcome_rides  };//and add the pricecheck price
+                const ret={subscribtion_cost,potential_routs_data,transfer_stations  };//and add the pricecheck price ,upcome_rides 
                 return res.status(201).json(ret);
+
+              }
+              else{
+                return res.status(400).send("origin or destination is invalid station");
+
+              }
         }
   }
 
@@ -382,14 +403,16 @@ catch (e) {
 //ok so, the purchasetype is set to cash or subscription rather than 0 or 1 in your code and also any purchase made with a
 // subscription should always have an amount of 1
   // -Request refund PUT 
+//: Undefined binding(s) detected when compiling FIRST. Undefined column(s): [id] query: select * from "se_project"."refund_requests" where "id" = ? limit ?
+  app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {    
+    const  requestId =parseInt( req.params.requestId);//Number(ret1[0]["id"]);
 
-  app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
-    const { requestId } = req.params;
+
     const existRequest = await db("se_project.refund_requests")
       .where({ id: requestId })
       .select("*")
       .first();
-    if (!existRequest) {
+    if (isEmpty( existRequest) ) {
       return res.status(400).send("Refund request does not exist");
     }
 
@@ -428,7 +451,7 @@ catch (e) {
         .select("*")
         .first();
 
-      if (subscription) {
+      if (!isEmpty( subscription) ) {
         //get the number of tickets and insert it into a variable 
         const numberoftickets = await db("se_project.subscription")
           .where({ userid: existRequest.userid })
@@ -477,7 +500,7 @@ catch (e) {
 // -Request Senior PUT
 
     app.put("/api/v1/requests/senior/:requestId", async (req, res) => {
-        const {requestId} = req.params;
+        const  requestId =parseInt( req.params.requestId);//Number(ret1[0]["id"]);
 
         let status = await db("se_project.senior_requests")
             .where({id: requestId})
@@ -495,7 +518,7 @@ catch (e) {
             .where({id: requestId})
             .select("*")
             .first();
-        if (!existRequest) {
+        if (isEmpty( existRequest)) {
             return res.status(400).send("Senior request does not exist");
         }
         try {
@@ -542,13 +565,15 @@ catch (e) {
 
   // -Update zone price PUT 
 
-  app.put("/api/v1/zones/zoneId", async (req, res) => {
-    const { zoneId } = req.params;
+  app.put("/api/v1/zones/:zoneId", async (req, res) => {
+    const  zoneId =parseInt( req.params.zoneId);//Number(ret1[0]["id"]);
+
     const existZone = await db("se_project.zones")
       .where({ id: zoneId })
       .select("*")
       .first();
-    if (!existZone) {
+    if (isEmpty( existZone)) {
+      console.log("dammmmmmmmmmmmmm");
       return res.status(400).send("Zone does not exist");
     }
 
@@ -559,6 +584,8 @@ catch (e) {
         .update({
           price: price
         }).returning("*");
+        console.log(updateZonePrice);
+
       return res.status(200).json(updateZonePrice);
 
     }
