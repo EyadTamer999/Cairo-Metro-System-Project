@@ -13,17 +13,18 @@
     $(document).ready(function(){    
       // Handle Registration Button Click
       $("#register").click(function() {
-        const firstName = $('#firstName').val();
-        const lastName = $('#lastName').val();
+        const firstname = $('#firstName').val();
+        const lastname = $('#lastName').val();
         const email = $('#email').val();
         const password = $('#password').val();
 
         const data = {
-          firstName,
-          lastName,
+          firstname,
+          lastname,
           email,
           password,
         };
+        console.log(data)
 
         $.ajax({
           type: "POST",
