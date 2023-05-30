@@ -89,8 +89,7 @@ module.exports = function (app) {
         const previous = {};
 
         // Fetch all stations from the database
-        const stationsQuery = await db.select('se_project.stations') //'SELECT id, stationname FROM stations';
-        const {rows: stations} = await pool.query(stationsQuery);
+        const stations = await db('se_project.stations').select('id', 'stationname');
 
         // Initialize distances with infinity, except for the source station which is 0
         stations.forEach(station => {
@@ -114,12 +113,11 @@ module.exports = function (app) {
             }
 
             // Fetch routes from the database for the closest station
-            const routesQuery =  se_project.routes //'SELECT toStationId FROM routes WHERE fromStationId = $1';
-            const {rows: routes} = await pool.query(routesQuery, [closestStationId]);
+            const routes = await db('se_project.routes').select('tostationid').where('fromstationid', '=', closestStationId);
 
             // Update distances to neighboring stations
             for (let route of routes) {
-                const neighborStationId = route.toStationId;
+                const neighborStationId = route.tostationid;
                 const distance = shortestDistance + 1; // Assuming each route has a weight of 1
 
                 if (distance < distances[neighborStationId]) {
@@ -140,17 +138,40 @@ module.exports = function (app) {
         return {distance: distances[toStationId], path};
     }
 
-// Usage example
-    const fromStationId = 1; // Replace with the actual source station ID
-    const toStationId = 5; // Replace with the actual destination station ID
+    //calculate the price of ride from origin to destination
+    //notice that the price will differ.. if user is a subscriber, then it'll cost 1 ticket, else if is senior then apply discount
+    //---------------------------------------------------------------------------
+    // Check Price:
+    app.post("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => {
+        // < 9 stations = 5 gneh,
+        // 10 - 16 stations = 7 gneh
+        // > 16 stations = 10 gneh
+        // 50% discount law senior
+        //
+        //run shortest path algo
+        //select the stations and save them in an array, select the routes and save them in an array, and select the stations routes and save them in an array,
+        //we need to mark where we can start.
+        // https://www.geeksforgeeks.org/implementation-graph-javascript/
+        // https://github.com/dagrejs/graphlib/wiki
+        // https://www.npmjs.com/package/graphlib?activeTab=readme
+        //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
+        try {
+            const {originId, destinationId} = req.params;
+            let startStation = await db.select('*').from("se_project.stations").where('id', '=', originId);
+            let endStation = await db.select('*').from("se_project.stations").where('id', '=', destinationId);
 
-    calculateShortestPath(fromStationId, toStationId)
-        .then(result => {
-            console.log('Shortest distance:', result.distance);
-            console.log('Shortest path:', result.path);
-        })
-        .catch(error => {
-            console.error('An error occurred:', error);
-        });
+            //calculate the shortest path
+            let shortestPath = await calculateShortestPath(startStation, endStation);
+
+            console.log(shortestPath)
+            console.log(shortestPath.path)
+
+
+            return res.status(200).send("success")
+        } catch (err) {
+            console.log("Error checking price", err.message);
+            return res.status(400).send(err.message);
+        }
+    });
 
 }
