@@ -9,7 +9,8 @@ const privateViewRoutes = require('./routes/private/view');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hjs');
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'ejs');
 // Config setup to allow our HTTP server to serve static files from our public directory
 app.use(express.static('public'));
 // Config setup to parse JSON payloads from HTTP POST request body
