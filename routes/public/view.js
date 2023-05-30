@@ -12,7 +12,7 @@ module.exports = function(app) {
   });
 // example of passing variables with a page
   app.get('/register', async function(req, res) {
-    return res.render('register.html');
+    return res.render('register.html', {title: "Register"});
   });
 
   // example of passing variables with a page
