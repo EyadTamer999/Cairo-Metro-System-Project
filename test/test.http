@@ -44,3 +44,6 @@ Content-Type: application/json
 }
 ###
 PUT localhost:3000/api/v1/requests/senior/1
+
+###
+POST localhost:3000/api/v1/tickets/price/1/4

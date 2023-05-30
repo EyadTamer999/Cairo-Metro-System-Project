@@ -84,99 +84,73 @@ module.exports = function (app) {
         }
     });
 
-    //calculate the price of ride from origin to destination
-    //notice that the price will differ.. if user is a subscriber, then it'll cost 1 ticket, else if is senior then apply discount
-    //---------------------------------------------------------------------------
-    // Check Price:
-    app.post("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => {
-        // < 9 stations = 5 gneh,
-        // 10 - 16 stations = 7 gneh
-        // > 16 stations = 10 gneh
-        // 50% discount law senior
-        //
+    async function calculateShortestPath(fromStationId, toStationId) {
+        const distances = {};
+        const previous = {};
 
-        //run shortest path algo
-        //select the stations and save them in an array, select the routes and save them in an array, and select the stations routes and save them in an array,
-        //we need to mark where we can start.
-        // https://www.geeksforgeeks.org/implementation-graph-javascript/
-        /*
+        // Fetch all stations from the database
+        const stationsQuery = await db.select('se_project.stations') //'SELECT id, stationname FROM stations';
+        const {rows: stations} = await pool.query(stationsQuery);
 
-        // Using the above implemented graph class
-        var g = new Graph(6);
-        var vertices = [ 'A', 'B', 'C', 'D', 'E', 'F' ];
+        // Initialize distances with infinity, except for the source station which is 0
+        stations.forEach(station => {
+            distances[station.id] = station.id === fromStationId ? 0 : Infinity;
+        });
 
-        // adding vertices
-        for (var i = 0; i < vertices.length; i++) {
-            g.addVertex(vertices[i]);
-        }
+        while (true) {
+            let closestStationId = null;
+            let shortestDistance = Infinity;
 
-        // adding edges
-        g.addEdge('A', 'B');
-        g.addEdge('A', 'D');
-        g.addEdge('A', 'E');
-        g.addEdge('B', 'C');
-        g.addEdge('D', 'E');
-        g.addEdge('E', 'F');
-        g.addEdge('E', 'C');
-        g.addEdge('C', 'F');
-
-        // prints all vertex and
-        // its adjacency list
-        // A -> B D E
-        // B -> A C
-        // C -> B E F
-        // D -> A E
-        // E -> A D F C
-        // F -> E C
-        g.printGraph();
-
-        */
-        //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
-        try {
-            const {originId, destinationId} = req.params;
-            const existStation1 = await db.select("id").from("se_project.stations").where("id", originId);
-            const existStation2 = await db.select("id").from("se_project.stations").where("id", destinationId);
-            if (!existStation1) {
-                return res.status(404).send("Origin station doesn't exist");
-            } else if (!existStation2) {
-                return res.status(404).send("Destination station doesn't exist");
-            } else {
-                const routeId = await db('stationroutes')
-                    .where('stationid', originId)
-                    //   .where('stationid', destinationId)
-                    .select('routeid')
-                    .first();
-
-
-                const stationCount = await db('stationroutes')
-                    .where('routeid', routeId)
-                    .count();
-
-                if (stationCount == 9) {
-                    price = await db('zones')
-                        .where('zonetype', '9')
-                        .select('price')
-                } else if (stationCount >= 10 && stationCount < 16) {
-                    price = await db('zones')
-                        .where('zonetype', '10-16')
-                        .select('price')
-
-                } else if (stationCount == 16) {
-                    price = await db('zones')
-                        .where('zonetype', '16')
-                        .select('price')
-
-                } else {
-                    console.log("Error matching stations with price", err.message);
-                    return res.status(400).send(err.message);
-
+            // Find the unvisited station with the shortest distance
+            for (let stationId in distances) {
+                if (distances[stationId] < shortestDistance && !previous[stationId]) {
+                    closestStationId = stationId;
+                    shortestDistance = distances[stationId];
                 }
-
-                return res.status(201).send(price);
             }
-        } catch (err) {
-            console.log("Error checking price", err.message);
-            return res.status(400).send(err.message);
+
+            if (closestStationId === null || closestStationId === toStationId) {
+                break; // No more unvisited stations or destination reached
+            }
+
+            // Fetch routes from the database for the closest station
+            const routesQuery =  se_project.routes //'SELECT toStationId FROM routes WHERE fromStationId = $1';
+            const {rows: routes} = await pool.query(routesQuery, [closestStationId]);
+
+            // Update distances to neighboring stations
+            for (let route of routes) {
+                const neighborStationId = route.toStationId;
+                const distance = shortestDistance + 1; // Assuming each route has a weight of 1
+
+                if (distance < distances[neighborStationId]) {
+                    distances[neighborStationId] = distance;
+                    previous[neighborStationId] = closestStationId;
+                }
+            }
         }
-    });
+
+        // Build the shortest path from source to destination
+        const path = [toStationId];
+        let currentStationId = toStationId;
+        while (previous[currentStationId]) {
+            path.unshift(previous[currentStationId]);
+            currentStationId = previous[currentStationId];
+        }
+
+        return {distance: distances[toStationId], path};
+    }
+
+// Usage example
+    const fromStationId = 1; // Replace with the actual source station ID
+    const toStationId = 5; // Replace with the actual destination station ID
+
+    calculateShortestPath(fromStationId, toStationId)
+        .then(result => {
+            console.log('Shortest distance:', result.distance);
+            console.log('Shortest path:', result.path);
+        })
+        .catch(error => {
+            console.error('An error occurred:', error);
+        });
+
 }

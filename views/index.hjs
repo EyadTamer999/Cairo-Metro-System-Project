@@ -68,8 +68,6 @@
 
 
     <section id="Home" class="flex flex-row">
-
-
         <div class="bg-black rounded-2xl bg-opacity-50 text-white mt-72 max-w-lg mx-auto shadow-2xl">
             <h1 class="pl-5 text-6xl font-semibold leading-normal">BOOOOOOO <br>Ride the
                 <span
