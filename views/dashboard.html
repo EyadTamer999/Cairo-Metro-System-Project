@@ -71,14 +71,24 @@
     </nav>
 
     <section id="Home">
+
+    <!--User will see navigation to Tickets with some info and View rides etc -->
+
+
+
+
+    </section>
+
+
+    <section id="Account">
         <div
-                class="my-6 center w-1/3 rounded-2xl bg-white text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
+                class="mt-6 center w-1/3 rounded-2xl bg-white text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
             <div
                     class="border-b-2 border-neutral-100 px-6 py-3">
                 My Account
             </div>
             <div class="p-6">
-                <h5
+                <h3
                         class="place-items-start flex flex-col mb-2 text-xl font-medium leading-tight text-neutral-800">
                     <span class="mb-3">
                     First Name: <%= user['firstname'] %>
@@ -91,7 +101,7 @@
                     </span>
                     <span class="mb-3" id="RoleToUserType">
                         <script>
-                            const currUser = <%- JSON.stringify(user) %>;
+                            const currUser = <%-JSON.stringify(user) %>;
                             $(document).ready(function () {
                                 userType = function () {
                                     if (currUser.isNormal)
@@ -105,22 +115,30 @@
                             });
                         </script>
                     </span>
-                </h5>
-                <p class="mb-4 text-base text-neutral-600">
-                    With supporting text below as a natural lead-in to additional
-                    content.
-                </p>
+                </h3>
+
+                <!--todo add functionality-->
+
                 <button
                         type="button"
-                        class="inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)](59,113,202,0.5)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                        class="w-full h-20 my-6 rounded rounded-lg bg-amber-700 text-l font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-amber-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-amber-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-amber-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)](59,113,202,0.5)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                         data-te-ripple-init
                 >
-                    Button
+                    Reset Password
                 </button>
-            </div>
-            <div
-                    class="border-t-2 border-neutral-100 px-6 py-3">
-                2 days ago
+                <!--todo add functionality-->
+
+                <!-- todo if request is already sent on this account make the button unclickable, and set the status in the account description -->
+                <button
+
+
+                        type="button"
+                        class="w-full h-20 my-6 rounded rounded-lg bg-slate-300 text-l border border-gray-400 font-medium uppercase leading-normal text-black shadow-black/5 transition duration-150 ease-in-out hover:bg-slate-500 hover:shadow-2xl focus:bg-slate-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)](59,113,202,0.5)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                        data-te-ripple-init
+                >
+                    Request Senior Account
+                </button>
+
             </div>
         </div>
     </section>
