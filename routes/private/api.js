@@ -120,8 +120,7 @@ app.get("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => { 
         .where("rides.tripDate", tripDate)
         .update("rides.status", 'Completed')
         .returning("*");
-        //add defensive programming for if a ride is in the future aka more than today then dont update 
-        return res.status(200).json(simulateRide);
+        return res.status(200).json(simulatedRide);
     }
     catch(err){
         console.log("Error simulating ride", err.message);
@@ -210,7 +209,7 @@ app.get("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => { 
 
                   //get transfer stations
 
-                  //return price,route , transfer stations
+                  // TODO return price,route , transfer stations
                   //ret={origin,destination,uid,tripDate,payedAmount,purchasedId,holderName,creditCardNumber};
                 //return res.status(201).json(ret);
 
