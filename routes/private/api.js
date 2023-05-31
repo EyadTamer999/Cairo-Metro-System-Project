@@ -47,10 +47,10 @@ module.exports = function (app) {
         }
     });
 
-    // Pay for ticket by subscription
-    //look through el subscription using el user id
-    //check if user has sub, if no sub then no pay.
-    //if sub then make ticket! 💪🏽
+// Pay for ticket by subscription
+//look through el subscription using el user id
+//check if user has sub, if no sub then no pay.
+//if sub then make ticket! 💪🏽
     app.post("/api/v1/tickets/purchase/subscription", async (req, res) => {
         try {
             //check on user if there exists a subscription under his/her user id
@@ -189,7 +189,7 @@ module.exports = function (app) {
         }
     });
 
-    //Check price and payment endpoints
+//Check price and payment endpoints
     async function helper(
         fromStationId,
         toStationId,
@@ -231,13 +231,13 @@ module.exports = function (app) {
     ) {
         const stations = await db("se_project.routes")
             .select("*")
-            .where('fromstationid', '=' ,fromStationId);
+            .where('fromstationid', '=', fromStationId);
         console.log("stations => ", stations)
 
         for (let i in stations) {
             const stationss = await db("se_project.stations")
                 .select("*")
-                .where('id', '=' ,stations[i].tostationid)
+                .where('id', '=', stations[i].tostationid)
                 .first();
             console.log("stationss => ", stationss)
 
@@ -302,10 +302,10 @@ module.exports = function (app) {
         // Initialize distances with infinity, except for the source station which is 0
     }
 
-    //calculate the price of ride from origin to destination
-    //notice that the price will differ.. if user is a subscriber, then it'll cost 1 ticket, else if is senior then apply discount
-    //---------------------------------------------------------------------------
-    // Check Price:
+//calculate the price of ride from origin to destination
+//notice that the price will differ.. if user is a subscriber, then it'll cost 1 ticket, else if is senior then apply discount
+//---------------------------------------------------------------------------
+// Check Price:
     app.get(
         "/api/v1/tickets/price/:originId/:destinationId",
         async (req, res) => {
@@ -347,5 +347,6 @@ module.exports = function (app) {
         }
     );
 
-};
+}
+;
 

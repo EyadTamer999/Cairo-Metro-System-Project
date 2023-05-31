@@ -27,7 +27,10 @@ module.exports = function (app) {
     // Register HTTP endpoint to render /users page
     app.get('/dashboard', async function (req, res) {
         const user = await getUser(req);
-        return res.render('dashboard.html', {user});
+        const userRides =  await db.select('*').from("se_project.rides").where('userid',user['id'])
+        const userSubscription =  await db.select('*').from("se_project.subscription").where('userid',user['id'])
+
+        return res.render('dashboard.html', {user, userRides , userSubscription});
     });
 
     // Register HTTP endpoint to render /users page
@@ -40,7 +43,7 @@ module.exports = function (app) {
     app.get('/stations_example', async function (req, res) {
         const user = await getUser(req);
         const stations = await db.select('*').from('se_project.stations');
-        return res.render('stations_example', {...user, stations});
+        return res.render('stations_example.html', {...user, stations});
     });
 
 };
