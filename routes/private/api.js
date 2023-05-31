@@ -47,7 +47,7 @@ module.exports = function (app) {
     }
   });
 
-  // -Request refund PUT 
+  // -Request refund PUT
   app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
     const { requestId } = req.params;
     const existRequest = await db("se_project.refund_requests")
@@ -65,7 +65,9 @@ module.exports = function (app) {
         .select("*")
         .first();
       if (ticket.tripdate <= new Date()) {
-        return res.status(400).send("Only future-dated tickets can be refunded"); //should i also return rejected with it or not
+        return res
+          .status(400)
+          .send("Only future-dated tickets can be refunded"); //should i also return rejected with it or not
       }
 
       const { status: refundStatus } = req.body;
@@ -74,7 +76,7 @@ module.exports = function (app) {
       }
       const stat = await db("se_project.refund_requests")
         .where("id", requestId)
-        .returning("status")
+        .returning("status");
 
       const updateRefundRequestStatus = await db("se_project.refund_requests")
         .where("id", requestId)
@@ -94,7 +96,7 @@ module.exports = function (app) {
         .first();
 
       if (subscription) {
-        //get the number of tickets and insert it into a variable 
+        //get the number of tickets and insert it into a variable
         const numberoftickets = await db("se_project.subscription")
           .where({ userid: existRequest.userid })
           .returning("nooftickets");
@@ -110,25 +112,25 @@ module.exports = function (app) {
           .where({ userid: existRequest.userid })
           .returning("purchaseIid");
 
-        await db('se_project.transactions').insert({
-          amount: (numberoftickets + 1),
-          userid: existRequest.userid,
-          purchasedIid: purchasedIid,
-          purchasetype: "subscription"
-        })
-          .returning('*');
-          
-        } else {
+        await db("se_project.transactions")
+          .insert({
+            amount: numberoftickets + 1,
+            userid: existRequest.userid,
+            purchasedIid: purchasedIid,
+            purchasetype: "subscription",
+          })
+          .returning("*");
+      } else {
         //refund with online payment
 
-        await db('se_project.transactions').insert({
-          amount: (-refundamount),
-          userid: existRequest.userid,
-          purchasedIid: purchasedIid,
-          purchasetype: "transaction"
-        })
-          .returning('*');
-
+        await db("se_project.transactions")
+          .insert({
+            amount: -refundamount,
+            userid: existRequest.userid,
+            purchasedIid: purchasedIid,
+            purchasetype: "transaction",
+          })
+          .returning("*");
       }
 
       return res.status(200).json(updateRefundRequestStatus);
@@ -289,7 +291,6 @@ module.exports = function (app) {
     if (!existRoute) {
       return res.status(404).send("Route does not exist");
     }
-//ehab 
     try {
       const updateRoute = await db("se_project.routes")
         .where("id", routeid)
@@ -305,7 +306,7 @@ module.exports = function (app) {
     }
   });
 
-  // -Delete route: DONE 
+  // -Delete route: DONE
   app.delete("/api/v1/route/:routeid", async (req, res) => {
     //still need to adjust for the missing cases as to contradict my old logic
 
@@ -457,35 +458,36 @@ module.exports = function (app) {
 
   //Check price and payment endpoints------------------------------------------------------------------------------------
 
-  async function helper(fromStationId, toStationId, distances, previous, count, tempcount){
+  async function helper(
+    fromStationId,
+    toStationId,
+    distances,
+    previous,
+    count,
+    tempcount
+  ) {
     const stations = await db("se_project.routes")
       .select("*")
       .where({ fromstationid: fromStationId });
     for (let j in stations) {
-        if (previous.contains(stations.tostationid[j])) continue;
-         else {
-          const toStations = await db("se_project.routes")
-            .select("tostationid")
-            .where({ fromstationid: stations[j].id });
-         if (toStations.length() === 1) continue;
-          else {
-            const station = stations[j];
-            count++;
-            if (fromStationId === toStationId) {
-              distances.append(count);
-            } else {
-              helper(
-                station.id,
-                toStationId,
-                distances,
-                previous,
-                count
-              );
-            }
+      if (previous.contains(stations.tostationid[j])) continue;
+      else {
+        const toStations = await db("se_project.routes")
+          .select("tostationid")
+          .where({ fromstationid: stations[j].id });
+        if (toStations.length() === 1) continue;
+        else {
+          const station = stations[j];
+          count++;
+          if (fromStationId === toStationId) {
+            distances.append(count);
+          } else {
+            helper(station.id, toStationId, distances, previous, count);
           }
-          count = tempcount;
         }
+        count = tempcount;
       }
+    }
   }
 
   async function calculateShortestPath(
@@ -498,14 +500,21 @@ module.exports = function (app) {
     const stations = await db("se_project.routes")
       .select("*")
       .where({ fromstationid: fromStationId });
-     for (let i in stations.tostationid) {
+    for (let i in stations.tostationid) {
       const stationss = await db("se_project.stations")
         .select("*")
-        .where({ id: stations.fromstationid[i]})
+        .where({ id: stations.fromstationid[i] })
         .first();
       if (stationss.stationtype[i] === "transfer") {
         let tempcount = count;
-        helper(stationss.id, toStationId, distances, previous, count, tempcount);
+        helper(
+          stationss.id,
+          toStationId,
+          distances,
+          previous,
+          count,
+          tempcount
+        );
       } else {
         if (previous.contains(stations.tostationid[i])) {
           continue;
@@ -561,7 +570,7 @@ module.exports = function (app) {
   //notice that the price will differ.. if user is a subscriber, then it'll cost 1 ticket, else if is senior then apply discount
   //---------------------------------------------------------------------------
   // Check Price:
-  app.post(
+  app.get(
     "/api/v1/tickets/price/:originId/:destinationId",
     async (req, res) => {
       // < 9 stations = 5 gneh,
@@ -578,23 +587,29 @@ module.exports = function (app) {
       //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
       try {
         const { originId, destinationId } = req.params;
+        const originid = parseInt(originId);
+        const destinationid = parseInt(destinationId);
         let startStation = await db
           .select("*")
           .from("se_project.stations")
-          .where("id", "=", originId);
+          .where("id", "=", originid);
         let endStation = await db
           .select("*")
           .from("se_project.stations")
-          .where("id", "=", destinationId);
+          .where("id", "=", destinationid);
 
         //calculate the shortest path
+        let distances = {};
+        let previous = {};
         let shortestPath = await calculateShortestPath(
           startStation,
-          endStation
+          endStation,
+          distances,
+          previous,
+          0
         );
 
         console.log(shortestPath);
-        console.log(shortestPath.path);
 
         return res.status(200).send("success");
       } catch (err) {
