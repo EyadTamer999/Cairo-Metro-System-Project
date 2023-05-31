@@ -24,8 +24,11 @@
     <nav id="navbar"
          class="flex items-center bg-white bg-opacity-25 rounded-2xl px-2 h-fit shadow-2xl duration-300">
         <p class="ml-6 text-capitalize text-3xl shadow-2xl">Welcome <%= user['firstname'] %></p>
+        <a href="/" class="no-underline text-4xl shadow-2xl text-black px-12">Logout</a>
 
-        <img class="ml-12 cursor-pointer" onclick="notifications.showModal()" src="/images/Bell-Empty.svg" alt="notifications">
+
+        <img class="ml-12 cursor-pointer" onclick="notifications.showModal()" src="/images/Bell-Empty.svg"
+             alt="notifications">
 
         <!--todo add functionality-->
         <dialog class="backdrop-blur-sm" id="notifications">
@@ -53,7 +56,13 @@
                    class="no-underline text-4xl text-black px-12 duration-300 hover:text-6xl">Account</a>
             </li>
         </ul>
-        <img src="/images/icon.png" alt="logo" class="w-40 cursor-pointer hover:animate-pulse">
+        <a href="/">
+            <img
+
+                    class="w-40 hover:animate-pulse"
+                    src="/images/icon.png"
+                    alt="logo"/>
+        </a>
         <script>
             $(function () {
                 var scroll = $(document).scrollTop();
@@ -178,12 +187,6 @@
                 </h3>
 
                 <!--todo add functionality-->
-                <dialog class="backdrop-blur-sm" id="PasswordModal">
-                    <p>Greetings, one and all!</p>
-                    <form method="dialog">
-                        <button>OK</button>
-                    </form>
-                </dialog>
                 <button
                         type="button"
                         onclick="PasswordModal.showModal()"
@@ -193,17 +196,72 @@
                     Reset Password
                 </button>
                 <!--todo add functionality-->
+                <dialog class="backdrop-blur-sm" id="PasswordModal">
+                    <p>Greetings, one and all!</p>
+                    <form method="dialog">
+                        <button>OK</button>
+                    </form>
+                </dialog>
+
 
                 <!-- todo if request is already sent on this account make the button unclickable, and set the status in the account description -->
                 <button
 
 
                         type="button"
+                        onclick="RequestSeniorAccountModal.showModal()"
                         class="w-full h-20 my-6 rounded rounded-lg bg-slate-300 text-l border border-gray-400 font-medium uppercase leading-normal text-black shadow-black/5 transition duration-150 ease-in-out hover:bg-slate-500 hover:shadow-2xl focus:bg-slate-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)](59,113,202,0.5)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                         data-te-ripple-init
                 >
                     Request Senior Account
                 </button>
+
+                <!--todo add functionality-->
+                <dialog class="" id="RequestSeniorAccountModal">
+                    <div class="container flex flex-col">
+                        <button class="rounded-3xl bg-blue-500 text-bold text-2xl justify-self-end self-end mx-2 my-2 px-2 py-1">
+                            X
+                        </button>
+                        <form class="flex flex-col container" method="dialog">
+                            <div class="relative mb-3">
+                                <input
+                                        type="text"
+                                        class="peer m-0 block h-[58px] w-full rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-6 py-4 text-2xl font-normal leading-tight text-neutral-700 transition duration-200 ease-linear placeholder:text-transparent focus:border-primary focus:pb-[0.625rem] focus:pt-[1.625rem] focus:text-neutral-700 focus:outline-none peer-focus:text-primary [&:not(:placeholder-shown)]:pb-[0.625rem] [&:not(:placeholder-shown)]:pt-[1.625rem]"
+                                        id="NationalId"
+                                        placeholder="National ID"/>
+                                <label
+                                        for="NationalId"
+                                        class="pointer-events-none absolute left-0 top-0 origin-[0_0] border border-solid border-transparent px-3 py-4 text-neutral-500 transition-[opacity,_transform] duration-200 ease-linear peer-focus:-translate-y-2 peer-focus:translate-x-[0.15rem] peer-focus:scale-[0.85] peer-focus:text-primary peer-[:not(:placeholder-shown)]:-translate-y-2 peer-[:not(:placeholder-shown)]:translate-x-[0.15rem] peer-[:not(:placeholder-shown)]:scale-[0.85] motion-reduce:transition-none"
+                                >National ID</label>
+                            </div>
+                            <p class="text-red-700" id="NationalIdError" style="visibility: hidden">Please Enter your National ID</p>
+                            <div class="container flex-row">
+                                <button class="bg-blue-500 mr-4 px-1 py-1 mx-2 my-2">
+                                    Submit Request
+                                </button>
+                                <button class="bg-red-500 mr-4 px-1 py-1 mx-2 my-2">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </dialog>
+
+                <!--todo add functionality-->
+                <script>
+                    $(document).ready(function () {
+                        $("#submit").click(function () {
+                            const NationalId = $('#NationalId').val();
+                            if(!NationalId){
+                                //show error message #NationalIdError and return
+                            }
+
+                            $.ajax({
+                                //call user makes request
+                            });
+                        });
+                    });
+                </script>
 
             </div>
         </div>
