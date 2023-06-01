@@ -49,7 +49,6 @@ module.exports = function (app) {
         const user = await db
             .select("*")
             .from("se_project.users")
-            .leftJoin("se_project.roles", "users.roleid", "roles.id")
             .where("email", email)
             .first();
         if (isEmpty(user)) {
@@ -75,16 +74,10 @@ module.exports = function (app) {
             await db("se_project.sessions").insert(session);
             // In the response, set a cookie on the client with the name "session_cookie"
             // and the value as the UUID we generated. We also set the expiration time.
-            const responseData = {
-                message: "login successful",
-                role: user.role // Add the user's role to the response
-            };
-
             return res
                 .cookie("session_token", token, {expires: expiresat})
                 .status(200)
-                // .send("login successful");
-                .json(responseData); // Send the response as JSON with user's role
+                .send("login successful");
         } catch (e) {
             console.log(e.message);
             return res.status(400).send("Could not register user");
