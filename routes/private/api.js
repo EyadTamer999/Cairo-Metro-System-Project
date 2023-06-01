@@ -342,6 +342,7 @@ module.exports = function (app) {
     tempcount
   ) {
     console.log("entered helper method");
+    console.log(fromStationId);
     const stations = await db("se_project.routes")
       .select("*")
       .where({ fromstationid: fromStationId });
@@ -351,19 +352,18 @@ module.exports = function (app) {
       if (previous.includes(stations[j].tostationid)) continue;
       else {
         previous.push(stations[j].tostationid);
-        console.log();
         const toStations = await db("se_project.routes")
           .select("tostationid")
-          .where({ fromstationid: stations[j].id });
+          .where({ fromstationid: stations[j].tostationid });
           console.log(toStations);
         if (Object.keys(toStations).length === 1) continue;
         else {
           const station = stations[j];
           count++;
-          if (fromStationId === toStationId) {
+          if (station.tostationid === toStationId) {
             distances.push(count);
           } else {
-            helper(station.id, toStationId, distances, previous, count);
+            helper(station.tostationid, toStationId, distances, previous, count);
           }
         }
         count = tempcount;
@@ -381,9 +381,9 @@ module.exports = function (app) {
     previous.push(fromStationId);
     console.log("entered the recursive method");
     const stations = await db("se_project.routes")
-      .select("*")
-      .where({ fromstationid: fromStationId });
-      console.log("the routes connected to the fromstationid:",stations);
+    .select("*")
+    .where({ fromstationid: fromStationId });
+    console.log(stations);
     for (let i in stations) {
       console.log("entering the main loop");
       console.log("distances array",distances);
@@ -391,7 +391,7 @@ module.exports = function (app) {
       // console.log(stations[i])
       const stationss = await db("se_project.stations")
         .select("*")
-        .where({ id: stations[i].tostationid });
+        .where({ id : stations[i].tostationid });
         console.log("the tostations:", stationss)
         // console.log("the fromstations where the id is in the ", i,"iteration:", stationss);
         const stationtype = stationss.stationtype; 
@@ -400,7 +400,7 @@ module.exports = function (app) {
         let tempcount = count;
         console.log("tempcount:",tempcount)
         helper(
-          stationss.id,
+          stationss[0].id,
           toStationId,
           distances,
           previous,
@@ -417,15 +417,15 @@ module.exports = function (app) {
           console.log("stations that already passed:", previous);
           const toStations = await db("se_project.routes")
             .select("tostationid")
-            .where({ fromstationid : stations[i].fromstationid });
+            .where({ fromstationid : stationss[i].id});
             console.log("the tostations where the id is in the ", i,"iteration:",toStations);
           if (Object.keys(toStations).length === 1) continue;
           else {
-            const station = stations[i];
+            const station = stationss[i];
             console.log("station in the ", i, "th iteration:",station);
             count++;
             console.log("the count:", count);
-            if (station.fromstationid === toStationId) {
+            if (stationss[i].id == toStationId) {
               distances.push(count);
               console.log("distances array",distances);
             } else {
