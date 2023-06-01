@@ -50,13 +50,5 @@ module.exports = function (app) {
         return res.render('stations_example.html', {...user, stations});
     });
 
-    // app.get('/admin', async function (req, res) {
-    //     const user = await getUser(req);
-    //     //const userRides =  await db.select('*').from("se_project.rides").where('userid',user['id'])
-    //     //const stations = await db.select('*').from('se_project.stations');
-    //     //const userSubscription =  await db.select('*').from("se_project.subscription").where('userid',user['id'])
-
-    //     return res.render('admin.html', {user});
-    //   });
 
 };
