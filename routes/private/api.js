@@ -113,18 +113,19 @@ app.get("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => { 
     // Simulate Ride
     app.put("/api/v1/ride/simulate", async (req, res) => {
     try{
-        const {origin, destination, tripDate} = req.body;
+        const {origin, destination, tripdate} = req.body;
         const simulatedRide = await db('se_project.rides')
-        .where("rides.destination", destination)
-        .where("rides.origin", origin)
-        .where("rides.tripDate", tripDate)
-        .update("rides.status", 'Completed')
+        .where("destination", destination)
+        .where("origin", origin)
+        .where("tripdate", tripdate)
+        .update("status", 'completed')
         .returning("*");
+        console.log("Ride simulated successfully");
         return res.status(200).json(simulatedRide);
     }
     catch(err){
         console.log("Error simulating ride", err.message);
-        return res.status(400).send(err.message);
+        return res.status(400).send("Error simulating ride, please make sure inputs are correct");
     }
     })
 
