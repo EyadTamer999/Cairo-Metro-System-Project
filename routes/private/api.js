@@ -466,21 +466,27 @@ module.exports = function (app) {
     count,
     tempcount
   ) {
+    console.log("entered helper method");
     const stations = await db("se_project.routes")
       .select("*")
       .where({ fromstationid: fromStationId });
+      console.log("the routes connected to the fromstationid:",stations);
     for (let j in stations) {
-      if (previous.contains(stations.tostationid[j])) continue;
+
+      if (previous.includes(stations[j].tostationid)) continue;
       else {
+        previous.push(stations[j].tostationid);
+        console.log();
         const toStations = await db("se_project.routes")
           .select("tostationid")
           .where({ fromstationid: stations[j].id });
-        if (toStations.length() === 1) continue;
+          console.log(toStations);
+        if (Object.keys(toStations).length === 1) continue;
         else {
           const station = stations[j];
           count++;
           if (fromStationId === toStationId) {
-            distances.append(count);
+            distances.push(count);
           } else {
             helper(station.id, toStationId, distances, previous, count);
           }
@@ -497,16 +503,26 @@ module.exports = function (app) {
     previous,
     count
   ) {
+    console.log("entered the recursive method");
     const stations = await db("se_project.routes")
       .select("*")
       .where({ fromstationid: fromStationId });
-    for (let i in stations.tostationid) {
+      console.log("the routes connected to the fromstationid:",stations);
+    for (let i in stations) {
+
+      console.log("distances array",distances);
+      console.log("stations that already passed", previous);
+      // console.log(stations[i])
       const stationss = await db("se_project.stations")
         .select("*")
-        .where({ id: stations.fromstationid[i] })
+        .where({ id: stations[i].fromstationid })
         .first();
-      if (stationss.stationtype[i] === "transfer") {
+        console.log("the fromstations where the id is in the ", i,"iteration:", stationss);
+        const stationtype = stationss.stationtype; 
+      if (stationtype === "transfer") {
+        console.log("station is transfer station");
         let tempcount = count;
+        console.log("tempcount:",tempcount)
         helper(
           stationss.id,
           toStationId,
@@ -516,18 +532,24 @@ module.exports = function (app) {
           tempcount
         );
       } else {
-        if (previous.contains(stations.tostationid[i])) {
+        if (previous.includes(stations[i].tostationid)) {
+          console.log("already passed station", stations.tostationid[i]);
           continue;
         } else {
+          previous.push(stations[i].tostationid);
           const toStations = await db("se_project.routes")
             .select("tostationid")
             .where({ fromstationid: stations[i].id });
+            console.log("the tostations where the id is in the ", i,"iteration:",toStations);
           if (toStations.length() === 1) continue;
           else {
             const station = stations[i];
+            console.log("station in the ", i, "th iteration:",station);
             count++;
+            console.log(count);
             if (station.fromstationid === toStationId) {
-              distances.append(count);
+              distances.push(count);
+              console.log("distances array",distances);
             } else {
               calculateShortestPath(
                 station.id,
@@ -592,28 +614,27 @@ module.exports = function (app) {
         let startStation = await db
           .select("*")
           .from("se_project.stations")
-          .where("id", "=", originid);
-        let endStation = await db
+          .where("id", "=", originid).first();
+          let endStation = await db
           .select("*")
           .from("se_project.stations")
-          .where("id", "=", destinationid);
-
+          .where("id", "=", destinationid).first();
         //calculate the shortest path
-        let distances = {};
-        let previous = {};
+        let distances = [];
+        let previous = [];
         let shortestPath = await calculateShortestPath(
-          startStation,
-          endStation,
+          startStation.id,
+          endStation.id,
           distances,
           previous,
           0
         );
 
-        console.log(shortestPath);
+        // console.log(shortestPath);
 
-        return res.status(200).send("success");
+        return res.status(200).json(shortestPath);
       } catch (err) {
-        console.log("Error checking price", err.message);
+        console.log( err.message);
         return res.status(400).send(err.message);
       }
     }
