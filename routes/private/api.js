@@ -457,6 +457,14 @@ app.get("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => { 
         }
     );
 
+
+
+    // app.get('/admin', function (req, res) {
+    //     // Logic to render the admin dashboard view
+    //     res.render('admin-dashboard');
+    //   });
+
+
 }
 ;
 
