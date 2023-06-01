@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="scroll-smooth" lang="en">
 <head>
     <title><%= user['firstname'] %>'s Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -88,10 +88,15 @@
         </script>
     </nav>
 
-    <div class="bg-white rounded-xl container mt-64 w-full my-24 px-6 mx-auto shadow-2xl">
+    <div class="bg-white rounded-xl container mt-24 w-full my-24 px-6 mx-auto shadow-2xl">
         <section id="Home" class="flex flex-col">
-
+            <div class="mt-5 self-center text-2xl font-medium">
+                <h1>
+                    Quick Overview
+                </h1>
+            </div>
             <div class="self-center w-full my-8 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+
                 <div class="flex items-center justify-between mb-4">
                     <h5 class="text-xl font-bold leading-none text-gray-900 ">Upcoming Rides</h5>
                     <a href="Tickets/Rides" class="text-sm font-medium text-blue-600 hover:underline">
@@ -103,7 +108,7 @@
                         <li class="py-3 sm:py-4">
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0">
-                                    <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png" alt="Neil image">
+                                    <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png" alt="Metro Car Icon">
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate ">
@@ -133,31 +138,78 @@
                             let html = '';
                             items.forEach(function (item) {
 
-
-                            html += ' <li class="py-3 sm:py-4">'
-                            html += '     <div class="flex items-center space-x-4">'
-                            html += '         <div class="flex-shrink-0">'
-                            html += '             <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png" alt="Neil image">'
-                            html += '             </div>'
-                            html += '         <div class="flex-1 min-w-0">'
-                            html += '             <p class="text-sm font-medium text-gray-900 truncate ">'
-                            html +=                "Ride ID: " + item['id']
-                            html += '             </p>'
-                            html += '             <p class="text-sm text-gray-500 truncate ">'
-                            html +=                 item['origin'] + ' -> ' + item['destination']
-                            html += '             </p>'
-                            html += '         </div>'
-                            html += '         <div class="inline-flex items-center text-base font-semibold text-gray-900 ">'
-                            html +=             item['tripdate']
-                            html += '         </div>'
-                            html += '         </div>'
-                            html += ' </li>'
-
+                            if(item['status'] === 'upcoming') {
+                                html += ' <li class="py-3 sm:py-4">'
+                                html += '     <div class="flex items-center space-x-4">'
+                                html += '         <div class="flex-shrink-0">'
+                                html += '             <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png" alt="Neil image">'
+                                html += '             </div>'
+                                html += '         <div class="flex-1 min-w-0">'
+                                html += '             <p class="text-sm font-medium text-gray-900 truncate ">'
+                                html += "Ride ID: " + item['id']
+                                html += '             </p>'
+                                html += '             <p class="text-sm text-gray-500 truncate ">'
+                                html += item['origin'] + ' -> ' + item['destination']
+                                html += '             </p>'
+                                html += '         </div>'
+                                html += '         <div class="inline-flex items-center text-base font-semibold text-gray-900 ">'
+                                html += item['tripdate']
+                                html += '         </div>'
+                                html += '         </div>'
+                                html += ' </li>'
+                            }
                             });
 
                             // Insert the generated HTML into the element with the specified ID
                             $('#ridesList').html(html);
                         });
+                    </script>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+    <div class="bg-white rounded-xl container mt-28 w-full my-24 px-6 mx-auto shadow-2xl">
+        <section id="Tickets/Rides" class="flex flex-col">
+            <div class="mt-5 self-center text-2xl font-medium">
+                <h1>
+                   Tickets & Rides
+                </h1>
+            </div>
+            <!--todo add buy ticket button w fo2eeh haykoon feeh el tickets bt3t abl kda... ride hykoon feeha these rides w past ones            -->
+            <div class="self-center w-full my-8 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+
+                <div class="flex items-center justify-between mb-4">
+                    <h5 class="text-xl font-bold leading-none text-gray-900 ">Upcoming Rides</h5>
+                    <a href="Tickets/Rides" class="text-sm font-medium text-blue-600 hover:underline">
+                        View all
+                    </a>
+                </div>
+                <div class="flow-root ">
+                    <ul role="list" class="divide-y divide-gray-200 max-h-64 overflow-y-scroll ">
+                        <li class="py-3 sm:py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png" alt="Metro Car Icon">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate ">
+                                        ride ID
+                                    </p>
+                                    <p class="text-sm text-gray-500 truncate ">
+                                        origin -> dest
+                                    </p>
+                                </div>
+                                <div class="inline-flex items-center text-base font-semibold text-gray-900 ">
+                                    DateTime
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <script>
+
                     </script>
                 </div>
             </div>
