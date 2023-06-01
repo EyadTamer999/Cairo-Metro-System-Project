@@ -128,7 +128,7 @@
                     <script>
                         $(document).ready(function () {
                             // Retrieve the JSON data (can be fetched using AJAX, etc.)
-                            const jsonData = <%-JSON.stringify(userRides) % >;
+                            const jsonData = <%-JSON.stringify(userRides) %>;
                             // console.log(jsonData)
                             // Parse the JSON data
                             const items = jsonData;
@@ -241,7 +241,7 @@
                     </span>
                     <span class="mb-3 text-2xl" id="upcomingRides">
                         <script>
-                            const currUser = <%-JSON.stringify(user) % >;
+                            const currUser = <%-JSON.stringify(user) %>;
                             $(document).ready(function () {
                                 userType = function () {
                                     if (currUser.isNormal)
@@ -270,10 +270,10 @@
 
 
                 <!--todo add functionality-->
-                <dialog class="" id="PayForSubscription">
+                <dialog class="rounded-2xl" id="PayForSubscription">
 
-                    <div class="flex justify-center items-center min-h-screen scrollbar-hide">
-                        <div class="h-auto w-80 bg-white p-3 rounded-lg">
+                    <div class="flex justify-center items-center scrollbar-hide">
+                        <div class="w-80 bg-white p-3 rounded-lg">
                             <p class="text-xl font-semibold">Payment Details</p>
                             <div class="input_text mt-6 relative"><input type="text"
                                                                          class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b "
