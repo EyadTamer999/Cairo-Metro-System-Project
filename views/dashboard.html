@@ -369,9 +369,9 @@
     </div>
 
 
-    <section id="Account">
+    <section id="Account" class="flex flex-col">
         <div
-                class="mt-6 w-1/2 rounded-2xl bg-white text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
+                class="self-center mt-6 w-2/3 rounded-2xl bg-white text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
             <div
                     class="text-3xl border-b-2 border-neutral-100 px-6 py-3">
                 My Account
@@ -379,6 +379,9 @@
             <div class="p-6">
                 <h3
                         class="place-items-start flex flex-col mb-2 text-2xl font-medium leading-tight text-neutral-800">
+                     <span class="mb-3 text-2xl">
+                    User ID: <%= user['userid'] %>
+                    </span>
                     <span class="mb-3 text-2xl">
                     First Name: <%= user['firstname'] %>
                     </span>
