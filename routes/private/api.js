@@ -47,150 +47,6 @@ module.exports = function (app) {
     }
   });
 
-  // -Request refund PUT
-  app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
-    const { requestId } = req.params;
-    const existRequest = await db("se_project.refund_requests")
-      .where({ id: requestId })
-      .select("*")
-      .first();
-    if (!existRequest) {
-      return res.status(400).send("Refund request does not exist");
-    }
-
-    try {
-      //check if the ticket associated with the refund request has a future trip date
-      const ticket = await db("se_project.tickets")
-        .where({ id: existRequest.ticketid })
-        .select("*")
-        .first();
-      if (ticket.tripdate <= new Date()) {
-        return res
-          .status(400)
-          .send("Only future-dated tickets can be refunded"); //should i also return rejected with it or not
-      }
-
-      const { status: refundStatus } = req.body;
-      if (refundStatus !== "accepted" && refundStatus !== "rejected") {
-        return res.status(400).send("Invalid status value");
-      }
-      const stat = await db("se_project.refund_requests")
-        .where("id", requestId)
-        .returning("status");
-
-      const updateRefundRequestStatus = await db("se_project.refund_requests")
-        .where("id", requestId)
-        .update({ status: refundStatus })
-        .returning("*");
-      if (stat === "accepted") {
-        return res.status(400).send("Request has already been accepted");
-      }
-      if (stat === "rejected") {
-        return res.status(400).send("Request has already been accepted");
-      }
-
-      // Check if the user has a subscription
-      const subscription = await db("se_project.subscription")
-        .where({ userid: existRequest.userid })
-        .select("*")
-        .first();
-
-      if (subscription) {
-        //get the number of tickets and insert it into a variable
-        const numberoftickets = await db("se_project.subscription")
-          .where({ userid: existRequest.userid })
-          .returning("nooftickets");
-
-        //refund with subscription
-
-        //getting remaining values
-        const refundamount = await db("se_project.transaction")
-          .where({ userid: existRequest.userid })
-          .returning("amount");
-
-        const purchasedIid = await db("se_project.transaction")
-          .where({ userid: existRequest.userid })
-          .returning("purchaseIid");
-
-        await db("se_project.transactions")
-          .insert({
-            amount: numberoftickets + 1,
-            userid: existRequest.userid,
-            purchasedIid: purchasedIid,
-            purchasetype: "subscription",
-          })
-          .returning("*");
-      } else {
-        //refund with online payment
-
-        await db("se_project.transactions")
-          .insert({
-            amount: -refundamount,
-            userid: existRequest.userid,
-            purchasedIid: purchasedIid,
-            purchasetype: "transaction",
-          })
-          .returning("*");
-      }
-
-      return res.status(200).json(updateRefundRequestStatus);
-    } catch (err) {
-      console.log("error message", err.message);
-      return res.status(400).send("Could not update refund request status");
-    }
-  });
-
-  // -Request Senior PUT
-  app.put("/api/v1/requests/senior/:requestId", async (req, res) => {
-    const { requestId } = req.params;
-    const existRequest = await db("se_project.senior_requests")
-      .where({ id: requestId })
-      .select("*")
-      .first();
-    if (!existRequest) {
-      return res.status(400).send("Senior request does not exist");
-    }
-    try {
-      const { status } = req.body;
-      if (status !== "accepted" && status !== "rejected") {
-        return res.status(400).send("Invalid status value");
-      }
-      const updateSeniorRequestStatus = await db("se_project.senior_requests")
-        .where("id", requestId)
-        .update({ status: status })
-        .returning("*");
-      return res.status(200).json(updateSeniorRequestStatus);
-    } catch (err) {
-      console.log("error message", err.message);
-      return res.status(400).send("Could not update senior request");
-    }
-  });
-
-  // -Update zone price PUT
-  app.put("/api/v1/zones/:zoneId", async (req, res) => {
-    const { zoneId } = req.params;
-    const existZone = await db("se_project.zones")
-      .where({ id: zoneId })
-      .select("*")
-      .first();
-    if (!existZone) {
-      return res.status(400).send("Zone does not exist");
-    }
-
-    try {
-      const { price } = req.body;
-      const updateZonePrice = await db("se_project.zones")
-        .where("id", zoneId)
-        .update({
-          price: price,
-        })
-        .returning("*");
-      return res.status(200).json(updateZonePrice);
-    } catch (err) {
-      console.log("error message", err.message);
-      return res.status(400).send("Could not update zone price"); //recheck
-    }
-  });
 
   /*
     Create api endpoints for admin :
@@ -458,6 +314,25 @@ module.exports = function (app) {
 
   //Check price and payment endpoints------------------------------------------------------------------------------------
 
+  /*
+  Lets try to go from station 1 to station 3
+  A simulation with stationroutes:
+    we will try getting the routes with station id = 1:
+      the routes will be route 1 and route 2.
+      we will then see the route that has the fromstation = 1
+      thus it will be route 1
+
+  
+  */
+
+      // async function calcPath(startST, endST){
+      //   const distance = [];
+
+      // }
+
+
+
+
   async function helper(
     fromStationId,
     toStationId,
@@ -503,21 +378,22 @@ module.exports = function (app) {
     previous,
     count
   ) {
+    previous.push(fromStationId);
     console.log("entered the recursive method");
     const stations = await db("se_project.routes")
       .select("*")
       .where({ fromstationid: fromStationId });
       console.log("the routes connected to the fromstationid:",stations);
     for (let i in stations) {
-
+      console.log("entering the main loop");
       console.log("distances array",distances);
       console.log("stations that already passed", previous);
       // console.log(stations[i])
       const stationss = await db("se_project.stations")
         .select("*")
-        .where({ id: stations[i].fromstationid })
-        .first();
-        console.log("the fromstations where the id is in the ", i,"iteration:", stationss);
+        .where({ id: stations[i].tostationid });
+        console.log("the tostations:", stationss)
+        // console.log("the fromstations where the id is in the ", i,"iteration:", stationss);
         const stationtype = stationss.stationtype; 
       if (stationtype === "transfer") {
         console.log("station is transfer station");
@@ -533,20 +409,22 @@ module.exports = function (app) {
         );
       } else {
         if (previous.includes(stations[i].tostationid)) {
-          console.log("already passed station", stations.tostationid[i]);
+          console.log("already passed station", stations[i].tostationid);
           continue;
         } else {
+          console.log("entering the else condition for if the station we are passing through is not the previous array")
           previous.push(stations[i].tostationid);
+          console.log("stations that already passed:", previous);
           const toStations = await db("se_project.routes")
             .select("tostationid")
-            .where({ fromstationid: stations[i].id });
+            .where({ fromstationid : stations[i].fromstationid });
             console.log("the tostations where the id is in the ", i,"iteration:",toStations);
-          if (toStations.length() === 1) continue;
+          if (Object.keys(toStations).length === 1) continue;
           else {
             const station = stations[i];
             console.log("station in the ", i, "th iteration:",station);
             count++;
-            console.log(count);
+            console.log("the count:", count);
             if (station.fromstationid === toStationId) {
               distances.push(count);
               console.log("distances array",distances);
@@ -565,8 +443,10 @@ module.exports = function (app) {
       }
     }
     let minSoFar = distances[0];
+    console.log(minSoFar);
     for (let i in distances) {
       if (distances[i] < minSoFar) minSoFar = distances[i];
+      console.log(minSoFar);
     }
 
     return minSoFar;
