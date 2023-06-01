@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel='stylesheet' href='/styles/style.css'/>
+    <title><%= title %></title>
+    <link rel="icon" type="png" href="/images/icon.png">
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+</head>
+<body>
+<div class="container bg-[url('/images/background.jpg')] min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
+
+    <nav id="navbar"
+         class="flex items-center bg-white bg-opacity-25 rounded-2xl px-2 h-fit shadow-2xl duration-300">
+        <img src="/images/icon.png" alt="logo" class="w-40 cursor-pointer">
+        <ul class="flex-1 text-center">
+            <li class="list-none inline-block px-5">
+                <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
+            </li>
+            <li class="list-none inline-block px-5">
+                <a href="#Features"
+                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Features</a>
+            </li>
+            <li class="list-none inline-block px-5">
+                <a href="#FAQ"
+                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">FAQ</a>
+            </li>
+            <li class="list-none inline-block px-5">
+                <a href="#About"
+                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">About</a>
+            </li>
+        </ul>
+        <a href="/login"><img src="/images/user.png" alt="Login"
+                              class="w-16 mr-8 duration-300 hover:w-24 cursor-pointer"></a>
+
+        <script>
+            $(function () {
+                var scroll = $(document).scrollTop();
+                var navHeight = $('#navbar').outerHeight();
+
+                $(window).scroll(function () {
+                    var scrolled = $(document).scrollTop();
+
+                    if (scrolled > navHeight) {
+                        $('#navbar').addClass('animate');
+                    } else {
+
+                        $('#navbar').removeClass('animate');
+                    }
+
+                    if (scrolled > scroll) {
+                        $('#navbar').removeClass('sticky');
+                    } else {
+                        $('#navbar').addClass('sticky');
+                    }
+
+                    scroll = $(document).scrollTop();
+
+                });
+            });
+        </script>
+    </nav>
+
+    <!--    todo add informative text here-->
+    <section id="Home" class="flex flex-col">
+        <div class="bg-white rounded-2xl bg-opacity-50 text-black mt-72 max-w-lg mx-auto shadow-2xl">
+            <h1 class="pl-5 text-6xl font-semibold leading-normal">BOOOOOOO <br>Ride the
+                <span
+                        class="font-light text-red-950 opacity-90">Metro!</span></h1>
+            <p class="pl-5 text-black/80 mr-10">
+                t pretium ultricies dignissim. Sed sit amet mi eget urna
+                placerat vulputate. Ut vulputate est non quam dignissim
+                elementum. Donec a ullamcorper diam.
+            </p>
+        </div>
+
+        <!--    todo add informative text here-->
+        <div class="bg-white rounded-2xl bg-opacity-50 text-black mt-72 max-w-lg mx-auto shadow-2xl">
+            <h1 class="pl-5 text-6xl font-semibold leading-normal">Embrace the Energy: <br>Ride the
+                <span
+                        class="font-light text-red-950 opacity-90">Metro!</span></h1>
+            <p class="pl-5 text-black/80 mr-10">
+                t pretium ultricies dignissim. Sed sit amet mi eget urna
+                placerat vulputate. Ut vulputate est non quam dignissim
+                elementum. Donec a ullamcorper diam.
+            </p>
+        </div>
+
+        <!--    todo add informative text here-->
+        <div class="bg-white rounded-2xl bg-opacity-50 text-black mt-72 max-w-lg mx-auto shadow-2xl">
+            <h1 class="pl-3 text-6xl font-semibold leading-normal">Embrace Energy<br>Ride The
+                <span
+                        class="font-light text-red-950 opacity-90">Metro!</span></h1>
+            <p class="pl-5 text-center text-black/80 mr-10">
+                Embark on an unforgettable metro experience: Seamless journeys, modern comfort, and friendly staff
+                await.
+                Discover the joy of effortless travel and let our station be your gateway to city adventures.
+            </p>
+
+            <div class="center mt-10 mb-10">
+                <a href="/register"
+                   class="text-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Sign
+                    Up Now!</a>
+                <a href="#"
+                   class="text-white bg-blue-950 rounded-3xl py-2.5 px-8 font-medium inline-block mr-4 hover:bg-blue-600 hover:border-blue-950 hover:text-black duration-300 hover:border border border-transparent">Download
+                    App <span class="text-xl">&#10515</span></a>
+            </div>
+        </div>
+
+
+    </section>
+
+    <!-- Container for demo purpose -->
+    <div class="bg-white rounded-xl container mt-64 my-24 px-6 mx-auto shadow-2xl">
+
+        <!-- Section: Design Block -->
+        <section id="Features" class="mb-32 text-gray-800 text-center">
+
+            <h2 class="text-3xl font-bold mt-10 mb-12 pb-4 text-center">Project Features</h2>
+
+            <div class="grid lg:grid-cols-3 gap-6 xl:gap-x-12">
+                <div class="mb-6 lg:mb-0">
+                    <div class="relative block bg-white rounded-lg shadow-2xl">
+                        <div class="flex">
+                            <div
+                                    class="relative overflow-hidden bg-no-repeat bg-cover bg-no-repeat bg-cover shadow-lg rounded-lg mx-4 -mt-4"
+                                    data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                <img src="/images/map.png" class="w-full"/>
+                                <a href="#!">
+                                    <div
+                                            class="absolute top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed opacity-0 hover:opacity-100 transition duration-300 ease-in-out"
+                                            style="background-color: rgba(251, 251, 251, 0.15)"></div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <!--    todo add informative text here-->
+                            <h5 class="font-bold text-lg mb-3">View routes and stations!</h5>
+                            <p class="mb-4 pb-2">
+                                Ut pretium ultricies dignissim. Sed sit amet mi eget urna
+                                placerat vulputate. Ut vulputate est non quam dignissim
+                                elementum. Donec a ullamcorper diam.
+                            </p>
+                            <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light"
+                               class="text-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Read
+                                more</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6 lg:mb-0">
+                    <div class="relative block bg-white rounded-lg shadow-2xl">
+                        <div class="flex">
+                            <div
+                                    class="relative overflow-hidden bg-no-repeat bg-cover bg-no-repeat bg-cover shadow-lg rounded-lg mx-4 -mt-4"
+                                    data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                <img src="/images/metrocar.webp" class="w-full"/>
+                                <a href="#!">
+                                    <div
+                                            class="absolute top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed opacity-0 hover:opacity-100 transition duration-300 ease-in-out"
+                                            style="background-color: rgba(251, 251, 251, 0.15)"></div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <!--    todo add informative text here-->
+                            <h5 class="font-bold text-lg mb-3">Ride to your comfort</h5>
+                            <p class="mb-4 pb-2">
+                                Suspendisse in volutpat massa. Nulla facilisi. Sed aliquet
+                                diam orci, nec ornare metus semper sed. Integer volutpat
+                                ornare erat sit amet rutrum.
+                            </p>
+                            <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light"
+                               class="itext-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Read
+                                more</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-0">
+                    <div class="relative block bg-white rounded-lg shadow-2xl">
+                        <div class="flex">
+                            <div
+                                    class="relative overflow-hidden bg-no-repeat bg-cover bg-no-repeat bg-cover shadow-lg rounded-lg mx-4 -mt-4"
+                                    data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                <img src="/images/hand_paying.jpg" class="w-full"/>
+                                <a href="#!">
+                                    <div
+                                            class="absolute top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed opacity-0 hover:opacity-100 transition duration-300 ease-in-out"
+                                            style="background-color: rgba(251, 251, 251, 0.15)"></div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <!--    todo add informative text here-->
+                            <h5 class="font-bold text-lg mb-3">Pay online</h5>
+                            <p class="mb-4 pb-2">
+                                Curabitur tristique, mi a mollis sagittis, metus felis mattis
+                                arcu, non vehicula nisl dui quis diam. Mauris ut risus eget
+                                massa volutpat feugiat. Donec.
+                            </p>
+                            <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light"
+                               class="text-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Read
+                                more</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mx-auto xl:px-32">
+                <div class="grid lg:grid-cols-2 gap-12 flex items-center">
+                    <div class="mt-12 lg:mt-0">
+                        <h1 class="text-4xl md:text-5xl xl:text-6xl font-bold tracking-tight mb-12">SIGN UP
+                            NOW!<br/><span class="text-red-600">for Cairo Metro</span></h1>
+                        <a href="/register"
+                           class="text-black bg-red-400 rounded-3xl py-3 px-8 font-medium inline-block mr-4 hover:bg-red-600 hover:border-red-50 hover:text-white duration-300 hover:border border border-transparent">Sign
+                            Up Now!</a>
+                    </div>
+                    <div class="mb-12 lg:mb-0">
+                        <div
+                                class="embed-responsive embed-responsive-16by9 relative w-full overflow-hidden rounded-lg shadow-lg"
+                                style="padding-top: 56.25%"
+                        >
+                            <iframe class="shadow-2xl rounded-2xl" width="560" height="315"
+                                    src="https://www.youtube-nocookie.com/embed/oJJwtvwCqBU"
+                                    title="YouTube video player" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- Container for demo purpose -->
+    <div class="container bg-white rounded-2xl my-24 mt-10 px-6 mx-auto">
+
+        <!-- Section: Design Block -->
+        <section id="FAQ" class="mb-32 text-gray-800 my-12">
+            <div class="grid lg:grid-cols-2 gap-4 lg:gap-x-12 lg:mb-0">
+                <div class="mb-12 lg:mb-0">
+                    <h2 class="text-3xl font-bold mb-6">Frequently asked questions</h2>
+
+                    <p class="text-gray-500 mb-12">
+                        Didn't find your answer in the FAQ? Contact our sales team.
+                    </p>
+
+                    <form>
+                        <div class="form-group mb-6">
+                            <input type="text"
+                                   class="form-control block w-full px-3 text-xl py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                   id="exampleInput7" placeholder="Name"/>
+                        </div>
+                        <div class="form-group mb-6">
+                            <input type="email"
+                                   class="form-control block w-full px-3 text-xl py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                   id="exampleInput8" placeholder="Email address"/>
+                        </div>
+                        <div class="form-group mb-6">
+            <textarea
+                    class="form-control block w-full px-3 py-1.5 text-base text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    id="exampleFormControlTextarea13" rows="3" placeholder="Message"></textarea>
+                        </div>
+                        <div class="form-group form-check text-center mb-6">
+                            <input type="checkbox"
+                                   class="form-check-input appearance-none text-xl h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-red-600 checked:border-red-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain mr-2 cursor-pointer"
+                                   id="exampleCheck87" checked/>
+                            <label class="form-check-label inline-block text-gray-800" for="exampleCheck87">Send me a
+                                copy of this
+                                message</label>
+                        </div>
+                        <button type="submit"
+                                class="ml-72 w-1/2 h-10 px-6 py-2.5 bg-red-600 text-white font-medium text-xl leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+                            Send
+                        </button>
+                    </form>
+                </div>
+
+                <div class="mb-6 md:mb-0">
+                    <p class="font-bold mb-4">Anim pariatur cliche reprehenderit?</p>
+                    <p class="text-gray-500 mb-12">
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt autem numquam dolore
+                        molestias aperiam culpa alias veritatis architecto eos, molestiae vitae ex eligendi
+                        libero eveniet dolorem, doloremque rem aliquid perferendis.
+                    </p>
+
+                    <p class="font-bold mb-4">Non cupidatat skateboard dolor brunch?</p>
+                    <p class="text-gray-500 mb-12">
+                        Distinctio corporis, iure facere ducimus quos consectetur ipsa ut magnam autem
+                        doloremque ex! Id, sequi. Voluptatum magnam sed fugit iusto minus et suscipit? Minima
+                        sunt at nulla tenetur, numquam unde quod modi magnam ab deserunt ipsam sint aliquid
+                        dolores libero repellendus cupiditate mollitia quidem dolorem odit
+                    </p>
+
+                    <p class="font-bold mb-4">
+                        Praesentium voluptatibus temporibus consequatur non aspernatur?
+                    </p>
+                    <p class="text-gray-500 mb-12">
+                        Minima sunt at nulla tenetur, numquam unde quod modi magnam ab deserunt ipsam sint
+                        aliquid dolores libero repellendus cupiditate mollitia quidem dolorem.
+                    </p>
+
+                    <p class="font-bold mb-4">Voluptatum magnam sed fugit iusto minus et suscipit?</p>
+                    <p class="text-gray-500 mb-12">
+                        Laudantium perferendis, est alias iure ut veniam suscipit dolorem fugit. Et ipsam
+                        corporis earum ea ut quae cum non iusto blanditiis ipsum dolor eius reiciendis, velit
+                        adipisci quas.
+                    </p>
+                </div>
+            </div>
+        </section>
+        <!-- Section: Design Block -->
+
+    </div>
+    <!-- Container for demo purpose -->
+
+    <!-- Container for demo purpose -->
+    <div class="container bg-white rounded-2xl mt-10 px-6 mx-auto">
+
+        <!-- Section: Design Block -->
+        <section id="About" class="mt-10 mb-32 text-gray-800 text-center">
+            <h2 class="text-3xl font-bold mb-12">Meet the <u class="text-red-600">team</u></h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-6 gap-x-6 lg:gap-xl-12">
+                <div class="mb-12 lg:mb-0">
+                    <img class="rounded-lg shadow-lg mb-6 mx-auto" src="/images/Eyad.jpg"
+                         alt="avatar" style="width: 150px"/>
+                    <h5 class="text-lg font-bold mb-4">Zatoona</h5>
+                    <p class="mb-6">Fullstack Developer</p>
+                    <ul class="list-inside flex mx-auto justify-center">
+                        <a href="#!" class="px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="w-4 h-4 text-red-600">
+                                <path fill="currentColor"
+                                      d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/>
+                            </svg>
+                        </a>
+                        <a href="#!" class="px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-4 h-4 text-red-600">
+                                <path fill="currentColor"
+                                      d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/>
+                            </svg>
+                        </a>
+                        <a href="#!" class="px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-4 h-4 text-red-600">
+                                <path fill="currentColor"
+                                      d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/>
+                            </svg>
+                        </a>
+                    </ul>
+                </div>
+                <div class="mb-12 lg:mb-0">
+                    <img class="rounded-lg shadow-lg mb-6 mx-auto" src="/images/Mahmoud.jpg"
+                         alt="avatar" style="width: 150px"/>
+                    <h5 class="text-lg font-bold mb-4">Mahmoud Osama</h5>
+                    <p class="mb-6">Backend Developer</p>
+                    <ul class="list-inside flex mx-auto justify-center">
+                        <a href="https://github.com/Mahmouddd21" class="px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="w-4 h-4 text-red-600">
+                                <path fill="currentColor"
+                                      d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/mahmoud-osama-9966a9268/?originalSubdomain=eg"
+                           class="px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-4 h-4 text-red-600">
+                                <path fill="currentColor"
+                                      d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/>
+                            </svg>
+                        </a>
+                    </ul>
+                </div>
+                <div class="mb-12 md:mb-0">
+                    <img class="rounded-lg shadow-lg mb-6 mx-auto" src="/images/Abdullah.jpg"
+                         alt="avatar" style="width: 150px"/>
+                    <h5 class="text-lg font-bold mb-4">Abdullah Khaled</h5>
+                    <p class="mb-6">Backend Developer</p>
+                    <ul class="list-inside flex mx-auto justify-center">
+                        <a href="https://instagram.com/abdullah_kmas?igshid=MjEwN2IyYWYwYw==" class="px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-4 h-4 text-red-600">
+                                <path fill="currentColor"
+                                      d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+                            </svg>
+                        </a>
+                    </ul>
+                </div>
+                <div class="mb-12 md:mb-0">
+                    <img class="rounded-lg shadow-lg mb-6 mx-auto" src="/images/wa7wa7.jpg"
+                         alt="avatar" style="width: 150px"/>
+                    <h5 class="text-lg font-bold mb-4">Mohammed Yehia</h5>
+                    <p class="mb-6">Web Designer</p>
+                    <ul class="list-inside flex mx-auto justify-center">
+
+                        <a href="#!" class="px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-4 h-4 text-red-600">
+                                <path fill="currentColor"
+                                      d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/>
+                            </svg>
+                        </a>
+
+                    </ul>
+                </div>
+
+                <div class="mb-12 md:mb-0">
+                    <img class="rounded-lg shadow-lg mb-6 mx-auto" src="/images/mariam.jpg"
+                         alt="avatar" style="width: 150px"/>
+                    <h5 class="text-lg font-bold mb-4">Mariam Sherif</h5>
+                    <p class="mb-6">Web Designer</p>
+                    <ul class="list-inside flex mx-auto justify-center">
+
+                        <a href="https://github.com/standsuser" class="px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="w-4 h-4 text-red-600">
+                                <path fill="currentColor"
+                                      d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/>
+                            </svg>
+                        </a>
+
+                        <a href="https://www.linkedin.com/in/mariam-almotawally-385aab277/" class="px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-4 h-4 text-red-600">
+                                <path fill="currentColor"
+                                      d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/>
+                            </svg>
+                        </a>
+
+                    </ul>
+                </div>
+
+                <div class="mb-12 md:mb-0">
+                    <img class="rounded-lg shadow-lg mb-6 mx-auto" src="/images/m7md.jpg"
+                         alt="avatar" style="width: 150px"/>
+                    <h5 class="text-lg font-bold mb-4">Mohammed Ehab</h5>
+                    <p class="mb-6">Web Designer</p>
+                    <ul class="list-inside flex mx-auto justify-center">
+                        <a href="https://github.com/ManOnFire40" class="px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="w-4 h-4 text-red-600">
+                                <path fill="currentColor"
+                                      d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/>
+                            </svg>
+                        </a>
+
+
+                        <a href="https://www.linkedin.com/in/mohamed-ehab-468333272/" class="px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-4 h-4 text-red-600">
+                                <path fill="currentColor"
+                                      d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/>
+                            </svg>
+                        </a>
+                    </ul>
+                </div>
+
+
+            </div>
+        </section>
+        <!-- Section: Design Block -->
+    </div>
+    <!-- Container for demo purpose -->
+</div>
+
+
+<footer class="bg-white dark:bg-gray-900">
+    <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
+        <div class="sm:flex sm:items-center sm:justify-between">
+          <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="https://flowbite.com/"
+                                                                                          class="hover:underline">Gomhoryt masr el 3arabya™</a>. All Rights Reserved.
+          </span>
+            <div class="flex mt-4 space-x-6 sm:justify-center sm:mt-0">
+                <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                              d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                              clip-rule="evenodd"/>
+                    </svg>
+                    <span class="sr-only">Facebook page</span>
+                </a>
+                <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                              d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
+                              clip-rule="evenodd"/>
+                    </svg>
+                    <span class="sr-only">Instagram page</span>
+                </a>
+                <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"/>
+                    </svg>
+                    <span class="sr-only">Twitter page</span>
+                </a>
+                <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                              d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                              clip-rule="evenodd"/>
+                    </svg>
+                    <span class="sr-only">GitHub account</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+</body>
+</html>
