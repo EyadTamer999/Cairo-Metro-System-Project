@@ -120,6 +120,10 @@ app.get("/api/v1/tickets/price/:originId/:destinationId", async (req, res) => { 
         .where("tripdate", tripdate)
         .update("status", 'completed')
         .returning("*");
+        if (isEmpty( simulatedRide)) {
+            console.log("Ride does not exist");
+            return res.status(400).send("Ride does not exist");
+          }
         console.log("Ride simulated successfully");
         return res.status(200).json(simulatedRide);
     }
