@@ -31,7 +31,7 @@ module.exports = function (app) {
         const stations = await db.select('*').from('se_project.stations');
         const userSubscription =  await db.select('*').from("se_project.subscription").where('userid',user['id'])
 
-        return res.render('dashboard.html', {user, userRides , userSubscription});
+        return res.render('dashboard.html', {user, userRides , userSubscription, stations});
     });
 
     // Register HTTP endpoint to render /users page
