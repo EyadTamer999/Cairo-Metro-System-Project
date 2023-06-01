@@ -127,51 +127,31 @@
                             // Parse the JSON data
                             const items = jsonData;
 
-                            // console.log(items)
+                            console.log(items)
 
                             // Generate the HTML markup dynamically
                             let html = '';
                             items.forEach(function (item) {
 
 
-                                html += '<li className="py-3 sm:py-4">'
-                                html += '<div className="flex items-center space-x-4">'
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='<div className="flex-shrink-0">'
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='<img className="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png" alt="Neil image">'
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='</div>'
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='<div className="flex-1 min-w-0">'
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='<p className="text-sm font-medium text-gray-900 truncate ">'
-                                html += '<div className="flex items-center space-x-4">'
-                                html += "item['id']"
-                                    //todo add rideID
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='</p>'
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='<p className="text-sm text-gray-500 truncate ">'
-                                html += '<div className="flex items-center space-x-4">'
-                                html += "item['origin'] + "->" +  item['destination']"
-                                    //todo add origin -> dest
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='</p>'
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='</div>'
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='<div className="inline-flex items-center text-base font-semibold text-gray-900 ">'
-                                html += '<div className="flex items-center space-x-4">'
-                                html += "item['tripdate']"
-                                    //todo add DateTime
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='</div>'
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='</div>'
-                                html += '<div className="flex items-center space-x-4">'
-                                html +='</li>'
-                                html += '<div className="flex items-center space-x-4">'
+                            html += ' <li class="py-3 sm:py-4">'
+                            html += '     <div class="flex items-center space-x-4">'
+                            html += '         <div class="flex-shrink-0">'
+                            html += '             <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png" alt="Neil image">'
+                            html += '             </div>'
+                            html += '         <div class="flex-1 min-w-0">'
+                            html += '             <p class="text-sm font-medium text-gray-900 truncate ">'
+                            html +=                "Ride ID: " + item['id']
+                            html += '             </p>'
+                            html += '             <p class="text-sm text-gray-500 truncate ">'
+                            html +=                 item['origin'] + ' -> ' + item['destination']
+                            html += '             </p>'
+                            html += '         </div>'
+                            html += '         <div class="inline-flex items-center text-base font-semibold text-gray-900 ">'
+                            html +=             item['tripdate']
+                            html += '         </div>'
+                            html += '         </div>'
+                            html += ' </li>'
 
                             });
 
@@ -261,8 +241,8 @@
                                 id="closeRequestSeniorAccountModal"
                                 type="reset"
                                 class="rounded-3xl bg-blue-500 text-bold text-2xl justify-self-end self-end mx-2 my-2 px-2 py-1">
-                            X
-                        </button>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16"> <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/> </svg>                        </button>
+
                         <script>
                             const dialog = document.querySelector("#RequestSeniorAccountModal");
                             const closeButton = document.querySelector("#closeRequestSeniorAccountModal");
