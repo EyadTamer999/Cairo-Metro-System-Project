@@ -28,6 +28,7 @@ module.exports = function (app) {
     app.get('/dashboard', async function (req, res) {
         const user = await getUser(req);
         const userRides =  await db.select('*').from("se_project.rides").where('userid',user['id'])
+        const stations = await db.select('*').from('se_project.stations');
         const userSubscription =  await db.select('*').from("se_project.subscription").where('userid',user['id'])
 
         return res.render('dashboard.html', {user, userRides , userSubscription});

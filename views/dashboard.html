@@ -108,7 +108,8 @@
                         <li class="py-3 sm:py-4">
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0">
-                                    <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png" alt="Metro Car Icon">
+                                    <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png"
+                                         alt="Metro Car Icon">
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate ">
@@ -127,7 +128,7 @@
                     <script>
                         $(document).ready(function () {
                             // Retrieve the JSON data (can be fetched using AJAX, etc.)
-                            const jsonData = <%-JSON.stringify(userRides) %>;
+                            const jsonData = <%-JSON.stringify(userRides) % >;
                             // console.log(jsonData)
                             // Parse the JSON data
                             const items = jsonData;
@@ -138,26 +139,26 @@
                             let html = '';
                             items.forEach(function (item) {
 
-                            if(item['status'] === 'upcoming') {
-                                html += ' <li class="py-3 sm:py-4">'
-                                html += '     <div class="flex items-center space-x-4">'
-                                html += '         <div class="flex-shrink-0">'
-                                html += '             <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png" alt="Neil image">'
-                                html += '             </div>'
-                                html += '         <div class="flex-1 min-w-0">'
-                                html += '             <p class="text-sm font-medium text-gray-900 truncate ">'
-                                html += "Ride ID: " + item['id']
-                                html += '             </p>'
-                                html += '             <p class="text-sm text-gray-500 truncate ">'
-                                html += item['origin'] + ' -> ' + item['destination']
-                                html += '             </p>'
-                                html += '         </div>'
-                                html += '         <div class="inline-flex items-center text-base font-semibold text-gray-900 ">'
-                                html += item['tripdate']
-                                html += '         </div>'
-                                html += '         </div>'
-                                html += ' </li>'
-                            }
+                                if (item['status'] === 'upcoming') {
+                                    html += ' <li class="py-3 sm:py-4">'
+                                    html += '     <div class="flex items-center space-x-4">'
+                                    html += '         <div class="flex-shrink-0">'
+                                    html += '             <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png" alt="Neil image">'
+                                    html += '             </div>'
+                                    html += '         <div class="flex-1 min-w-0">'
+                                    html += '             <p class="text-sm font-medium text-gray-900 truncate ">'
+                                    html += "Ride ID: " + item['id']
+                                    html += '             </p>'
+                                    html += '             <p class="text-sm text-gray-500 truncate ">'
+                                    html += item['origin'] + ' -> ' + item['destination']
+                                    html += '             </p>'
+                                    html += '         </div>'
+                                    html += '         <div class="inline-flex items-center text-base font-semibold text-gray-900 ">'
+                                    html += item['tripdate']
+                                    html += '         </div>'
+                                    html += '         </div>'
+                                    html += ' </li>'
+                                }
                             });
 
                             // Insert the generated HTML into the element with the specified ID
@@ -175,7 +176,7 @@
         <section id="Tickets/Rides" class="flex flex-col">
             <div class="mt-5 self-center text-2xl font-medium">
                 <h1>
-                   Tickets & Rides
+                    Tickets & Rides
                 </h1>
             </div>
             <!--todo add buy ticket button w fo2eeh haykoon feeh el tickets bt3t abl kda... ride hykoon feeha these rides w past ones            -->
@@ -192,7 +193,8 @@
                         <li class="py-3 sm:py-4">
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0">
-                                    <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png" alt="Metro Car Icon">
+                                    <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png"
+                                         alt="Metro Car Icon">
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate ">
@@ -239,7 +241,7 @@
                     </span>
                     <span class="mb-3 text-2xl" id="upcomingRides">
                         <script>
-                            const currUser = <%-JSON.stringify(user) %>;
+                            const currUser = <%-JSON.stringify(user) % >;
                             $(document).ready(function () {
                                 userType = function () {
                                     if (currUser.isNormal)
@@ -254,6 +256,135 @@
                         </script>
                     </span>
                 </h3>
+
+
+                <!--todo add functionality-->
+                <button
+                        type="button"
+                        onclick="PayForSubscription.showModal()"
+                        class="w-full h-20 my-6 rounded rounded-lg bg-orange-700 text-l font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-orange-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-orange-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-orange-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)](59,113,202,0.5)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                        data-te-ripple-init
+                >
+                    Pay For Subscription
+                </button>
+
+
+                <!--todo add functionality-->
+                <dialog class="" id="PayForSubscription">
+
+                    <div class="flex justify-center items-center min-h-screen scrollbar-hide">
+                        <div class="h-auto w-80 bg-white p-3 rounded-lg">
+                            <p class="text-xl font-semibold">Payment Details</p>
+                            <div class="input_text mt-6 relative"><input type="text"
+                                                                         class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b "
+                                                                         placeholder="John Row"/> <span
+                                    class="absolute left-0 text-sm -top-4">Cardholder Name</span> <i
+                                    class="absolute left-2 top-4 text-gray-400 fa fa-user"></i></div>
+                            <div class="input_text mt-8 relative"><input type="text"
+                                                                         class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b "
+                                                                         placeholder="0000 0000 0000 0000"
+                                                                         data-slots="0" data-accept="\d" size="19"/>
+                                <span class="absolute left-0 text-sm -top-4">Card Number</span> <i
+                                        class="absolute left-2 top-[14px] text-gray-400 text-sm fa fa-credit-card"></i>
+                            </div>
+                            <div class="mt-8 flex gap-5 ">
+                                <div class="input_text relative w-full"><input type="text"
+                                                                               class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b "
+                                                                               placeholder="mm/yyyy" data-slots="my"/>
+                                    <span class="absolute left-0 text-sm -top-4">Expiry</span> <i
+                                            class="absolute left-2 top-4 text-gray-400 fa fa-calendar-o"></i></div>
+                                <div class="input_text relative w-full"><input type="text"
+                                                                               class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b "
+                                                                               placeholder="000" data-slots="0"
+                                                                               data-accept="\d" size="3"/> <span
+                                        class="absolute left-0 text-sm -top-4">CVV</span> <i
+                                        class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i></div>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <select class="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                        <option value="annual">Year (365 days)</option>
+                                        <option value="month">Month (30 days)</option>
+                                        <option value="quarterly">Quarterly (90 days)</option>
+                                    </select>
+                                </label>
+                            </div>
+
+                            <p class="text-lg text-center mt-4 text-gray-600 font-semibold">Payment amount: </p>
+                            <div class="flex flex-col justify-center mt-4">
+                                <button class="self-center outline-none pay h-12 bg-orange-600 text-white mb-3 hover:bg-orange-700 rounded-lg w-1/2 cursor-pointer transition-all">
+                                    Pay
+                                </button>
+                                <button type="button" id="ClosePayForSubscription"
+                                        class="self-center focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                                    Cancel
+                                </button>
+                                <script>
+                                    const dialog = document.querySelector("#PayForSubscription");
+                                    const closeButton = document.querySelector("#ClosePayForSubscription");
+                                    closeButton.addEventListener("click", () => {
+                                        dialog.close();
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            for (const el of document.querySelectorAll("[placeholder][data-slots]")) {
+                                const pattern = el.getAttribute("placeholder"),
+                                    slots = new Set(el.dataset.slots || "_"),
+                                    prev = (j => Array.from(pattern, (c, i) => slots.has(c) ? j = i + 1 : j))(0),
+                                    first = [...pattern].findIndex(c => slots.has(c)),
+                                    accept = new RegExp(el.dataset.accept || "\\d", "g"),
+                                    clean = input => {
+                                        input = input.match(accept) || [];
+                                        return Array.from(pattern, c =>
+                                            input[0] === c || slots.has(c) ? input.shift() || c : c
+                                        );
+                                    },
+                                    format = () => {
+                                        const [i, j] = [el.selectionStart, el.selectionEnd].map(i => {
+                                            i = clean(el.value.slice(0, i)).findIndex(c => slots.has(c));
+                                            return i < 0 ? prev[prev.length - 1] : back ? prev[i - 1] || first : i;
+                                        });
+                                        el.value = clean(el.value).join``;
+                                        el.setSelectionRange(i, j);
+                                        back = false;
+                                    };
+                                let back = false;
+                                el.addEventListener("keydown", (e) => back = e.key === "Backspace");
+                                el.addEventListener("input", format);
+                                el.addEventListener("focus", format);
+                                el.addEventListener("blur", () => el.value === pattern && (el.value = ""));
+                            }
+                        });
+
+                        var pay = document.querySelector(".pay");
+                        var allinputs = document.querySelectorAll(".input_text input")
+                        pay.addEventListener('click', function () {
+                            allinputs.forEach((e) => {
+                                e.classList.remove('warning');
+                                if (e.value.length < 1) {
+                                    e.classList.add('warning');
+                                }
+                            });
+                        });
+
+                        allinputs.forEach((all) => {
+                            all.addEventListener('keyup', function () {
+                                if (all.value.length < 1) {
+                                    all.classList.add('warning');
+
+                                } else {
+                                    all.classList.remove('warning');
+                                }
+                            });
+                        });
+                    </script>
+                </dialog>
 
                 <!--todo add functionality-->
                 <button
@@ -285,6 +416,7 @@
                     Request Senior Account
                 </button>
 
+
                 <!--todo add functionality-->
                 <dialog class="" id="RequestSeniorAccountModal">
                     <div class="container flex flex-col">
@@ -293,7 +425,11 @@
                                 id="closeRequestSeniorAccountModal"
                                 type="reset"
                                 class="rounded-3xl bg-blue-500 text-bold text-2xl justify-self-end self-end mx-2 my-2 px-2 py-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16"> <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/> </svg>                        </button>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-x" viewBox="0 0 16 16">
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                        </button>
 
                         <script>
                             const dialog = document.querySelector("#RequestSeniorAccountModal");
