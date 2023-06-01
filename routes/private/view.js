@@ -27,11 +27,12 @@ module.exports = function (app) {
     // Register HTTP endpoint to render /users page
     app.get('/dashboard', async function (req, res) {
         const user = await getUser(req);
-        const userRides =  await db.select('*').from("se_project.rides").where('userid',user['id'])
+        const userRides =  await db.select('*').from("se_project.rides").where('userid',user['userid'])
         const stations = await db.select('*').from('se_project.stations');
-        const userSubscription =  await db.select('*').from("se_project.subscription").where('userid',user['id'])
-
-        return res.render('dashboard.html', {user, userRides , userSubscription, stations});
+        const userSubscription =  await db.select('*').from("se_project.subscription").where('userid',user['userid'])
+        const purchaseHistory = await db.select('*').from("se_project.transactions").where('userid',user['userid'])
+        console.log(purchaseHistory)
+        return res.render('dashboard.html', {user, userRides , userSubscription, stations, purchaseHistory});
     });
 
     // Register HTTP endpoint to render /users page
