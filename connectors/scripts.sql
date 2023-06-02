@@ -122,8 +122,8 @@ CREATE TABLE IF NOT EXISTS se_project.routes
 (
     id SERIAL NOT NULL,
     routename text Not null,
-    fromStationid INTEGER NOT NULL,
-    toStationid INTEGER NOT NULL, 
+    fromstationid INTEGER NOT NULL,
+    tostationid INTEGER NOT NULL, 
     CONSTRAINT routes_pkey PRIMARY KEY (id),
     FOREIGN KEY( fromStationid ) REFERENCES se_project.stations on DELETE CASCADE on UPDATE CASCADE,
     FOREIGN KEY( toStationid ) REFERENCES se_project.stations  on DELETE CASCADE on UPDATE CASCADE

@@ -4,7 +4,7 @@ const db = require("../../connectors/db");
 const roles = require("../../constants/roles");
 const {getSessionToken} = require('../../utils/session');
 
-const date = require('date-and-time');
+const date = require('date-and-time');//run this command before starting the server npm install date-and-time
 
 const getUser = async function (req) {
   const sessionToken = getSessionToken(req);
@@ -189,9 +189,7 @@ try{
     else if(subType!="annual" && subType!="month"&& subType!="quarterly" )
     {
       return res.status(400).send("you entered invalid subscription type you have only 3 types which are quarterly , month and annual");
-    }
-
-    
+    }   
 
     else{
 
@@ -367,13 +365,17 @@ try{
                 const origin_id=await db.select("id").from('se_project.stations').where('stationname',origin) ;
                 const des_id=await db.select("id").from('se_project.stations').where('stationname',destination) ;
                 console.log("ya ana mabdoon");
-                console.log(des_id);
-                
-                console.log(origin_id);
+                const origin_id_int=origin_id[0]['id'];
+                const des_id_int=des_id[0]['id'];
+
+
+                console.log(des_id_int);
+  
+                console.log(origin_id_int);
                 console.log("ya ana mabdoon");
 
                 if(!isEmpty(origin_id) && !isEmpty(des_id) ){
-                const potential_routs_data=await db.select("*").from('se_project.routes').where('toStationid',des_id  ).where('fromStationid',origin_id) ;//ret2
+                const potential_routs_data=await db.select("*").from('se_project.routes').where('tostationid',des_id_int  ).where('fromstationid',origin_id_int) ;//ret2
               
                 
                 const t="transfer";
@@ -382,25 +384,26 @@ try{
 
 
                 ////////////////////////////////////////////////////
-                // current date
+                // current date problem in date time methods
                 
+                let date1=new Date(tripDate);
                 // adjust 0 before single digit date
-                let date = ("0" + tripDate.getDate()).slice(-2);
+                let date = ("0" + date1.getDate()).slice(-2);
 
                 // current month
-                let month = ("0" + (tripDate.getMonth() + 1)).slice(-2);
+                let month = ("0" + (date1.getMonth() + 1)).slice(-2);
 
                 // current year
-                let year = tripDate.getFullYear();
+                let year = date1.getFullYear();
 
                 // current hours
-                let hours = tripDate.getHours();
+                let hours = date1.getHours();
 
                 // current minutes
-                let minutes = tripDate.getMinutes();
+                let minutes = date1.getMinutes();
 
                 // current seconds
-                let seconds = tripDate.getSeconds();
+                let seconds = date1.getSeconds();
 
 
                 let up_date_bound=new Date();
