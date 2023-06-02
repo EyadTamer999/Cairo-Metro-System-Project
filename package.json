@@ -1,7 +1,11 @@
 {
   "name": "SE_PROJECT",
+  "main": "server.js",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "date-and-time": "^3.0.0",
