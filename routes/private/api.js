@@ -48,6 +48,8 @@ module.exports = function (app) {
         }
     });
 
+
+
 // Pay for ticket by subscription
 //look through el subscription using el user id
 //check if user has sub, if no sub then no pay.
@@ -117,20 +119,97 @@ module.exports = function (app) {
                 })
 
 
-                // const ticket_cost=0;//TODO call CheckPrice
-                // const origin_id=await db.select("id").from('se_project.stations').where('stationname',origin) ;
-                // const des_id=await db.select("id").from('se_project.stations').where('stationname',destination) ;
-                // console.log("ya ana mabdoon");
-                // const origin_id_int=origin_id[0]['id'];
+                const ticket_cost=0;//TODO call CheckPrice
+                const origin_id=await db.select("id").from('se_project.stations').where('stationname',origin) ;
+                const des_id=await db.select("id").from('se_project.stations').where('stationname',destination) ;
+                console.log("ya ana mabdoon");
+                const origin_id_int=origin_id[0]['id'];
+                const des_id_int=des_id[0]['id'];
 
-                // console.log(newNumOfTickets)
-                return res.status(201).json(newPaymentBySubscription);
+
+                console.log(des_id_int);
+
+                console.log(origin_id_int);
+                console.log("ya ana mabdoon");
+
+                if(!isEmpty(origin_id) && !isEmpty(des_id) ){
+                    const potential_routs_data=await db.select("*").from('se_project.routes').where('tostationid',des_id_int  ).where('fromstationid',origin_id_int) ;//ret2
+
+
+                    const t="transfer";
+
+                    const transfer_stations=await db.select("stationname").from('se_project.stations').where('stationtype',t) ;//ret3
+
+
+                    ////////////////////////////////////////////////////
+                    // current date problem in date time methods
+
+                    let date1=new Date(tripdate);
+                    // adjust 0 before single digit date
+                    let date = ("0" + date1.getDate()).slice(-2);
+
+                    // current month
+                    let month = ("0" + (date1.getMonth() + 1)).slice(-2);
+
+                    // current year
+                    let year = date1.getFullYear();
+
+                    // current hours
+                    let hours = date1.getHours();
+
+                    // current minutes
+                    let minutes = date1.getMinutes();
+
+                    // current seconds
+                    let seconds = date1.getSeconds();
+
+
+                    let up_date_bound=new Date();
+                    up_date_bound.setFullYear(year);
+                    up_date_bound.setMonth(month);
+                    up_date_bound.setDate(date);
+                    up_date_bound.setHours(23);
+                    up_date_bound.setMinutes(59);
+                    up_date_bound.setSeconds(59);
+
+                    /*knex.raw(
+                    'select * from users where first_name is null'
+                    ),*/
+                    //const todayCloseDate = DF.format(new Date(), 'yyyy-MM-dd');
+
+                    const upcome_rides=await db.select("*").from('se_project.rides')
+                        .where('tripdate','>',tripdate )
+                        .where('tripdate','<',up_date_bound ) ;
+                    //TODO ret4 not finished  .where('published_date', '<', 2000)
+
+                    //  { tripdate >= currentdate}
+                    //1-full ticket price, check price
+                    //2-route
+                    //3-transfer stations,
+                    //4-upcoming ride on the date of the ticket
+
+
+                    //  { tripdate >= currentdate}
+                    //1-full ticket price, check price
+                    //2-route
+                    //3-transfer stations,
+                    //4-upcoming ride on the date of the ticket
+
+                    const ret={ticket_cost,potential_routs_data,transfer_stations,upcome_rides  };//and add the pricecheck price ,upcome_rides
+                    return res.status(201).json(ret);
+
+                }
+                else{
+                    return res.status(400).send("origin or destination is invalid station");
+
+                }
             }
         } catch (err) {
             console.log("Error paying for ticket by subscription", err.message);
             return res.status(400).send(err.message);
         }
     });
+
 
 
 //reset password for admin and user PUT
