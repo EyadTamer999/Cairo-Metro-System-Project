@@ -4,11 +4,9 @@
     <title><%= user['firstname'] %>'s Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <!--    <link rel='stylesheet' href='/styles/bootstrap.min.css'/>-->
     <link rel='stylesheet' href='/styles/style.css'/>
     <link rel="icon" type="png" href="/images/icon.png">
     <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
-    <!--    <script src="/js/bootstrap.min.js" type="text/javascript"></script>-->
 </head>
 <body>
 <script>
@@ -99,7 +97,7 @@
 
                 <div class="flex items-center justify-between mb-4">
                     <h5 class="text-xl font-bold leading-none text-gray-900 ">Upcoming Rides</h5>
-                    <a href="Tickets/Rides" class="text-sm font-medium text-blue-600 hover:underline">
+                    <a href="#Tickets/Rides" class="text-sm font-medium text-blue-600 hover:underline">
                         View all
                     </a>
                 </div>
@@ -168,6 +166,155 @@
                 </div>
             </div>
 
+            <div class="self-center w-full my-8 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+
+                <div class="flex items-center justify-between mb-4">
+                    <h5 class="text-xl font-bold leading-none text-gray-900 ">My Transactions History</h5>
+                    <a href="#Tickets/Rides" class="text-sm font-medium text-blue-600 hover:underline">
+                        View all
+                    </a>
+                </div>
+                <div class="flow-root ">
+                    <ul id="TransactionHistory" role="list" class="divide-y divide-gray-200 max-h-64 overflow-y-scroll ">
+                        <li class="py-3 sm:py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img class="w-8 h-8 rounded-full" src="/images/transaction.png"
+                                         alt="Metro Car Icon">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate ">
+                                        Transaction ID + purchaseID
+                                    </p>
+                                    <p class="text-sm text-gray-500 truncate ">
+                                        purchase type
+                                    </p>
+                                </div>
+                                <div class="inline-flex items-center text-base font-semibold text-gray-900 ">
+                                    amount
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <script>
+                        $(document).ready(function () {
+                            // Retrieve the JSON data (can be fetched using AJAX, etc.)
+                            const jsonData = <%-JSON.stringify(purchaseHistory) %>;
+                            // console.log(jsonData)
+                            // Parse the JSON data
+                            const items = jsonData;
+
+                            console.log(items)
+
+                            // Generate the HTML markup dynamically
+                            let html = '';
+                            items.forEach(function (item) {
+
+
+                                    html += ' <li class="py-3 sm:py-4">'
+                                    html += '     <div class="flex items-center space-x-4">'
+                                    html += '         <div class="flex-shrink-0">'
+                                    html += '             <img class="w-8 h-8 rounded-full" src="/images/train-station.png" alt="Neil image">'
+                                    html += '             </div>'
+                                    html += '         <div class="flex-1 min-w-0">'
+                                    html += '             <p class="text-sm font-medium text-gray-900 truncate ">'
+                                    html += "Transaction ID: " + item['id'] + '-' + item['purchasediid']
+                                    html += '             </p>'
+                                    html += '             <p class="text-sm text-gray-500 truncate ">'
+                                    html +=  "Payment Method: " + item['purchasetype']
+                                    html += '             </p>'
+                                    html += '         </div>'
+                                    html += '         <div class="inline-flex items-center text-base font-semibold text-gray-900 ">'
+                                    html += item['amount'] + "EGP"
+                                    html += '         </div>'
+                                    html += '         </div>'
+                                    html += ' </li>'
+                            });
+
+                            // Insert the generated HTML into the element with the specified ID
+                            $('#TransactionHistory').html(html);
+                        });
+                    </script>
+
+                </div>
+            </div>
+
+            <div class="self-center w-full my-8 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+
+                <div class="flex items-center justify-between mb-4">
+                    <h5 class="text-xl font-bold leading-none text-gray-900 ">Available Stations</h5>
+                    <a href="#Tickets/Rides" class="text-sm font-medium text-blue-600 hover:underline">
+                        View all
+                    </a>
+                </div>
+                <div class="flow-root ">
+                    <ul id="StationList" role="list" class="divide-y divide-gray-200 max-h-64 overflow-y-scroll ">
+                        <li class="py-3 sm:py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img class="w-8 h-8 rounded-full" src="/images/train-station.png"
+                                         alt="Metro Car Icon">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate ">
+                                        Station Name
+                                    </p>
+                                    <p class="text-sm text-gray-500 truncate ">
+                                        Position and type
+                                    </p>
+                                </div>
+                                <div class="inline-flex items-center text-base font-semibold text-gray-900 ">
+                                    status
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <script>
+                        $(document).ready(function () {
+                            // Retrieve the JSON data (can be fetched using AJAX, etc.)
+                            const jsonData = <%-JSON.stringify(stations) %>;
+                            // console.log(jsonData)
+                            // Parse the JSON data
+                            const items = jsonData;
+
+                            console.log(items)
+
+                            // Generate the HTML markup dynamically
+                            let html = '';
+                            items.forEach(function (item) {
+
+
+                                html += ' <li class="py-3 sm:py-4">'
+                                html += '     <div class="flex items-center space-x-4">'
+                                html += '         <div class="flex-shrink-0">'
+                                html += '             <img class="w-8 h-8 rounded-full" src="/images/train-station.png" alt="Neil image">'
+                                html += '             </div>'
+                                html += '         <div class="flex-1 min-w-0">'
+                                html += '             <p class="text-sm font-medium text-gray-900 truncate ">'
+                                html += "Station Name: " + item['stationname']
+                                html += '             </p>'
+                                html += '             <p class="text-sm text-gray-500 truncate ">'
+                                html += item['stationtype'] + ' --- ' + item['stationposition']
+                                html += '             </p>'
+                                html += '         </div>'
+                                html += '         <div class="inline-flex items-center text-base font-semibold text-gray-900 ">'
+                                html += item['stationstatus']
+                                html += '         </div>'
+                                html += '         </div>'
+                                html += ' </li>'
+                            });
+
+                            // Insert the generated HTML into the element with the specified ID
+                            $('#StationList').html(html);
+                        });
+                    </script>
+
+                </div>
+            </div>
+
+
         </section>
     </div>
 
@@ -220,9 +367,9 @@
     </div>
 
 
-    <section id="Account">
+    <section id="Account" class="flex flex-col">
         <div
-                class="mx-8 mt-6 center w-1/3 rounded-2xl bg-white text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
+                class="self-center mt-6 w-2/3 rounded-2xl bg-white text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
             <div
                     class="text-3xl border-b-2 border-neutral-100 px-6 py-3">
                 My Account
@@ -230,6 +377,9 @@
             <div class="p-6">
                 <h3
                         class="place-items-start flex flex-col mb-2 text-2xl font-medium leading-tight text-neutral-800">
+                     <span class="mb-3 text-2xl">
+                    User ID: <%= user['userid'] %>
+                    </span>
                     <span class="mb-3 text-2xl">
                     First Name: <%= user['firstname'] %>
                     </span>
