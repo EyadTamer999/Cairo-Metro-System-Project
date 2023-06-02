@@ -83,4 +83,5 @@ module.exports = function (app) {
             return res.status(400).send("Could not register user");
         }
     });
+
 }
