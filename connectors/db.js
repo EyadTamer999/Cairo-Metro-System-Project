@@ -7,6 +7,7 @@ const knex = require('knex');
 const config = {
     client: 'pg',
     connection: {
+        name:'se_project',
         host: 'dpg-cht4ft0rddlc2m8npetg-a.frankfurt-postgres.render.com',
         port: 5432,
         user: 'se_project_user',
