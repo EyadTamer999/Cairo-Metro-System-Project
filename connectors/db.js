@@ -8,12 +8,12 @@ require("dotenv").config();
 const config = {
     client: 'pg',
     connection: {
-        host: 'localhost',
-        port: 5432,
-        user: 'postgres',
-        password: '1234',
-        database: 'se_project',
-        schema: 'se_project'
+        host: process.env.HOST,
+        port: process.env.PORT,
+        user: process.env.USERNAME,
+        password: process.env.PASSWORD,
+        database: process.env.DATABASE,
+        schema: process.env.SCHEMA
     }
 };
 
