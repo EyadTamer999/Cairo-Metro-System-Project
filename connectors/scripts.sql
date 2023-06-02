@@ -139,3 +139,13 @@ CREATE TABLE IF NOT EXISTS se_project.stationroutes
     FOREIGN KEY (stationid) REFERENCES se_project.stations on DELETE CASCADE on UPDATE CASCADE,
     FOREIGN KEY (routeid) REFERENCES se_project.routes on DELETE CASCADE on UPDATE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS se_project.creditcarddetails
+(
+    id SERIAL NOT NULL,
+    holder_name text NOT NULL,
+    creditCardNumber INTEGER NOT Null,
+    userId INTEGER NOT Null,
+    FOREIGN KEY( userId ) REFERENCES se_project.users,
+    CONSTRAINT cc_pkey PRIMARY KEY (id)
+);
