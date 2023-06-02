@@ -5,17 +5,23 @@ require("dotenv").config();
 
 // define the configuration settings to connect
 // to our local postgres server
-const config = {
+// const config = {
+//     client: 'pg',
+//     connection: {
+//         host: process.env.HOST,
+//         port: process.env.PORT,
+//         user: process.env.USERNAME,
+//         password: process.env.PASSWORD,
+//         database: process.env.DATABASE,
+//         schema: process.env.SCHEMA
+//     }
+// };
+//use for deployment
+const config = require('knex')({
     client: 'pg',
-    connection: {
-        host: process.env.HOST,
-        port: process.env.PORT,
-        user: process.env.USERNAME,
-        password: process.env.PASSWORD,
-        database: process.env.DATABASE,
-        schema: process.env.SCHEMA
-    }
-};
+    connection: process.env.PG_CONNECTION_STRING,
+    searchPath: ['knex', 'public'],
+});
 
 // create the connection with postgres
 const db = knex(config);
