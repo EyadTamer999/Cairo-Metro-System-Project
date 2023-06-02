@@ -360,7 +360,7 @@ module.exports = function (app) {
         else {
           const station = stations[j];
           count++;
-          if (station.tostationid === toStationId) {
+          if (parseInt(station.tostationid) === toStationId) {
             distances.push(count);
           } else {
             helper(station.tostationid, toStationId, distances, previous, count);
@@ -378,7 +378,7 @@ module.exports = function (app) {
     previous,
     count
   ) {
-    previous.push(fromStationId);
+    //previous.push(fromStationId);
     console.log("entered the recursive method");
     const stations = await db("se_project.routes")
     .select("*")
@@ -400,7 +400,7 @@ module.exports = function (app) {
         let tempcount = count;
         console.log("tempcount:",tempcount)
         helper(
-          stationss[0].id,
+          stations[0].tostationid,
           toStationId,
           distances,
           previous,
@@ -413,7 +413,7 @@ module.exports = function (app) {
           continue;
         } else {
           console.log("entering the else condition for if the station we are passing through is not the previous array")
-          previous.push(stations[i].tostationid);
+          previous.push(stations[i].fromstationid);
           console.log("stations that already passed:", previous);
           const toStations = await db("se_project.routes")
             .select("tostationid")
@@ -425,12 +425,12 @@ module.exports = function (app) {
             console.log("station in the ", i, "th iteration:",station);
             count++;
             console.log("the count:", count);
-            if (stationss[i].id == toStationId) {
+            if (parseInt(stationss[i].id) === toStationId) {
               distances.push(count);
               console.log("distances array",distances);
             } else {
               calculateShortestPath(
-                station.id,
+                stations[i].tostationid,
                 toStationId,
                 distances,
                 previous,
@@ -502,9 +502,10 @@ module.exports = function (app) {
         //calculate the shortest path
         let distances = [];
         let previous = [];
+        previous.push(originid);
         let shortestPath = await calculateShortestPath(
-          startStation.id,
-          endStation.id,
+          originid,
+          destinationid,
           distances,
           previous,
           0
