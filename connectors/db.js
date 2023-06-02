@@ -1,17 +1,17 @@
 // import the knex library that will allow us to
 // construct SQL statements
 const knex = require('knex');
+require("dotenv").config();
 
 // define the configuration settings to connect
 // to our local postgres server
 const config = {
     client: 'pg',
     connection: {
-        name:'se_project',
-        host: 'dpg-cht4ft0rddlc2m8npetg-a.frankfurt-postgres.render.com',
+        host: 'localhost',
         port: 5432,
-        user: 'se_project_user',
-        password: 'efDlZPKQAoXDJcvAk2DiNRphOhOuVF4r',
+        user: 'postgres',
+        password: '1234',
         database: 'se_project',
         schema: 'se_project'
     }
