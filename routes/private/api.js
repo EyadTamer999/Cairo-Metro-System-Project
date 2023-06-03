@@ -47,7 +47,6 @@ module.exports = function (app) {
     }
   });
 
-
   /*
     Create api endpoints for admin :
     - Create routes
@@ -312,160 +311,67 @@ module.exports = function (app) {
     } else return res.status(400).send("Can not delete route");
   });
 
-  //Check price and payment endpoints------------------------------------------------------------------------------------
+  // Check Price-----------------------------------------------------------------------------------------
 
-  /*
-  Lets try to go from station 1 to station 3
-  A simulation with stationroutes:
-    we will try getting the routes with station id = 1:
-      the routes will be route 1 and route 2.
-      we will then see the route that has the fromstation = 1
-      thus it will be route 1
+  async function floydWarshall(adjMatrix) {
+    const n = adjMatrix.length;
+    const dist = [...adjMatrix];
 
-  
-  */
-
-      // async function calcPath(startST, endST){
-      //   const distance = [];
-
-      // }
-
-
-
-
-  async function helper(
-    fromStationId,
-    toStationId,
-    distances,
-    previous,
-    count,
-    tempcount
-  ) {
-    console.log("entered helper method");
-    console.log(fromStationId);
-    const stations = await db("se_project.routes")
-      .select("*")
-      .where({ fromstationid: fromStationId });
-      console.log("the routes connected to the fromstationid:",stations);
-    for (let j in stations) {
-
-      if (previous.includes(stations[j].tostationid)) continue;
-      else {
-        previous.push(stations[j].tostationid);
-        const toStations = await db("se_project.routes")
-          .select("tostationid")
-          .where({ fromstationid: stations[j].tostationid });
-          console.log(toStations);
-        if (Object.keys(toStations).length === 1) continue;
-        else {
-          const station = stations[j];
-          count++;
-          if (station.tostationid === toStationId) {
-            distances.push(count);
-          } else {
-            helper(station.tostationid, toStationId, distances, previous, count);
+    for (let k = 0; k < n; k++) {
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+          if (
+            dist[i][k] !== Infinity &&
+            dist[k][j] !== Infinity &&
+            dist[i][k] + dist[k][j] < dist[i][j]
+          ) {
+            dist[i][j] = dist[i][k] + dist[k][j];
           }
         }
-        count = tempcount;
       }
     }
+    return dist;
   }
 
-  async function calculateShortestPath(
-    fromStationId,
-    toStationId,
-    distances,
-    previous,
-    count
-  ) {
-    previous.push(fromStationId);
-    console.log("entered the recursive method");
-    const stations = await db("se_project.routes")
-    .select("*")
-    .where({ fromstationid: fromStationId });
-    console.log(stations);
-    for (let i in stations) {
-      console.log("entering the main loop");
-      console.log("distances array",distances);
-      console.log("stations that already passed", previous);
-      // console.log(stations[i])
-      const stationss = await db("se_project.stations")
+  //VIP
+  async function create2dmatrix() {
+    const stCount = await db("se_project.stations").count();
+    let stCountint = parseInt(stCount[0]["count"]);
+    let matrix = [];
+    // console.log("lol");
+
+    for (let i = 0; i < stCountint; i++) {
+      // console.log("i:",i);
+      matrix[i] = [];
+      const existST1 = await db("se_project.stations")
+        .where({ id: i + 1 })
         .select("*")
-        .where({ id : stations[i].tostationid });
-        console.log("the tostations:", stationss)
-        // console.log("the fromstations where the id is in the ", i,"iteration:", stationss);
-        const stationtype = stationss.stationtype; 
-      if (stationtype === "transfer") {
-        console.log("station is transfer station");
-        let tempcount = count;
-        console.log("tempcount:",tempcount)
-        helper(
-          stationss[0].id,
-          toStationId,
-          distances,
-          previous,
-          count,
-          tempcount
-        );
-      } else {
-        if (previous.includes(stations[i].tostationid)) {
-          console.log("already passed station", stations[i].tostationid);
-          continue;
-        } else {
-          console.log("entering the else condition for if the station we are passing through is not the previous array")
-          previous.push(stations[i].tostationid);
-          console.log("stations that already passed:", previous);
-          const toStations = await db("se_project.routes")
-            .select("tostationid")
-            .where({ fromstationid : stationss[i].id});
-            console.log("the tostations where the id is in the ", i,"iteration:",toStations);
-          if (Object.keys(toStations).length === 1) continue;
-          else {
-            const station = stationss[i];
-            console.log("station in the ", i, "th iteration:",station);
-            count++;
-            console.log("the count:", count);
-            if (stationss[i].id == toStationId) {
-              distances.push(count);
-              console.log("distances array",distances);
-            } else {
-              calculateShortestPath(
-                station.id,
-                toStationId,
-                distances,
-                previous,
-                count
-              );
-            }
-          }
-          count = 0;
-        }
+        .first();
+      if (isEmpty(existST1)) {
+        stCountint++;
+        // continue;
+      }
+      for (let j = 0; j < stCountint; j++) {
+        // console.log("stcount:",stCountint);
+        // console.log("j:",j);
+        const existRoute = await db("se_project.routes")
+          .where({ fromstationid: i + 1, tostationid: j + 1 })
+          .select("*")
+          .first();
+
+        const existST2 = await db("se_project.stations")
+          .where({ id: j + 1 })
+          .select("*")
+          .first();
+
+        if (isEmpty(existST2)) stCountint++;
+        else if (!isEmpty(existRoute)) matrix[i][j] = 1;
+        else if (i === j) matrix[i][j] = 0;
+        else matrix[i][j] = Infinity;
       }
     }
-    let minSoFar = distances[0];
-    console.log(minSoFar);
-    for (let i in distances) {
-      if (distances[i] < minSoFar) minSoFar = distances[i];
-      console.log(minSoFar);
-    }
-
-    return minSoFar;
-
-    //test tomorrow
-    //arrival
-
-    /*
-        we will add the stations stopped by in the previous array
-        if we find one of the tostations in the previous array we will not execute recursion with it
-        we will increment the count with visiting a station
-        if we find the destination : increment the count in the distance array and break from the recursion
-        else : recusion with the tostations
-        for edge stations if the tostations is 1 only
-        choose the min from the distances
-        */
-    // Fetch all stations from the database
-
-    // Initialize distances with infinity, except for the source station which is 0
+    // console.log(matrix);
+    return matrix;
   }
 
   //calculate the price of ride from origin to destination
@@ -479,42 +385,44 @@ module.exports = function (app) {
       // 10 - 16 stations = 7 gneh
       // > 16 stations = 10 gneh
       // 50% discount law senior
-      //
-      //run shortest path algo
-      //select the stations and save them in an array, select the routes and save them in an array, and select the stations routes and save them in an array,
-      //we need to mark where we can start.
-      // https://www.geeksforgeeks.org/implementation-graph-javascript/
-      // https://github.com/dagrejs/graphlib/wiki
-      // https://www.npmjs.com/package/graphlib?activeTab=readme
-      //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
       try {
+        const user = await getUser(req);
         const { originId, destinationId } = req.params;
         const originid = parseInt(originId);
         const destinationid = parseInt(destinationId);
         let startStation = await db
           .select("*")
           .from("se_project.stations")
-          .where("id", "=", originid).first();
-          let endStation = await db
+          .where("id", "=", originid)
+          .first();
+        let endStation = await db
           .select("*")
           .from("se_project.stations")
-          .where("id", "=", destinationid).first();
-        //calculate the shortest path
-        let distances = [];
-        let previous = [];
-        let shortestPath = await calculateShortestPath(
-          startStation.id,
-          endStation.id,
-          distances,
-          previous,
-          0
-        );
-
+          .where("id", "=", destinationid)
+          .first();
+        let matrix = await create2dmatrix();
+        let distMatrix = await floydWarshall(matrix);
+        const distance = distMatrix[originid][destinationid];
+        let price;
+        switch (true) {
+          case distance <= 9:
+            price = 5;
+            break;
+          case distance > 9 && distance <= 16:
+            price = 7;
+            break;
+          default:
+            price = 10;
+        }
+        if (user.isSenior) {
+          price = price * 0.5;
+        }
+        
         // console.log(shortestPath);
 
-        return res.status(200).json(shortestPath);
+        return res.status(200).json(price);
       } catch (err) {
-        console.log( err.message);
+        console.log(err.message);
         return res.status(400).send(err.message);
       }
     }
