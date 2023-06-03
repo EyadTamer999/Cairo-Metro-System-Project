@@ -108,6 +108,11 @@
 
     <script>
         document.getElementById("pageTitle").innerText = document.title;
+ 
+          function selectRow(row) {
+              $('tr.selected').removeClass('selected');
+              $(row).toggleClass('selected');
+          }
     </script>
 
         <div class="btn-container">
