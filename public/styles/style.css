@@ -1,3 +1,15 @@
+*{
+  font-family: 'Poppins', 'sans-serif';
+}
 .center {
   text-align: center;
+}
+
+.animate{
+  top: -71px;
+}
+
+.sticky{
+  top:0;
+  z-index:99;
 }

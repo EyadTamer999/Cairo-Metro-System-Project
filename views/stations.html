@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <title>Stations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <!--    <link rel='stylesheet' href='/styles/bootstrap.min.css'/>-->
+    <link rel='stylesheet' href='/styles/style.css'/>
+    <link rel="icon" type="png" href="/images/icon.png">
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <!--    <script src="/js/bootstrap.min.js" type="text/javascript"></script>-->
+     <style>
+        #pageTitle {
+            font-size: 3rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+        const sessionToken = document.cookie.includes('session_token');
+        if (!sessionToken) {
+            location.href = '/';
+        }
+    });
+</script>
+
+<div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">    
+    <nav id="navbar" class="flex items-center bg-blue-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">        
+      <ul class="flex-1 text-center">
+            <li class="list-none inline-block px-5">
+                <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
+            </li>
+            <li class="list-none inline-block px-5">
+                <a href="#Account"
+                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Account</a>
+            </li>
+        </ul>
+
+        <a href="/"><img class="mr-7 w-7 h-7" src="/images/logout.png" alt="logout"></a>
+
+        <a href="/">
+            <img
+
+                    class="w-40 hover:animate-pulse"
+                    src="/images/icon.png"
+                    alt="logo"/>
+        </a>
+        <script>
+            $(function () {
+                var scroll = $(document).scrollTop();
+                var navHeight = $('#navbar').outerHeight();
+
+                $(window).scroll(function () {
+                    var scrolled = $(document).scrollTop();
+
+                    if (scrolled > navHeight) {
+                        $('#navbar').addClass('animate');
+                    } else {
+
+                        $('#navbar').removeClass('animate');
+                    }
+
+                    if (scrolled > scroll) {
+                        $('#navbar').removeClass('sticky');
+                    } else {
+                        $('#navbar').addClass('sticky');
+                    }
+
+                    scroll = $(document).scrollTop();
+
+                });
+            });
+        </script>
+    </nav>
+  <h1 id="pageTitle"></h1>
+
+    <script>
+        document.getElementById("pageTitle").innerText = document.title;
+    </script>
+
+    <br/>
+
+      <div style="position:absolute; right:0;">
+        <input id="btnAddStation" type="button" value="Add station" class="btn btn-primary">
+        <br />
+      </div>
+
+      <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Position</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+          <style>
+            .column-spacing {
+                padding: 0 50px; 
+            }
+        </style>
+        
+          <% stations.forEach(station => { %>
+            <tr>
+                <td><%= station.id %></td>
+                <td class="column-spacing"><%= station.stationname %></td>
+                <td class="column-spacing"><%= station.stationtype %></td>
+                <td class="column-spacing"><%= station.stationposition %></td>
+                <td class="column-spacing"><%= station.stationstatus %></td>
+            </tr>
+        <% }) %>
+      </tbody>
+    </table>
+</div>
+
+  </body>
+  </html>
