@@ -67,7 +67,7 @@
         //event listener for the edit button 
         $('#btnEditStation').click(function () {
           if (selectedStationId) {
-            const newurl = `/manage/stations/edit/${selectedStationId}`;
+            const newurl = '/manage/stations/edit/${selectedStationId}';
             location.href = newurl;
           } else {
               alert('Please select a station to edit.');
