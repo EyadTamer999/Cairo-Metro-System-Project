@@ -45,12 +45,18 @@ module.exports = function (app) {
         return res.render('users.html', {users});
     });
 
-    // Register HTTP endpoint to render /courses page
+    // Register HTTP endpoint to render /stations page
     app.get('/stations', async function (req, res) {
         const user = await getUser(req);
         const stations = await db.select('*').from('se_project.stations');
         return res.render('stations.html', {...user, stations});
     });
 
+        // Register HTTP endpoint to render /edit stations page
+        app.get('/manage/stations/edit/:stationId', async function (req, res) {
+            const user = await getUser(req);
+            const stations = await db.select('*').from('se_project.stations');
+            return res.render('edit.html', {...user, stations});
+        });
 
 };
