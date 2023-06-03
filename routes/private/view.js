@@ -59,4 +59,19 @@ module.exports = function (app) {
             return res.render('edit.html', {...user, stations});
         });
 
+        
+    // Register HTTP endpoint to render /routes page
+    app.get('/routes', async function (req, res) {
+        const user = await getUser(req);
+        const routes = await db.select('*').from('se_project.routes');
+        return res.render('routes.html', {...user, routes});
+    });
+
+        // Register HTTP endpoint to render /edit routes page
+        app.get('/manage/routes/edit/:routeId', async function (req, res) {
+            const user = await getUser(req);
+            const routes = await db.select('*').from('se_project.routes');
+            return res.render('edit.html', {...user, routes});
+        });
+
 };
