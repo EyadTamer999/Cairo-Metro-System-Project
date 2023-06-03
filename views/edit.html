@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit Station</title>
+    <!-- Include your CSS stylesheets and other dependencies here -->
+</head>
+<body>
+    <h1>Edit Station</h1>
+
+    <script>
+        // Get the current URL
+        const url = window.location.href;
+
+        // Extract the station ID from the URL
+        const stationId = url.substring(url.lastIndexOf('/') + 1);
+
+        // Update the HTML content with the station ID
+        document.getElementById("stationId").innerText = stationId;
+    </script>
+
+    <p>Editing Station ID: <span id="stationId"></span></p>
+
+    <!-- Rest of your HTML content -->
+
+    <!-- Include your JavaScript and other scripts here -->
+</body>
+</html>
