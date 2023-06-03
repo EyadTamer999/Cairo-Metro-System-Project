@@ -177,13 +177,12 @@
 
         document.getElementById("entityName").placeholder = placeholderText;
  
-        // Extract the entity ID from the URL
+        //get entity ID from the URL
         const entityId = url.substring(url.lastIndexOf('/') + 1);
 
-        // Update the HTML content with the entity ID
         document.getElementById("entityId").innerText = entityId;
 
-        // Update the page title
+        //page title
         document.getElementById("pageTitle").innerText = `Edit ${entityType.charAt(0).toUpperCase() + entityType.slice(1)}`;
     </script>
 </body>
