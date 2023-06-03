@@ -40,7 +40,7 @@
             border-bottom: 1px solid #ccc;
         }
         
-        tr.selected {
+        .selected {
             background-color: #4f46e5;
             color: #ffffff;
         }
@@ -63,7 +63,7 @@
         }
 
         // Event listener for table row click
-        $('.selectable-row').click(function () {
+        $(document).on('click', '.selectable-row', function () {
             var stationId = $(this).attr('data-station-id');
             selectRow(stationId);
         });
@@ -141,7 +141,7 @@
         </thead>
         <tbody>
         <% stations.forEach(station => { %>
-        <tr data-station-id="<%= station.id %>" class="selectable-row">
+        <tr id="row-<%= station.id %>" data-station-id="<%= station.id %>" class="selectable-row">
             <td><%= station.id %></td>
             <td><%= station.stationname %></td>
             <td><%= station.stationtype %></td>
