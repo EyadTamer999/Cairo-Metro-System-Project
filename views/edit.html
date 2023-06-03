@@ -186,20 +186,33 @@
         document.getElementById("pageTitle").innerText = `Edit ${entityType.charAt(0).toUpperCase() + entityType.slice(1)}`;
     </script>
 
+
+
     <script>
         $(document).ready(function () {
-            $("#submit").click(function () { //lama adoos on which button whitch which id it executes
-                const email = $('#email').val(); //get el value men el input element with id email
-                const password = $('#password').val();
-                const data = { //store the data f json 34an neb3t beeh el request
-                    email, 
-                    password,
+            $("#updateButton").click(function () {
+                const entityType = $("#entityType").text();
+                const entityId = $("#entityId").text();
+                const entityName = $('#entityName').val();
+
+                const data = {
+                    entityId,
+                    entityName,
                 };
 
+                let url;
+                if (entityType === "stations") {
+                    url = `/manage/stations/edit/${entityId}`;
+                } else if (entityType === "routes") {
+                    url = `/manage/routes/edit/${entityId}`;
+                } else if (entityType === "zones") {
+                    url = `/manage/zones/edit/${entityId}`;
+                }
+
                 $.ajax({
-                    type: "PUT", //el endoint uses eh
-                    url: '/manage/stations/edit/:stationId', //el backend url
-                    data, //json we created to send request
+                    type: "PUT",
+                    url: url,
+                    data,
                     success: function (serverResponse) {
                         if (serverResponse) {
                             alert(`Updated successfully`);
@@ -208,7 +221,7 @@
                     error: function (errorResponse) {
                         if (errorResponse) {
                             alert(`Error updating : ${errorResponse.responseText}`);
-                            console.log("error")
+                                console.log("error")
                         }
                     }
                 });
