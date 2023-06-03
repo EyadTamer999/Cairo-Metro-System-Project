@@ -30,8 +30,6 @@
         }
         
     </style>
-</head>
-<body>
 <script>
     $(document).ready(function () {
         const sessionToken = document.cookie.includes('session_token');
@@ -40,6 +38,8 @@
         }
     });
 </script>
+</head>
+<body>
 <div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
     <nav id="navbar" class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
         <ul class="flex-1 text-center">
@@ -245,9 +245,9 @@
                 } else if (entityType === "routes") {
                     url = `/manage/routes/edit/${entityId}`;
                 } 
-                // else if (entityType === "zones") {
-                //     url = `/manage/zones/edit/${entityId}`;
-                // }
+                else if (entityType === "zones") {
+                    url = `/manage/zones/edit/${entityId}`;
+                }
 
                 $.ajax({
                     type: "DELETE",
