@@ -124,7 +124,8 @@
     <h1 id="pageTitle"></h1>
 
     <div class="btn-container">
-        <button id="btnAddStation" class="btn" onclick="addStation()">Add Station</button>
+        <input type="text" id="stationNameInput" placeholder="Station name">
+        <button id="btnAddStation" class="btn" >Add Station</button>
         <button id="btnEditStation" class="btn">Edit Station</button>
     </div>
 
@@ -153,4 +154,38 @@
     </table>
 </div>
 </body>
+
+
+
+<script>
+  // update button
+  $(document).ready(function () {
+      $("#btnAddStation").click(function () {
+          const stationNameInput = $('#stationNameInput').val();
+          const data = {
+            stationNameInput
+          };
+
+          $.ajax({
+              type: "POST",
+              url: '/api/v1/station',
+              data,
+              success: function (serverResponse) {
+                  if (serverResponse) {
+                      alert(`Added successfully`);
+                  }
+              },
+              error: function (errorResponse) {
+                  if (errorResponse) {
+                      alert(`Error Adding : ${errorResponse.responseText}`);
+                          console.log("error")
+                  }
+              }
+          });
+      });
+  });
+
+
+</script>
+
 </html>
