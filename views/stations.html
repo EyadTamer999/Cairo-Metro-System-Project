@@ -29,6 +29,21 @@
             cursor: pointer;
             margin-right: 1rem;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        tr.selected {
+            background-color: #4f46e5;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -117,16 +132,15 @@
                 padding: 0 50px; 
             }
         </style>
-        
-          <% stations.forEach(station => { %>
-            <tr>
-                <td><%= station.id %></td>
-                <td class="column-spacing"><%= station.stationname %></td>
-                <td class="column-spacing"><%= station.stationtype %></td>
-                <td class="column-spacing"><%= station.stationposition %></td>
-                <td class="column-spacing"><%= station.stationstatus %></td>
-            </tr>
-        <% }) %>
+              <% stations.forEach(station => { %>
+              <tr onclick="selectRow(this)">
+                  <td><%= station.id %></td>
+                  <td><%= station.stationname %></td>
+                  <td><%= station.stationtype %></td>
+                  <td><%= station.stationposition %></td>
+                  <td><%= station.stationstatus %></td>
+              </tr>
+              <% }) %>
       </tbody>
     </table>
 </div>
