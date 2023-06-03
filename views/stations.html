@@ -53,13 +53,6 @@
         if (!sessionToken) {
             location.href = '/';
         }
-    });
-
-    $(document).ready(function () {
-        const sessionToken = document.cookie.includes('session_token');
-        if (!sessionToken) {
-            location.href = '/';
-        }
 
         let selectedStationId = null;
         function selectRow(stationId) {
