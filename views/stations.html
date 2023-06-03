@@ -47,18 +47,29 @@
     </style>
 </head>
 <body>
-<script>
+  <script>
     $(document).ready(function () {
         const sessionToken = document.cookie.includes('session_token');
         if (!sessionToken) {
             location.href = '/';
         }
 
+        // Variable to store the selected station ID
         let selectedStationId = null;
-        function selectRow(stationId) {
+
+        // Function to handle row selection
+        function selectRow(row, stationId) {
+            // Deselect previously selected row, if any
+            $('.selectable-row.selected').removeClass('selected');
+
+            // Select the clicked row
+            $(row).addClass('selected');
+
+            // Update the selected station ID
             selectedStationId = stationId;
         }
 
+        // Event listener for the edit button click
         $('#btnEditStation').click(function () {
             if (selectedStationId) {
                 location.href = '/manage/stations/edit/' + selectedStationId;
@@ -66,10 +77,8 @@
                 alert('Please select a station to edit.');
             }
         });
-      });
-
+    });
 </script>
-
 <div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">    
     <nav id="navbar" class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">        
       <ul class="flex-1 text-center">
@@ -152,7 +161,7 @@
             }
         </style>
               <% stations.forEach(station => { %>
-              <tr onclick="selectRow(this)">
+                <tr id="row-<%= station.id %>" onclick="selectRow(this, '<%= station.id %>')" class="selectable-row">
                   <td><%= station.id %></td>
                   <td><%= station.stationname %></td>
                   <td><%= station.stationtype %></td>
