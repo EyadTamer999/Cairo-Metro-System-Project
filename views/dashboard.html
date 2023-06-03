@@ -131,8 +131,6 @@
                             // Parse the JSON data
                             const items = jsonData;
 
-                            console.log(items)
-
                             // Generate the HTML markup dynamically
                             let html = '';
                             items.forEach(function (item) {
@@ -175,7 +173,8 @@
                     </a>
                 </div>
                 <div class="flow-root ">
-                    <ul id="TransactionHistory" role="list" class="divide-y divide-gray-200 max-h-64 overflow-y-scroll ">
+                    <ul id="TransactionHistory" role="list"
+                        class="divide-y divide-gray-200 max-h-64 overflow-y-scroll ">
                         <li class="py-3 sm:py-4">
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0">
@@ -205,31 +204,29 @@
                             // Parse the JSON data
                             const items = jsonData;
 
-                            console.log(items)
-
                             // Generate the HTML markup dynamically
                             let html = '';
                             items.forEach(function (item) {
 
 
-                                    html += ' <li class="py-3 sm:py-4">'
-                                    html += '     <div class="flex items-center space-x-4">'
-                                    html += '         <div class="flex-shrink-0">'
-                                    html += '             <img class="w-8 h-8 rounded-full" src="/images/train-station.png" alt="Neil image">'
-                                    html += '             </div>'
-                                    html += '         <div class="flex-1 min-w-0">'
-                                    html += '             <p class="text-sm font-medium text-gray-900 truncate ">'
-                                    html += "Transaction ID: " + item['id'] + '-' + item['purchasediid']
-                                    html += '             </p>'
-                                    html += '             <p class="text-sm text-gray-500 truncate ">'
-                                    html +=  "Payment Method: " + item['purchasetype']
-                                    html += '             </p>'
-                                    html += '         </div>'
-                                    html += '         <div class="inline-flex items-center text-base font-semibold text-gray-900 ">'
-                                    html += item['amount'] + "EGP"
-                                    html += '         </div>'
-                                    html += '         </div>'
-                                    html += ' </li>'
+                                html += ' <li class="py-3 sm:py-4">'
+                                html += '     <div class="flex items-center space-x-4">'
+                                html += '         <div class="flex-shrink-0">'
+                                html += '             <img class="w-8 h-8 rounded-full" src="/images/train-station.png" alt="Neil image">'
+                                html += '             </div>'
+                                html += '         <div class="flex-1 min-w-0">'
+                                html += '             <p class="text-sm font-medium text-gray-900 truncate ">'
+                                html += "Transaction ID: " + item['id'] + '-' + item['purchasediid']
+                                html += '             </p>'
+                                html += '             <p class="text-sm text-gray-500 truncate ">'
+                                html += "Payment Method: " + item['purchasetype']
+                                html += '             </p>'
+                                html += '         </div>'
+                                html += '         <div class="inline-flex items-center text-base font-semibold text-gray-900 ">'
+                                html += item['amount'] + "EGP"
+                                html += '         </div>'
+                                html += '         </div>'
+                                html += ' </li>'
                             });
 
                             // Insert the generated HTML into the element with the specified ID
@@ -278,8 +275,6 @@
                             // console.log(jsonData)
                             // Parse the JSON data
                             const items = jsonData;
-
-                            console.log(items)
 
                             // Generate the HTML markup dynamically
                             let html = '';
@@ -546,7 +541,6 @@
                     Reset Password
                 </button>
 
-                <!--todo add functionality-->
                 <dialog class="" id="PasswordModal">
                     <div class="container flex flex-col">
 
@@ -559,14 +553,17 @@
                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                             </svg>
                         </button>
-
+                        <!--todo fix X button-->
                         <script>
-                            const dialog = document.querySelector("#RequestSeniorAccountModal");
-                            const closeButton = document.querySelector("#closeRequestSeniorAccountModal");
-                            closeButton.addEventListener("click", () => {
-                                dialog.close();
+                            $(document).ready(function () {
+                                const dialog = document.querySelector("#PasswordModal");
+                                const closeButton = document.querySelector("#closePasswordModal");
+                                closeButton.addEventListener("click", () => {
+                                    dialog.close();
+                                });
                             });
                         </script>
+
 
                         <form class="flex flex-col container" method="dialog">
                             <div class="relative mb-3">
@@ -593,16 +590,58 @@
                                 >Enter New Password</label>
                             </div>
                             <p class="text-red-700" id="PasswordError" style="visibility: hidden">Please Enter your
-                                National ID</p>
+                                current password and new password</p>
                             <div class="container flex-row">
-                                <button class="bg-blue-500 mr-4 px-1 py-1 mx-2 my-2">
-                                    Submit Request
+                                <button id="SubmitPassword" class="bg-blue-500 mr-4 px-1 py-1 mx-2 my-2">
+                                    Submit
                                 </button>
                                 <button class="bg-red-500 mr-4 px-1 py-1 mx-2 my-2">
                                     Cancel
                                 </button>
                             </div>
                         </form>
+
+                        <script>
+                            $(document).ready(function () {
+                                $("#SubmitPassword").click(function () {
+                                    const currUser = <%-JSON.stringify(user) %>;
+                                    const currentPassword = $('#CurrentPassword').val();
+                                    const newPassword = $('#NewPassword').val();
+                                    const passwordError = $('#PasswordError');
+
+                                    data = {
+                                        password: newPassword
+                                    }
+
+                                    if (currUser['password'] !== currentPassword) {
+                                        passwordError.css("visibility", "visible")
+                                        $('#CurrentPassword').text("")
+                                        $('#NewPassword').text("");
+                                        return
+                                    }
+
+                                    passwordError.css("visibility", "hidden")
+                                    $.ajax({
+                                        type: "PUT",
+                                        url: '/api/v1/password/reset',
+                                        data,
+                                        success: function (serverResponse) {
+                                            if (serverResponse) {
+                                                location.href = '/dashboard';
+                                                console.log("success")
+                                            }
+                                        },
+                                        error: function (errorResponse) {
+                                            if (errorResponse) {
+                                                alert(`User Password reset error: ${errorResponse.responseText}`);
+                                                console.log("error")
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+
                     </div>
                 </dialog>
 
@@ -620,29 +659,31 @@
                 </button>
 
 
-                <!--todo add functionality-->
+                <!--todo fix X button-->
                 <dialog class="" id="RequestSeniorAccountModal">
                     <div class="container flex flex-col">
 
-                        <button
-                                id="closeRequestSeniorAccountModal"
-                                type="reset"
-                                class="rounded-3xl bg-blue-500 text-bold text-2xl justify-self-end self-end mx-2 my-2 px-2 py-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                 class="bi bi-x" viewBox="0 0 16 16">
-                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                            </svg>
-                        </button>
-
-                        <script>
-                            const dialog = document.querySelector("#RequestSeniorAccountModal");
-                            const closeButton = document.querySelector("#closeRequestSeniorAccountModal");
-                            closeButton.addEventListener("click", () => {
-                                dialog.close();
-                            });
-                        </script>
-
                         <form class="flex flex-col container" method="dialog">
+
+                            <button
+                                    id="closeRequestSeniorAccountModal"
+                                    type="reset"
+                                    class="rounded-3xl bg-blue-500 text-bold text-2xl justify-self-end self-end mx-2 my-2 px-2 py-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-x" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                </svg>
+                            </button>
+                            <script>
+                                $(document).ready(function () {
+                                    const dialog = document.querySelector("#RequestSeniorAccountModal");
+                                    const closeButton = document.querySelector("#closeRequestSeniorAccountModal");
+                                    closeButton.addEventListener("click", () => {
+                                        dialog.close();
+                                    });
+                                });
+                            </script>
+
                             <div class="relative mb-3">
                                 <input
                                         type="text"
@@ -657,7 +698,8 @@
                             <p class="text-red-700" id="NationalIdError" style="visibility: hidden">Please Enter your
                                 National ID</p>
                             <div class="container flex-row">
-                                <button class="bg-blue-500 mr-4 px-1 py-1 mx-2 my-2">
+                                <button onclick="RequestSeniorAccountModal.showModal()" id="SubmitSeniorRequest"
+                                        class="bg-blue-500 mr-4 px-1 py-1 mx-2 my-2">
                                     Submit Request
                                 </button>
                                 <button class="bg-red-500 mr-4 px-1 py-1 mx-2 my-2">
@@ -668,17 +710,44 @@
                     </div>
                 </dialog>
 
-                <!--todo add functionality-->
                 <script>
                     $(document).ready(function () {
-                        $("#submit").click(function () {
-                            const NationalId = $('#NationalId').val();
-                            if (!NationalId) {
-                                //show error message #NationalIdError and return
+                        $("#SubmitSeniorRequest").click(function () {
+                            const currUser = <%-JSON.stringify(user) %>;
+                            const nationalID = $('#NationalId').val();
+                            const inputError = $('#NationalIdError');
+                            let inputErrorVal = $('#NationalIdError').val();
+
+                            data = {
+                                nationalid: nationalID,
                             }
+                            console.log(data)
+
+                            if (nationalID === '') {
+                                inputError.css("visibility", "visible")
+                                inputErrorVal = "Please Enter your National ID"
+                                $('#NationalId').text("");
+                                return
+                            }
+                            inputError.css("visibility", "hidden")
 
                             $.ajax({
-                                //call user makes request
+                                type: "POST",
+                                url: '/api/v1/senior/request',
+                                data,
+                                success: function (serverResponse) {
+                                    if (serverResponse) {
+                                        console.log("success")
+                                    }
+                                },
+                                error: function (errorResponse) {
+                                    if (errorResponse) {
+                                        $('#NationalIdError').text(errorResponse.responseText);
+                                        inputError.css("visibility", "visible")
+
+                                        console.log("error")
+                                    }
+                                }
                             });
                         });
                     });
@@ -693,8 +762,9 @@
 <footer class="bg-white dark:bg-gray-900">
     <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
         <div class="sm:flex sm:items-center sm:justify-between">
-          <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="https://cairometro.gov.eg/en"
-                                                                                          class="hover:underline">Gomhoryt masr el 3arabya™</a>. All Rights Reserved.
+          <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a
+                  href="https://cairometro.gov.eg/en"
+                  class="hover:underline">Gomhoryt masr el 3arabya™</a>. All Rights Reserved.
           </span>
             <div class="flex mt-4 space-x-6 sm:justify-center sm:mt-0">
                 <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
