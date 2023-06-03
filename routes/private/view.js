@@ -28,7 +28,7 @@ module.exports = function (app) {
     app.get('/dashboard', async function (req, res) {
         const user = await getUser(req);
         if (user.isAdmin){
-            return res.render('admin.html', {user});
+            return res.render('manage.html', {user});
         }
     
         const userRides =  await db.select('*').from("se_project.rides").where('userid',user['userid'])
