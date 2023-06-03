@@ -117,6 +117,20 @@
 <body>
     <h1 id="pageTitle"></h1>
 
+    
+    <p id="editingEntity">Editing <span id="entityType"></span> ID: <span id="entityId"></span></p>
+
+    <div>
+        <label id="entityNameLabel" for="entityName"></label>
+        <input type="text" id="entityName" placeholder="">
+    </div>
+
+    <div class="btn-container">
+        <button id="updateButton">Update</button>
+        <button id="deleteButton">Delete</button>
+    </div>
+    
+
     <script>
         // Get the current URL
         const url = window.location.href;
@@ -162,23 +176,7 @@
         }
 
         document.getElementById("entityName").placeholder = placeholderText;
-    </script>
-
-    <p id="editingEntity">Editing <span id="entityType"></span> ID: <span id="entityId"></span></p>
-
-    <div>
-        <label id="entityNameLabel" for="entityName"></label>
-        <input type="text" id="entityName" placeholder="">
-    </div>
-
-    <div class="btn-container">
-        <button id="updateButton">Update</button>
-        <button id="deleteButton">Delete</button>
-    </div>
-    
-
-    <!-- Include your JavaScript and other scripts here -->
-    <script>
+ 
         // Extract the entity ID from the URL
         const entityId = url.substring(url.lastIndexOf('/') + 1);
 
