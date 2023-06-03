@@ -53,6 +53,26 @@
         if (!sessionToken) {
             location.href = '/';
         }
+
+        $(document).ready(function () {
+        const sessionToken = document.cookie.includes('session_token');
+        if (!sessionToken) {
+            location.href = '/';
+        }
+
+        let selectedStationId = null;
+        function selectRow(stationId) {
+            selectedStationId = stationId;
+        }
+
+        $('#btnEditStation').click(function () {
+            if (selectedStationId) {
+                location.href = '/manage/stations/edit/' + selectedStationId;
+            } else {
+                alert('Please select a station to edit.');
+            }
+        });
+        
     });
 </script>
 
