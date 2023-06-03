@@ -9,6 +9,13 @@
     <link rel="icon" type="png" href="/images/icon.png">
     <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
     <!--    <script src="/js/bootstrap.min.js" type="text/javascript"></script>-->
+     <style>
+        #pageTitle {
+            font-size: 3rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+    </style>
 </head>
 <body>
 <script>
@@ -19,9 +26,10 @@
         }
     });
 </script>
-<div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">    
-    <nav id="navbar" class="flex items-center bg-blue-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">        <ul class="flex-1 text-center">
 
+<div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">    
+    <nav id="navbar" class="flex items-center bg-blue-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">        
+      <ul class="flex-1 text-center">
             <li class="list-none inline-block px-5">
                 <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
             </li>
@@ -67,37 +75,42 @@
             });
         </script>
     </nav>
+  <h1 id="pageTitle"></h1>
+
+    <script>
+        document.getElementById("pageTitle").innerText = document.title;
+    </script>
+
     <br/>
-      {{#isAdmin}}
+
       <div style="position:absolute; right:0;">
         <input id="btnAddStation" type="button" value="Add station" class="btn btn-primary">
         <br />
       </div>
-      {{/isAdmin}}
+
       <table class="table">
         <thead>
-          <tr>
-            <th scope="col">id</th>
-            <th scope="col">Name</th>
-            <th scope="col">code</th>
-            <th scope="col">Type</th>
-            <th scope="col">Position</th>
-            <th scope="col">status</th>
-
-
-
-          </tr>
-          {{#stations}}
             <tr>
-              <td>{{id}}</td>
-              <td>{{stationName}}</td>
-              <td>{{stationType}}</td>
-              <td>{{stationPosition}}</td>
-              <td>{{stationStatus}}</td>
-            </tr> 
-          {{/stations}}
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Position</th>
+                <th scope="col">Status</th>
+            </tr>
         </thead>
-      </table>
-    </div>
+        <tbody>
+          <% stations.forEach(station => { %>
+              <tr>
+                  <td><%= station.id %></td>
+                  <td><%= station.stationname %></td>
+                  <td><%= station.stationtype %></td>
+                  <td><%= station.stationposition %></td>
+                  <td><%= station.stationstatus %></td>
+              </tr>
+          <% }) %>
+      </tbody>
+    </table>
+</div>
+
   </body>
   </html>
