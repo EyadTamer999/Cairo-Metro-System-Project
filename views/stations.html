@@ -53,8 +53,9 @@
         if (!sessionToken) {
             location.href = '/';
         }
+    });
 
-        $(document).ready(function () {
+    $(document).ready(function () {
         const sessionToken = document.cookie.includes('session_token');
         if (!sessionToken) {
             location.href = '/';
@@ -72,8 +73,8 @@
                 alert('Please select a station to edit.');
             }
         });
-        
-    });
+      });
+
 </script>
 
 <div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">    
