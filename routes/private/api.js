@@ -49,6 +49,28 @@ module.exports = function (app) {
     });
 
 
+    // Simulate Ride
+    app.put("/api/v1/ride/simulate", async (req, res) => {
+        try {
+            const {origin, destination, tripdate} = req.body;
+            const simulatedRide = await db('se_project.rides')
+                .where("destination", destination)
+                .where("origin", origin)
+                .where("tripdate", tripdate)
+                .update("status", 'completed')
+                .returning("*");
+            if (isEmpty(simulatedRide)) {
+                console.log("Ride does not exist");
+                return res.status(400).send("Ride does not exist");
+            }
+            console.log("Ride simulated successfully");
+            return res.status(200).json(simulatedRide);
+        } catch (err) {
+            console.log("Error simulating ride", err.message);
+            return res.status(400).send("Error simulating ride, please make sure inputs are correct");
+        }
+    })
+
 // Pay for ticket by subscription
 //look through el subscription using el user id
 //check if user has sub, if no sub then no pay.
@@ -272,7 +294,7 @@ module.exports = function (app) {
             try {
                 const creditCardNumber = req.body.creditCardNumber;
                 const holderName = req.body.holderName;
-                const payedAmount = req.body.payedAmount;
+                let payedAmount = req.body.payedAmount;
                 const subType = req.body.subType;
                 const zoneId = req.body.zoneId;
 

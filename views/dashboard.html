@@ -321,14 +321,45 @@
                     Tickets & Rides
                 </h1>
             </div>
-            <!--todo add buy ticket button w fo2eeh haykoon feeh el tickets bt3t abl kda... ride hykoon feeha these rides w past ones            -->
+            <!--todo add buy ticket button w fo2eeh haykoon feeh el tickets bt3t abl kda... ride hykoon feeha these rides w past ones-->
             <div class="self-center w-full my-8 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
 
                 <div class="flex items-center justify-between mb-4">
                     <h5 class="text-xl font-bold leading-none text-gray-900 ">Upcoming Rides</h5>
-                    <a href="Tickets/Rides" class="text-sm font-medium text-blue-600 hover:underline">
-                        View all
-                    </a>
+                </div>
+                <div class="flow-root ">
+                    <ul role="list" class="divide-y divide-gray-200 max-h-64 overflow-y-scroll ">
+                        <li class="py-3 sm:py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png"
+                                         alt="Metro Car Icon">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate ">
+                                        ride ID
+                                    </p>
+                                    <p class="text-sm text-gray-500 truncate ">
+                                        origin -> dest
+                                    </p>
+                                </div>
+                                <div class="inline-flex items-center text-base font-semibold text-gray-900 ">
+                                    DateTime
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <script>
+
+                    </script>
+                </div>
+            </div>
+
+            <!--todo add buy ticket button w fo2eeh haykoon feeh el tickets bt3t abl kda... ride hykoon feeha these rides w past ones-->
+            <div class="self-center w-full my-8 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+
+                <div class="flex items-center justify-between mb-4">
+                    <h5 class="text-xl font-bold leading-none text-gray-900 ">Zones</h5>
                 </div>
                 <div class="flow-root ">
                     <ul role="list" class="divide-y divide-gray-200 max-h-64 overflow-y-scroll ">
@@ -386,12 +417,12 @@
                     </span>
                     <span class="mb-3 text-2xl" id="upcomingRides">
                         <script>
-                            const currUser = <%-JSON.stringify(user) %>;
+                            const user = <%-JSON.stringify(user) %>;
                             $(document).ready(function () {
                                 userType = function () {
-                                    if (currUser.isNormal)
+                                    if (user.isNormal)
                                         return "User"
-                                    else if (currUser.isSenior)
+                                    else if (user.isSenior)
                                         return "Senior"
                                     else
                                         return "Admin"
@@ -420,12 +451,12 @@
                     <div class="flex justify-center items-center scrollbar-hide">
                         <div class="w-80 bg-white p-3 rounded-lg">
                             <p class="text-xl font-semibold">Payment Details</p>
-                            <div class="input_text mt-6 relative"><input type="text"
+                            <div class="input_text mt-6 relative"><input id="CardHolderNameInput" type="text"
                                                                          class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b "
                                                                          placeholder="John Row"/> <span
                                     class="absolute left-0 text-sm -top-4">Cardholder Name</span> <i
                                     class="absolute left-2 top-4 text-gray-400 fa fa-user"></i></div>
-                            <div class="input_text mt-8 relative"><input type="text"
+                            <div class="input_text mt-8 relative"><input id="CardNumberInput" type="text"
                                                                          class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b "
                                                                          placeholder="0000 0000 0000 0000"
                                                                          data-slots="0" data-accept="\d" size="19"/>
@@ -433,12 +464,12 @@
                                         class="absolute left-2 top-[14px] text-gray-400 text-sm fa fa-credit-card"></i>
                             </div>
                             <div class="mt-8 flex gap-5 ">
-                                <div class="input_text relative w-full"><input type="text"
+                                <div class="input_text relative w-full"><input id="ExpiryInput" type="text"
                                                                                class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b "
                                                                                placeholder="mm/yyyy" data-slots="my"/>
                                     <span class="absolute left-0 text-sm -top-4">Expiry</span> <i
                                             class="absolute left-2 top-4 text-gray-400 fa fa-calendar-o"></i></div>
-                                <div class="input_text relative w-full"><input type="text"
+                                <div class="input_text relative w-full"><input id="CVVInput" type="text"
                                                                                class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b "
                                                                                placeholder="000" data-slots="0"
                                                                                data-accept="\d" size="3"/> <span
@@ -446,9 +477,19 @@
                                         class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i></div>
                             </div>
 
+                            <div class="mt-8 flex gap-5 ">
+                                <div class="input_text relative w-full"><input id="ZoneIdInput" type="text"
+                                                                               class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b "
+                                                                               placeholder="000" data-slots="0"
+                                                                               data-accept="\d" size="3"/> <span
+                                        class="absolute left-0 text-sm -top-4">Zone ID</span> <i
+                                        class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i></div>
+                            </div>
+
+
                             <div>
-                                <label>
-                                    <select class="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                <label>Choose Subscription Type:
+                                    <select id="SubscriptionTypeInput" class="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                         <option value="annual">Year (365 days)</option>
                                         <option value="month">Month (30 days)</option>
                                         <option value="quarterly">Quarterly (90 days)</option>
@@ -456,11 +497,67 @@
                                 </label>
                             </div>
 
-                            <p class="text-lg text-center mt-4 text-gray-600 font-semibold">Payment amount: </p>
+                            <p id="PaymentAmountLabel" class="text-lg text-center mt-4 text-gray-600 font-semibold">Payment amount: </p>
+                            <p id="ErrorLabel" style="visibility: hidden" class="text-lg text-center mt-4 text-red-700 font-semibold"></p>
                             <div class="flex flex-col justify-center mt-4">
-                                <button class="self-center outline-none pay h-12 bg-orange-600 text-white mb-3 hover:bg-orange-700 rounded-lg w-1/2 cursor-pointer transition-all">
+                                <button id="PayForSubscriptionButton" class="self-center outline-none pay h-12 bg-orange-600 text-white mb-3 hover:bg-orange-700 rounded-lg w-1/2 cursor-pointer transition-all">
                                     Pay
                                 </button>
+
+                                <script>
+                                    $(document).ready(function () {
+                                        $("#PayForSubscriptionButton").click(function () {
+                                            const user = <%-JSON.stringify(user) %>;
+                                            const cardHolderName = $('#CardHolderNameInput').val();
+                                            const cardNumber = $('#CardNumberInput').val();
+                                            const expiry = $('#ExpiryInput').val();
+                                            const cVV = $('#CVVInput').val();
+                                            const zoneId = $('#ZoneIdInput').val();
+                                            const subscriptionType = $('#SubscriptionTypeInput').val();
+                                            const paymentAmount = $('#PaymentAmountLabel');
+                                            const errorLabel = $('#ErrorLabel');
+
+
+                                            data = {
+                                                creditCardNumber: cardNumber,
+                                                holderName: cardHolderName,
+                                                payedAmount: paymentAmount,
+                                                subType: subscriptionType,
+                                                zoneId: zoneId
+                                            }
+
+                                            //todo handle if any of the inputs is empty
+                                            for(let i in data) {
+                                                if (i !== "") {
+                                                    errorLabel.css("visibility", "visible")
+                                                    errorLabel.text("${i} is missing!")
+                                                    $('#CurrentPassword').text("")
+                                                    $('#NewPassword').text("");
+                                                    return
+                                                }
+                                            }
+                                            errorLabel.css("visibility", "hidden")
+
+                                            $.ajax({
+                                                type: "POST",
+                                                url: '/api/v1/payment/subscription',
+                                                data,
+                                                success: function (serverResponse) {
+                                                    if (serverResponse) {
+                                                        console.log("success")
+                                                    }
+                                                },
+                                                error: function (errorResponse) {
+                                                    if (errorResponse) {
+                                                        alert(`User Password reset error: ${errorResponse.responseText}`);
+                                                        console.log("error")
+                                                    }
+                                                }
+                                            });
+                                        });
+                                    });
+                                </script>
+
                                 <button type="button" id="ClosePayForSubscription"
                                         class="self-center focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
                                     Cancel
@@ -531,7 +628,7 @@
                     </script>
                 </dialog>
 
-                <!--todo add functionality-->
+
                 <button
                         type="button"
                         onclick="PasswordModal.showModal()"
@@ -553,7 +650,6 @@
                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                             </svg>
                         </button>
-                        <!--todo fix X button-->
                         <script>
                             $(document).ready(function () {
                                 const dialog = document.querySelector("#PasswordModal");
@@ -604,7 +700,7 @@
                         <script>
                             $(document).ready(function () {
                                 $("#SubmitPassword").click(function () {
-                                    const currUser = <%-JSON.stringify(user) %>;
+                                    const user = <%-JSON.stringify(user) %>;
                                     const currentPassword = $('#CurrentPassword').val();
                                     const newPassword = $('#NewPassword').val();
                                     const passwordError = $('#PasswordError');
@@ -613,7 +709,7 @@
                                         password: newPassword
                                     }
 
-                                    if (currUser['password'] !== currentPassword) {
+                                    if (user['password'] !== currentPassword) {
                                         passwordError.css("visibility", "visible")
                                         $('#CurrentPassword').text("")
                                         $('#NewPassword').text("");
@@ -659,7 +755,6 @@
                 </button>
 
 
-                <!--todo fix X button-->
                 <dialog class="" id="RequestSeniorAccountModal">
                     <div class="container flex flex-col">
 
@@ -713,7 +808,7 @@
                 <script>
                     $(document).ready(function () {
                         $("#SubmitSeniorRequest").click(function () {
-                            const currUser = <%-JSON.stringify(user) %>;
+                            const user = <%-JSON.stringify(user) %>;
                             const nationalID = $('#NationalId').val();
                             const inputError = $('#NationalIdError');
                             let inputErrorVal = $('#NationalIdError').val();
