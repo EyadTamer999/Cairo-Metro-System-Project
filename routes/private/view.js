@@ -74,4 +74,18 @@ module.exports = function (app) {
             return res.render('edit.html', {...user, routes});
         });
 
+            // Register HTTP endpoint to render /zones page
+    app.get('/zones', async function (req, res) {
+        const user = await getUser(req);
+        const zones = await db.select('*').from('se_project.zones');
+        return res.render('zones.html', {...user, zones});
+    });
+
+        // Register HTTP endpoint to render /edit zones page
+        app.get('/manage/zones/edit/zoneId', async function (req, res) {
+            const user = await getUser(req);
+            const zones = await db.select('*').from('se_project.zones');
+            return res.render('edit.html', {...user, zones});
+        });
+
 };
