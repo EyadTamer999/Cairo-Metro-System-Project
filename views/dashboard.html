@@ -545,12 +545,65 @@
                 >
                     Reset Password
                 </button>
+
                 <!--todo add functionality-->
-                <dialog class="backdrop-blur-sm" id="PasswordModal">
-                    <p>Greetings, one and all!</p>
-                    <form method="dialog">
-                        <button>OK</button>
-                    </form>
+                <dialog class="" id="PasswordModal">
+                    <div class="container flex flex-col">
+
+                        <button
+                                id="closePasswordModal"
+                                type="reset"
+                                class="rounded-3xl bg-blue-500 text-bold text-2xl justify-self-end self-end mx-2 my-2 px-2 py-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-x" viewBox="0 0 16 16">
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                        </button>
+
+                        <script>
+                            const dialog = document.querySelector("#RequestSeniorAccountModal");
+                            const closeButton = document.querySelector("#closeRequestSeniorAccountModal");
+                            closeButton.addEventListener("click", () => {
+                                dialog.close();
+                            });
+                        </script>
+
+                        <form class="flex flex-col container" method="dialog">
+                            <div class="relative mb-3">
+                                <input
+                                        type="text"
+                                        class="peer m-0 block h-[58px] w-full rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-6 py-4 text-lg font-normal leading-tight text-neutral-700 transition duration-200 ease-linear placeholder:text-transparent focus:border-primary focus:pb-[0.625rem] focus:pt-[1.625rem] focus:text-neutral-700 focus:outline-none peer-focus:text-primary [&:not(:placeholder-shown)]:pb-[0.625rem] [&:not(:placeholder-shown)]:pt-[1.625rem]"
+                                        id="CurrentPassword"
+                                        placeholder="Current Password"/>
+                                <label
+                                        for="CurrentPassword"
+                                        class="pointer-events-none absolute left-0 top-0 origin-[0_0] border border-solid border-transparent px-3 py-4 text-neutral-500 transition-[opacity,_transform] duration-200 ease-linear peer-focus:-translate-y-2 peer-focus:translate-x-[0.15rem] peer-focus:scale-[0.85] peer-focus:text-primary peer-[:not(:placeholder-shown)]:-translate-y-2 peer-[:not(:placeholder-shown)]:translate-x-[0.15rem] peer-[:not(:placeholder-shown)]:scale-[0.85] motion-reduce:transition-none"
+                                >Enter Current Password</label>
+                            </div>
+
+                            <div class="relative mb-3">
+                                <input
+                                        type="text"
+                                        class="peer m-0 block h-[58px] w-full rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-6 py-4 text-lg font-normal leading-tight text-neutral-700 transition duration-200 ease-linear placeholder:text-transparent focus:border-primary focus:pb-[0.625rem] focus:pt-[1.625rem] focus:text-neutral-700 focus:outline-none peer-focus:text-primary [&:not(:placeholder-shown)]:pb-[0.625rem] [&:not(:placeholder-shown)]:pt-[1.625rem]"
+                                        id="NewPassword"
+                                        placeholder="New Password"/>
+                                <label
+                                        for="NewPassword"
+                                        class="pointer-events-none absolute left-0 top-0 origin-[0_0] border border-solid border-transparent px-3 py-4 text-neutral-500 transition-[opacity,_transform] duration-200 ease-linear peer-focus:-translate-y-2 peer-focus:translate-x-[0.15rem] peer-focus:scale-[0.85] peer-focus:text-primary peer-[:not(:placeholder-shown)]:-translate-y-2 peer-[:not(:placeholder-shown)]:translate-x-[0.15rem] peer-[:not(:placeholder-shown)]:scale-[0.85] motion-reduce:transition-none"
+                                >Enter New Password</label>
+                            </div>
+                            <p class="text-red-700" id="PasswordError" style="visibility: hidden">Please Enter your
+                                National ID</p>
+                            <div class="container flex-row">
+                                <button class="bg-blue-500 mr-4 px-1 py-1 mx-2 my-2">
+                                    Submit Request
+                                </button>
+                                <button class="bg-red-500 mr-4 px-1 py-1 mx-2 my-2">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </dialog>
 
 
@@ -640,7 +693,7 @@
 <footer class="bg-white dark:bg-gray-900">
     <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
         <div class="sm:flex sm:items-center sm:justify-between">
-          <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="https://flowbite.com/"
+          <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="https://cairometro.gov.eg/en"
                                                                                           class="hover:underline">Gomhoryt masr el 3arabya™</a>. All Rights Reserved.
           </span>
             <div class="flex mt-4 space-x-6 sm:justify-center sm:mt-0">
