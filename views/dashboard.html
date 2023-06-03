@@ -325,7 +325,7 @@
             <div class="self-center w-full my-8 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
 
                 <div class="flex items-center justify-between mb-4">
-                    <h5 class="text-xl font-bold leading-none text-gray-900 ">Upcoming Rides</h5>
+                    <h5 class="text-xl font-bold leading-none text-gray-900 ">Rides</h5>
                 </div>
                 <div class="flow-root ">
                     <ul role="list" class="divide-y divide-gray-200 max-h-64 overflow-y-scroll ">
@@ -355,37 +355,80 @@
                 </div>
             </div>
 
-            <!--todo add buy ticket button w fo2eeh haykoon feeh el tickets bt3t abl kda... ride hykoon feeha these rides w past ones-->
             <div class="self-center w-full my-8 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
 
                 <div class="flex items-center justify-between mb-4">
                     <h5 class="text-xl font-bold leading-none text-gray-900 ">Zones</h5>
                 </div>
                 <div class="flow-root ">
-                    <ul role="list" class="divide-y divide-gray-200 max-h-64 overflow-y-scroll ">
+                    <ul id="ZonesList" role="list" class="divide-y divide-gray-200 max-h-64 overflow-y-scroll ">
                         <li class="py-3 sm:py-4">
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0">
-                                    <img class="w-8 h-8 rounded-full" src="/images/MetroCarIcon.png"
+                                    <img class="w-8 h-8 rounded-full" src="/images/train-station.png"
                                          alt="Metro Car Icon">
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate ">
-                                        ride ID
+                                        Zone ID
                                     </p>
                                     <p class="text-sm text-gray-500 truncate ">
-                                        origin -> dest
+                                        Zone type
                                     </p>
                                 </div>
                                 <div class="inline-flex items-center text-base font-semibold text-gray-900 ">
-                                    DateTime
+                                    Zone price
                                 </div>
                             </div>
                         </li>
                     </ul>
-                    <script>
 
+                    <script>
+                        //todo check how to return value from ajax
+                        $(document).ready(function () {
+
+                            let jsonData = []
+
+                            $.get("api/v1/zones", function( data ) {
+                                console.log( typeof data ); // string
+                                console.log( data ); // HTML content of the jQuery.ajax page
+                                jsonData = data
+
+                                console.log("dasdwdad" ,jsonData)
+                                // Parse the JSON data
+                                const items = jsonData;
+
+                                // Generate the HTML markup dynamically
+                                let html = '';
+                                items.forEach(function (item) {
+
+
+                                    html += ' <li class="py-3 sm:py-4">'
+                                    html += '     <div class="flex items-center space-x-4">'
+                                    html += '         <div class="flex-shrink-0">'
+                                    html += '             <img class="w-8 h-8 rounded-full" src="/images/train-station.png" alt="Neil image">'
+                                    html += '             </div>'
+                                    html += '         <div class="flex-1 min-w-0">'
+                                    html += '             <p class="text-sm font-medium text-gray-900 truncate ">'
+                                    html += "Zone ID: " + item['id']
+                                    html += '             </p>'
+                                    html += '             <p class="text-sm text-gray-500 truncate ">'
+                                    html +=  "Zone type: " + item['zonetype']
+                                    html += '             </p>'
+                                    html += '         </div>'
+                                    html += '         <div class="inline-flex items-center text-base font-semibold text-gray-900 ">'
+                                    html +=  "Price: " + item['price'] + " EGP"
+                                    html += '         </div>'
+                                    html += '         </div>'
+                                    html += ' </li>'
+                                });
+
+                                // Insert the generated HTML into the element with the specified ID
+                                $('#ZonesList').html(html);
+                            });
+                        });
                     </script>
+
                 </div>
             </div>
 
@@ -480,7 +523,7 @@
                             <div class="mt-8 flex gap-5 ">
                                 <div class="input_text relative w-full"><input id="ZoneIdInput" type="text"
                                                                                class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b "
-                                                                               placeholder="000" data-slots="0"
+                                                                               placeholder="0" data-slots="0"
                                                                                data-accept="\d" size="3"/> <span
                                         class="absolute left-0 text-sm -top-4">Zone ID</span> <i
                                         class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i></div>
@@ -494,6 +537,70 @@
                                         <option value="month">Month (30 days)</option>
                                         <option value="quarterly">Quarterly (90 days)</option>
                                     </select>
+
+
+                                    <script>
+                                        //on change of SubscriptionTypeInput update the payment amount todo get zone prices
+                                        $(document).ready(function () {
+
+                                        })
+                                    </script>
+
+
+                                    <script>
+                                        //todo check how to return value from ajax
+                                        $(document).ready(function () {
+
+                                            $("#SubscriptionTypeInput").change(function () {
+
+
+                                                let jsonData = []
+
+                                                $.get("api/v1/zones", function( data ) {
+                                                    console.log( typeof data ); // string
+                                                    console.log( data ); // HTML content of the jQuery.ajax page
+                                                    jsonData = data
+
+                                                    console.log("dasdwdad" ,jsonData)
+                                                    // Parse the JSON data
+                                                    const items = jsonData;
+
+                                                    // Generate the HTML markup dynamically
+                                                    let html = '';
+                                                    items.forEach(function (item) {
+
+
+                                                        html += ' <li class="py-3 sm:py-4">'
+                                                        html += '     <div class="flex items-center space-x-4">'
+                                                        html += '         <div class="flex-shrink-0">'
+                                                        html += '             <img class="w-8 h-8 rounded-full" src="/images/train-station.png" alt="Neil image">'
+                                                        html += '             </div>'
+                                                        html += '         <div class="flex-1 min-w-0">'
+                                                        html += '             <p class="text-sm font-medium text-gray-900 truncate ">'
+                                                        html += "Zone ID: " + item['id']
+                                                        html += '             </p>'
+                                                        html += '             <p class="text-sm text-gray-500 truncate ">'
+                                                        html +=  "Zone type: " + item['zonetype']
+                                                        html += '             </p>'
+                                                        html += '         </div>'
+                                                        html += '         <div class="inline-flex items-center text-base font-semibold text-gray-900 ">'
+                                                        html +=  "Price: " + item['price'] + " EGP"
+                                                        html += '         </div>'
+                                                        html += '         </div>'
+                                                        html += ' </li>'
+                                                    });
+                                                    //todo get zones then on change get the zone price based on that id
+                                                    // Insert the generated HTML into the element with the specified ID
+                                                    $('#ZonesList').html(html);
+                                                });
+
+                                                if(){
+                                                    $('#CardHolderNameInput').text();
+                                                }
+                                            })
+                                        });
+                                    </script>
+
                                 </label>
                             </div>
 
@@ -505,6 +612,7 @@
                                 </button>
 
                                 <script>
+                                    //todo kamel when ehab adds the rest
                                     $(document).ready(function () {
                                         $("#PayForSubscriptionButton").click(function () {
                                             const user = <%-JSON.stringify(user) %>;
@@ -530,7 +638,7 @@
                                             for(let i in data) {
                                                 if (i !== "") {
                                                     errorLabel.css("visibility", "visible")
-                                                    errorLabel.text("${i} is missing!")
+                                                    errorLabel.text(i, "is missing!")
                                                     $('#CurrentPassword').text("")
                                                     $('#NewPassword').text("");
                                                     return
