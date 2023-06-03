@@ -189,6 +189,7 @@
 
 
     <script>
+        // update button
         $(document).ready(function () {
             $("#updateButton").click(function () {
                 const entityType = $("#entityType").text();
@@ -227,6 +228,47 @@
                 });
             });
         });
+
+//delete button
+        $(document).ready(function () {
+            $("#deleteButton").click(function () {
+                const entityType = $("#entityType").text();
+                const entityId = $("#entityId").text();
+                const entityName = $('#entityName').val();
+
+                const data = {
+                };  //no data? or should we add id
+
+                let url;
+                if (entityType === "stations") {
+                    url = `/manage/stations/edit/${entityId}`;
+                } else if (entityType === "routes") {
+                    url = `/manage/routes/edit/${entityId}`;
+                } 
+                // else if (entityType === "zones") {
+                //     url = `/manage/zones/edit/${entityId}`;
+                // }
+
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    data,
+                    success: function (serverResponse) {
+                        if (serverResponse) {
+                            alert(`Deleted successfully`);
+                        }
+                    },
+                    error: function (errorResponse) {
+                        if (errorResponse) {
+                            alert(`Error deleting : ${errorResponse.responseText}`);
+                                console.log("error")
+                        }
+                    }
+                });
+            });
+        });
+
+
     </script>
 
 
