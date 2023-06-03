@@ -27,6 +27,10 @@ module.exports = function (app) {
     // Register HTTP endpoint to render /users page
     app.get('/dashboard', async function (req, res) {
         const user = await getUser(req);
+        if (user.isAdmin){
+            return res.render('admin.html', {user});
+        }
+    
         const userRides =  await db.select('*').from("se_project.rides").where('userid',user['userid'])
         const stations = await db.select('*').from('se_project.stations');
         const userSubscription =  await db.select('*').from("se_project.subscription").where('userid',user['userid'])
