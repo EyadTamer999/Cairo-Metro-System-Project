@@ -54,29 +54,27 @@
             location.href = '/';
         }
 
-        // Variable to store the selected station ID
         let selectedStationId = null;
 
-        // Function to handle row selection
         function selectRow(row, stationId) {
-            // Deselect previously selected row, if any
-            $('.selectable-row.selected').removeClass('selected');
+            $('.selectable-row.selected').removeClass('selected'); //deselect any selected row
 
-            // Select the clicked row
             $(row).addClass('selected');
 
-            // Update the selected station ID
             selectedStationId = stationId;
         }
 
-        // Event listener for the edit button click
+        //event listener for the edit button 
         $('#btnEditStation').click(function () {
-            if (selectedStationId) {
-                location.href = '/manage/stations/edit/' + selectedStationId;
-            } else {
-                alert('Please select a station to edit.');
-            }
+          if (selectedStationId) {
+            const editUrl = `/manage/stations/edit/${selectedStationId}`;
+            location.href = editUrl;
+          } else {
+              alert('Please select a station to edit.');
+          }
         });
+
+
     });
 </script>
 <div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">    
@@ -140,7 +138,7 @@
 
         <div class="btn-container">
           <button id="btnAddStation" class="btn" onclick="addStation()">Add Station</button>
-          <button id="btnEditStation" class="btn" onclick="editStation()">Edit Station</button>
+          <button id="btnEditStation" class="btn" >Edit Station</button>
       </div>
 
     <br/>
