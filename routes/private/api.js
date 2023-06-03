@@ -51,7 +51,29 @@ module.exports = function (app) {
     }
   });
 
-
+    // Simulate Ride
+    app.put("/api/v1/ride/simulate", async (req, res) => {
+        try{
+            const {origin, destination, tripdate} = req.body;
+            const simulatedRide = await db('se_project.rides')
+            .where("destination", destination)
+            .where("origin", origin)
+            .where("tripdate", tripdate)
+            .update("status", 'completed')
+            .returning("*");
+            if (isEmpty( simulatedRide)) {
+                console.log("Ride does not exist");
+                return res.status(400).send("Ride does not exist");
+              }
+            console.log("Ride simulated successfully");
+            return res.status(200).json(simulatedRide);
+        }
+        catch(err){
+            console.log("Error simulating ride", err.message);
+            return res.status(400).send("Error simulating ride, please make sure inputs are correct");
+        }
+        })
+    
 
 // Pay for ticket by subscription
 //look through el subscription using el user id
@@ -463,7 +485,6 @@ module.exports = function (app) {
                         const ticket_cost = 0;//TODO call CheckPrice
                         const origin_id = await db.select("id").from('se_project.stations').where('stationname', origin);
                         const des_id = await db.select("id").from('se_project.stations').where('stationname', destination);
-                        console.log("ya ana mabdoon");
                         const origin_id_int = origin_id[0]['id'];
                         const des_id_int = des_id[0]['id'];
 
@@ -471,8 +492,6 @@ module.exports = function (app) {
                         console.log(des_id_int);
 
                         console.log(origin_id_int);
-                        console.log("ya ana mabdoon");
-
                         if (!isEmpty(origin_id) && !isEmpty(des_id)) {
                             const potential_routs_data = await db.select("*").from('se_project.routes').where('tostationid', des_id_int).where('fromstationid', origin_id_int);//ret2
 
