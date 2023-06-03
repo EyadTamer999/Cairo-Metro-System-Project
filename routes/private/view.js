@@ -46,10 +46,10 @@ module.exports = function (app) {
     });
 
     // Register HTTP endpoint to render /courses page
-    app.get('/stations_example', async function (req, res) {
+    app.get('/stations', async function (req, res) {
         const user = await getUser(req);
         const stations = await db.select('*').from('se_project.stations');
-        return res.render('stations_example.html', {...user, stations});
+        return res.render('stations.html', {...user, stations});
     });
 
 
