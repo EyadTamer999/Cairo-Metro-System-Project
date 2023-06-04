@@ -133,6 +133,221 @@ async (req,res)=>{
 
 
 
+
+
+
+
+//paying for tickets online need work 
+app.post("/api/v1/payment/ticket",
+async (req,res)=>{
+try{
+
+
+
+  const {
+    creditCardNumber,//Integer
+    holderName,//string
+    payedAmount,//integer
+
+    origin,//string
+    destination,//string
+    tripDate //dateTime
+    }=req.body;
+    
+    const user=await getUser(req);
+    const uid=user.userid;
+    
+
+    const existsubsription = await db.select("*").from("se_project.subscription").where('userid',uid);
+    if(!isEmpty(existsubsription))
+    {
+      return res.status(400).send("user have subscription");
+
+    }
+  else{  
+          
+
+
+
+          if(creditCardNumber===null)
+          {
+            return res.status(400).send("you must entered creditCardNumber");
+          }
+
+          else if(holderName===null)
+          {
+            return res.status(400).send("you must enter the name of credit Card holder");
+          }
+
+          else if(destination==origin)
+          {
+            return res.status(400).send("invalid trip");
+          }
+          else if(payedAmount===null)
+          {
+            return res.status(400).send("you must enter the paid amount");
+          }
+          
+
+          else if(tripDate===null)
+          {
+            return res.status(400).send("you must enter the trip date");
+
+          }
+
+          else if(origin==="")
+          {
+            return res.status(400).send("you must enter the origin");
+
+          }
+
+          else if(destination==="")
+          {
+            return res.status(400).send("you must enter the destination");
+
+          }
+
+          //TODO checkprice before inserting   
+          else{
+                const ret1=await db('se_project.tickets').insert({
+                  origin:origin,
+                  destination:destination,
+                  subid:null,//as we are paying online without subscription
+                  userid:uid,
+                  tripdate:tripDate
+
+
+                }).returning("*");
+
+
+                const id_trip=Number(ret1[0]["id"]);
+
+                const  ret2=await db('se_project.transactions').insert({
+                  amount:payedAmount,
+                  userid:uid,
+                  purchasedid:toString(id_trip),
+                  purchasetype:"ticket"        
+                  
+
+                }).returning("*");
+                
+
+                const ret3=await db('se_project.creditcarddetails').insert({
+                  holder_name:holderName,
+                  userid:uid,
+                  creditcardnumber:creditCardNumber
+                  
+
+                }).returning("*");
+
+
+
+                
+                const  ret4=await db('se_project.rides').insert({
+                  status:"activated",
+                  origin:origin,
+                  destination:destination,
+                  userid:uid,
+                  ticketid:id_trip,
+                  tripdate:tripDate
+                  
+                }).returning("*");
+
+                const ticket_cost=0;//TODO call CheckPrice
+                const origin_id=await db.select("id").from('se_project.stations').where('stationname',origin) ;
+                const des_id=await db.select("id").from('se_project.stations').where('stationname',destination) ;
+                console.log("ya ana mabdoon");
+                const origin_id_int=origin_id[0]['id'];
+                const des_id_int=des_id[0]['id'];
+
+
+                console.log(des_id_int);
+  
+                console.log(origin_id_int);
+                console.log("ya ana mabdoon");
+
+                if(!isEmpty(origin_id) && !isEmpty(des_id) ){
+                const potential_routs_data=await db.select("*").from('se_project.routes').where('tostationid',des_id_int  ).where('fromstationid',origin_id_int) ;//ret2
+              
+                
+                const t="transfer";
+
+                const transfer_stations=await db.select("stationname").from('se_project.stations').where('stationtype',t) ;//ret3
+
+
+                ////////////////////////////////////////////////////
+                // current date problem in date time methods
+                
+                let date1=new Date(tripDate);
+                // adjust 0 before single digit date
+                let date = ("0" + date1.getDate()).slice(-2);
+
+                // current month
+                let month = ("0" + (date1.getMonth() + 1)).slice(-2);
+
+                // current year
+                let year = date1.getFullYear();
+
+                // current hours
+                let hours = date1.getHours();
+
+                // current minutes
+                let minutes = date1.getMinutes();
+
+                // current seconds
+                let seconds = date1.getSeconds();
+
+
+                let up_date_bound=new Date();
+                up_date_bound.setFullYear(year);
+                up_date_bound.setMonth(month);
+                up_date_bound.setDate(date);
+                up_date_bound.setHours(23);
+                up_date_bound.setMinutes(59);
+                up_date_bound.setSeconds(59);              
+
+                /*knex.raw(
+                'select * from users where first_name is null'
+                ),*/          
+                //const todayCloseDate = DF.format(new Date(), 'yyyy-MM-dd');
+
+                const upcome_rides=await db.select("*").from('se_project.rides')
+                .where('tripdate','>',tripDate )
+                .where('tripdate','<',up_date_bound ) ;
+                //TODO ret4 not finished  .where('published_date', '<', 2000)
+
+                //  { tripdate >= currentdate}   
+                //1-full ticket price, check price
+                //2-route 
+                //3-transfer stations, 
+                //4-upcoming ride on the date of the ticket
+
+
+                //  { tripdate >= currentdate}   
+                //1-full ticket price, check price
+                //2-route 
+                //3-transfer stations, 
+                //4-upcoming ride on the date of the ticket
+
+                const ret={ticket_cost,potential_routs_data,transfer_stations,upcome_rides  };//and add the pricecheck price ,upcome_rides 
+                return res.status(201).json(ret);
+
+              }
+              else{
+                return res.status(400).send("origin or destination is invalid station");
+
+              }
+        }
+  }
+
+} 
+catch (e) {
+  console.log("Could not buy online tickets",e.message);
+  return res.status(400).send(e.message);
+}
+});
+
+
 function get_num_of_tickets(subType)
 {
   if(subType=="quarterly")
@@ -162,10 +377,7 @@ try{
     const existZone = await db.select("*").from("se_project.zones")
     .where({ id: zoneId });
 
-    if(user.isSenior)
-    {
-      payedAmount=payedAmount*0.9 ;
-    }
+
     if (isEmpty(existZone)) 
     {
     return res.status(400).send("Zone does not exist");
@@ -417,220 +629,6 @@ catch (e) {
 
 
 
-
-
-//paying for tickets online need work 
-app.post("/api/v1/payment/ticket",
-async (req,res)=>{
-try{
-
-
-
-  const {
-    creditCardNumber,//Integer
-    holderName,//string
-    payedAmount,//integer
-
-    origin,//string
-    destination,//string
-    tripDate //dateTime
-    }=req.body;
-    
-    const user=await getUser(req);
-    const uid=user.userid;
-    
-
-    const existsubsription = await db.select("*").from("se_project.subscription").where('userid',uid);
-    if(!isEmpty(existsubsription))
-    {
-      return res.status(400).send("user have subscription");
-
-    }
-  else{  
-          if(user.isSenior)
-          {
-            payedAmount=payedAmount*0.9 ;
-          }
-
-
-
-          else if(creditCardNumber===null)
-          {
-            return res.status(400).send("you must entered creditCardNumber");
-          }
-
-          else if(holderName===null)
-          {
-            return res.status(400).send("you must enter the name of credit Card holder");
-          }
-
-          else if(destination==origin)
-          {
-            return res.status(400).send("invalid trip");
-          }
-          else if(payedAmount===null)
-          {
-            return res.status(400).send("you must enter the paid amount");
-          }
-          
-
-          else if(tripDate===null)
-          {
-            return res.status(400).send("you must enter the trip date");
-
-          }
-
-          else if(origin==="")
-          {
-            return res.status(400).send("you must enter the origin");
-
-          }
-
-          else if(destination==="")
-          {
-            return res.status(400).send("you must enter the destination");
-
-          }
-
-          //TODO checkprice before inserting   
-          else{
-                const ret1=await db('se_project.tickets').insert({
-                  origin:origin,
-                  destination:destination,
-                  subid:null,//as we are paying online without subscription
-                  userid:uid,
-                  tripdate:tripDate
-
-
-                }).returning("*");
-
-
-                const id_trip=Number(ret1[0]["id"]);
-
-                const  ret2=await db('se_project.transactions').insert({
-                  amount:payedAmount,
-                  userid:uid,
-                  purchasedid:toString(id_trip),
-                  purchasetype:"ticket"        
-                  
-
-                }).returning("*");
-                
-
-                const ret3=await db('se_project.creditcarddetails').insert({
-                  holder_name:holderName,
-                  userid:uid,
-                  creditcardnumber:creditCardNumber
-                  
-
-                }).returning("*");
-
-
-
-                
-                const  ret4=await db('se_project.rides').insert({
-                  status:"activated",
-                  origin:origin,
-                  destination:destination,
-                  userid:uid,
-                  ticketid:id_trip,
-                  tripdate:tripDate
-                  
-                }).returning("*");
-
-                const ticket_cost=0;//TODO call CheckPrice
-                const origin_id=await db.select("id").from('se_project.stations').where('stationname',origin) ;
-                const des_id=await db.select("id").from('se_project.stations').where('stationname',destination) ;
-                console.log("ya ana mabdoon");
-                const origin_id_int=origin_id[0]['id'];
-                const des_id_int=des_id[0]['id'];
-
-
-                console.log(des_id_int);
-  
-                console.log(origin_id_int);
-                console.log("ya ana mabdoon");
-
-                if(!isEmpty(origin_id) && !isEmpty(des_id) ){
-                const potential_routs_data=await db.select("*").from('se_project.routes').where('tostationid',des_id_int  ).where('fromstationid',origin_id_int) ;//ret2
-              
-                
-                const t="transfer";
-
-                const transfer_stations=await db.select("stationname").from('se_project.stations').where('stationtype',t) ;//ret3
-
-
-                ////////////////////////////////////////////////////
-                // current date problem in date time methods
-                
-                let date1=new Date(tripDate);
-                // adjust 0 before single digit date
-                let date = ("0" + date1.getDate()).slice(-2);
-
-                // current month
-                let month = ("0" + (date1.getMonth() + 1)).slice(-2);
-
-                // current year
-                let year = date1.getFullYear();
-
-                // current hours
-                let hours = date1.getHours();
-
-                // current minutes
-                let minutes = date1.getMinutes();
-
-                // current seconds
-                let seconds = date1.getSeconds();
-
-
-                let up_date_bound=new Date();
-                up_date_bound.setFullYear(year);
-                up_date_bound.setMonth(month);
-                up_date_bound.setDate(date);
-                up_date_bound.setHours(23);
-                up_date_bound.setMinutes(59);
-                up_date_bound.setSeconds(59);              
-
-                /*knex.raw(
-                'select * from users where first_name is null'
-                ),*/          
-                //const todayCloseDate = DF.format(new Date(), 'yyyy-MM-dd');
-
-                const upcome_rides=await db.select("*").from('se_project.rides')
-                .where('tripdate','>',tripDate )
-                .where('tripdate','<',up_date_bound ) ;
-                //TODO ret4 not finished  .where('published_date', '<', 2000)
-
-                //  { tripdate >= currentdate}   
-                //1-full ticket price, check price
-                //2-route 
-                //3-transfer stations, 
-                //4-upcoming ride on the date of the ticket
-
-
-                //  { tripdate >= currentdate}   
-                //1-full ticket price, check price
-                //2-route 
-                //3-transfer stations, 
-                //4-upcoming ride on the date of the ticket
-
-                const ret={ticket_cost,potential_routs_data,transfer_stations,upcome_rides  };//and add the pricecheck price ,upcome_rides 
-                return res.status(201).json(ret);
-
-              }
-              else{
-                return res.status(400).send("origin or destination is invalid station");
-
-              }
-        }
-  }
-
-} 
-catch (e) {
-  console.log("Could not buy online tickets",e.message);
-  return res.status(400).send(e.message);
-}
-});
 
 //ok so, the purchasetype is set to cash or subscription rather than 0 or 1 in your code and also any purchase made with a
 // subscription should always have an amount of 1
