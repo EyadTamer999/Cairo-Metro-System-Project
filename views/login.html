@@ -128,6 +128,18 @@
                         if (serverResponse) {
                             location.href = '/dashboard';
                         }
+
+                        if (serverResponse) {
+                            const role = serverResponse.role;
+                            // if (role === 'admin') {
+                            // location.href = '/admin'; // Redirect to admin dashboard if the user is an admin
+                            // } else {
+                            location.href = '/dashboard'; // Redirect to regular user dashboard
+                            //}
+                        }
+
+
+                        
                     },
                     error: function (errorResponse) {
                         if (errorResponse) {

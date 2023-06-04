@@ -47,10 +47,12 @@ module.exports = function (app) {
         // validate the provided password against the password in the database
         // if invalid, send an unauthorized code
         const user = await db
-            .select("*")
-            .from("se_project.users")
-            .where("email", email)
-            .first();
+        .select("users.*", "roles.role")
+        .from("se_project.users")
+        .leftJoin("se_project.roles", "users.roleid", "roles.id")
+        .where("users.email", email)
+        .first();
+      
         if (isEmpty(user)) {
             return res.status(400).send("user does not exist");
         }
@@ -58,6 +60,12 @@ module.exports = function (app) {
         if (user.password !== password) {
             return res.status(401).send("Password does not match");
         }
+
+        const responseData = {
+            message: "login successful",
+            role: user.role
+          };
+          
 
         // set the expiry time as 15 minutes after the current time
         const token = v4();
@@ -77,7 +85,7 @@ module.exports = function (app) {
             return res
                 .cookie("session_token", token, {expires: expiresat})
                 .status(200)
-                .send("login successful");
+                .json(responseData);
         } catch (e) {
             console.log(e.message);
             return res.status(400).send("Could not register user");
