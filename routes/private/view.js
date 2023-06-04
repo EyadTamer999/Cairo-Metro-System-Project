@@ -110,4 +110,12 @@ module.exports = function (app) {
             const refunds = await db.select('*').from('se_project.refund_requests');
             return res.render('refunds.html', {...user, refunds});
         });
+
+
+            // Register HTTP endpoint to render /zones page
+    app.get('/subscriptions', async function (req, res) {
+        const user = await getUser(req);
+        const zones = await db.select('*').from('se_project.zones');
+        return res.render('subscriptions.html', { ...user, zones });
+    });
 };
