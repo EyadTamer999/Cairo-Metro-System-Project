@@ -88,4 +88,26 @@ module.exports = function (app) {
             return res.render('edit.html', {...user, zones});
         });
 
+
+      // Register HTTP endpoint to render /requests page
+    app.get('/requests', async function (req, res) {
+        const user = await getUser(req);
+        return res.render('requests.html', {...user});
+    });
+
+        // Register HTTP endpoint to render /senior requests page
+        app.get('/manage/requests/seniors', async function (req, res) {
+            const user = await getUser(req);
+            const seniors = await db.select('*').from('se_project.seniors');
+            return res.render('seniors.html', {...user, seniors});
+        });
+
+
+        
+        // Register HTTP endpoint to render /senior requests page
+        app.get('/manage/requests/refunds', async function (req, res) {
+            const user = await getUser(req);
+            const refunds = await db.select('*').from('se_project.refunds');
+            return res.render('refunds.html', {...user, refunds});
+        });
 };
