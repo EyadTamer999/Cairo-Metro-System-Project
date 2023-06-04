@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <title>Stations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel='stylesheet' href='/styles/style.css'/>
+    <link rel="icon" type="png" href="/images/icon.png">
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <style>
+        #pageTitle {
+            font-size: 3rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .btn-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            background-color: #4f46e5;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .selected {
+            background-color: #4f46e5;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+        const sessionToken = document.cookie.includes('session_token');
+        if (!sessionToken) {
+            location.href = '/';
+        }
+
+        let selectedStationId = null;
+
+        function selectRow(stationId) {
+            $('.selectable-row.selected').removeClass('selected');
+            $(`#row-${stationId}`).addClass('selected');
+            selectedStationId = stationId;
+        }
+
+        // Event listener for table row click
+        $(document).on('click', '.selectable-row', function () {
+            var stationId = $(this).attr('data-station-id');
+            selectRow(stationId);
+        });
+
+        // Event listener for the edit button click
+        $('#btnEditStation').click(function () {
+            if (selectedStationId !== null) {
+                location.href = `/manage/stations/edit/${selectedStationId}`;
+            } else {
+                alert('Please select a station to edit.');
+            }
+        });
+    });
+</script>
+<div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
+    <nav id="navbar" class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
+        <ul class="flex-1 text-center">
+            <li class="list-none inline-block px-5">
+                <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
+            </li>
+            <li class="list-none inline-block px-5">
+                <a href="#Account" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Account</a>
+            </li>
+        </ul>
+
+        <a href="/"><img class="mr-7 w-7 h-7" src="/images/logout.png" alt="logout"></a>
+
+        <a href="/">
+            <img class="w-40 hover:animate-pulse" src="/images/icon.png" alt="logo"/>
+        </a>
+        <script>
+            $(function () {
+                var scroll = $(document).scrollTop();
+                var navHeight = $('#navbar').outerHeight();
+
+                $(window).scroll(function () {
+                    var scrolled = $(document).scrollTop();
+
+                    if (scrolled > navHeight) {
+                        $('#navbar').addClass('animate');
+                    } else {
+
+                        $('#navbar').removeClass('animate');
+                    }
+
+                    if (scrolled > scroll) {
+                        $('#navbar').removeClass('sticky');
+                    } else {
+                        $('#navbar').addClass('sticky');
+                    }
+
+                    scroll = $(document).scrollTop();
+
+                });
+            });
+        </script>
+    </nav>
+    <h1 id="pageTitle"></h1>
+
+    <div class="btn-container">
+        <input type="text" id="stationNameInput" placeholder="New station name">
+        <button id="btnAddStation" class="btn" >Add Station</button>
+        <button id="btnEditStation" class="btn">Edit Station</button>
+    </div>
+
+    <br/>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Position</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% stations.forEach(station => { %>
+        <tr id="row-<%= station.id %>" data-station-id="<%= station.id %>" class="selectable-row">
+            <td><%= station.id %></td>
+            <td><%= station.stationname %></td>
+            <td><%= station.stationtype %></td>
+            <td><%= station.stationposition %></td>
+            <td><%= station.stationstatus %></td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
+</body>
+
+
+
+<script>
+  // add station button
+  $(document).ready(function () {
+      $("#btnAddStation").click(function () {
+          const stationNameInput = $('#stationNameInput').val();
+          const data = {
+            stationNameInput
+          };
+
+          $.ajax({
+              type: "POST",
+              url: '/api/v1/station',
+              data,
+              success: function (serverResponse) {
+                  if (serverResponse) {
+                      alert(`Added successfully`);
+                  }
+              },
+              error: function (errorResponse) {
+                  if (errorResponse) {
+                      alert(`Error Adding : ${errorResponse.responseText}`);
+                          console.log("error")
+                  }
+              }
+          });
+      });
+  });
+
+
+</script>
+
+</html>

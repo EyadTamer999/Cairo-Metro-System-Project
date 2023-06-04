@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <title>Requests</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel='stylesheet' href='/styles/style.css'/>
+    <link rel="icon" type="png" href="/images/icon.png">
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <style>
+        #pageTitle {
+            font-size: 3rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .btn-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 100px); /* Adjust the height to leave space for the navbar */
+            position: relative;
+            top: -50px; /* Adjust the value as needed to raise the buttons */
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            font-size: 3rem;
+            background-color: #4f46e5;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .selected {
+            background-color: #4f46e5;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+        const sessionToken = document.cookie.includes('session_token');
+        if (!sessionToken) {
+            location.href = '/';
+        }
+
+        // Event listener for the redirect buttons
+        $('#btnRedirectSenior').click(function () {
+            window.location.href = '/manage/requests/seniors';
+        });
+
+        $('#btnRedirectRefund').click(function () {
+            window.location.href = '/manage/requests/refunds';
+        });
+    });
+</script>
+<div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
+    <nav id="navbar" class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
+        <ul class="flex-1 text-center">
+            <li class="list-none inline-block px-5">
+                <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
+            </li>
+            <li class="list-none inline-block px-5">
+                <a href="#Account" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Account</a>
+            </li>
+        </ul>
+
+        <a href="/"><img class="mr-7 w-7 h-7" src="/images/logout.png" alt="logout"></a>
+
+        <a href="/">
+            <img class="w-40 hover:animate-pulse" src="/images/icon.png" alt="logo"/>
+        </a>
+        <script>
+            $(function () {
+                var scroll = $(document).scrollTop();
+                var navHeight = $('#navbar').outerHeight();
+
+                $(window).scroll(function () {
+                    var scrolled = $(document).scrollTop();
+
+                    if (scrolled > navHeight) {
+                        $('#navbar').addClass('animate');
+                    } else {
+
+                        $('#navbar').removeClass('animate');
+                    }
+
+                    if (scrolled > scroll) {
+                        $('#navbar').removeClass('sticky');
+                    } else {
+                        $('#navbar').addClass('sticky');
+                    }
+
+                    scroll = $(document).scrollTop();
+
+                });
+            });
+        </script>
+    </nav>
+    <h1 id="pageTitle"></h1>
+
+    <div class="btn-container">
+        <button id="btnRedirectSenior" class="btn">Senior Requests</button>
+        <button id="btnRedirectRefund" class="btn">Refund Requests</button>
+    </div>
+
+    <br/>
+
+</div>
+</body>
+
+
+</html>
