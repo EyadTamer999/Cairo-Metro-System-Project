@@ -35,7 +35,6 @@ module.exports = function (app) {
         const stations = await db.select('*').from('se_project.stations');
         const userSubscription =  await db.select('*').from("se_project.subscription").where('userid',user['userid'])
         const purchaseHistory = await db.select('*').from("se_project.transactions").where('userid',user['userid'])
-        console.log(purchaseHistory)
         return res.render('dashboard.html', {user, userRides , userSubscription, stations, purchaseHistory});
     });
 
