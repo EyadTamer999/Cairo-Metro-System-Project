@@ -1,6 +1,6 @@
 const db = require('../../connectors/db');
 const roles = require('../../constants/roles');
-const {getSessionToken} = require('../../utils/session');
+const { getSessionToken } = require('../../utils/session');
 
 const getUser = async function (req) {
     const sessionToken = getSessionToken(req);
@@ -27,29 +27,34 @@ module.exports = function (app) {
     // Register HTTP endpoint to render /users page
     app.get('/dashboard', async function (req, res) {
         const user = await getUser(req);
-        if (user.isAdmin){
-            return res.render('manage.html', {user});
+        if (user.isAdmin) {
+            return res.render('manage.html', { user });
         }
-    
-        const userRides =  await db.select('*').from("se_project.rides").where('userid',user['userid'])
+
+        const userRides = await db.select('*').from("se_project.rides").where('userid', user['userid'])
         const stations = await db.select('*').from('se_project.stations');
-        const userSubscription =  await db.select('*').from("se_project.subscription").where('userid',user['userid'])
-        const purchaseHistory = await db.select('*').from("se_project.transactions").where('userid',user['userid'])
-        return res.render('dashboard.html', {user, userRides , userSubscription, stations, purchaseHistory});
+        const userSubscription = await db.select('*').from("se_project.subscription").where('userid', user['userid'])
+        const purchaseHistory = await db.select('*').from("se_project.transactions").where('userid', user['userid'])
+        return res.render('dashboard.html', { user, userRides, userSubscription, stations, purchaseHistory });
     });
 
     // Register HTTP endpoint to render /users page
     app.get('/users', async function (req, res) {
         const users = await db.select('*').from('se_project.users');
-        return res.render('users.html', {users});
+        return res.render('users.html', { users });
     });
 
     // Register HTTP endpoint to render /courses page
     app.get('/stations', async function (req, res) {
         const user = await getUser(req);
         const stations = await db.select('*').from('se_project.stations');
-        return res.render('stations.html', {...user, stations});
+        return res.render('stations.html', { ...user, stations });
     });
-
+    // Register HTTP endpoint to render /edit zones page
+    app.get('/subscriptions', async function (req, res) {
+        const user = await getUser(req);
+        const zones = await db.select('*').from('se_project.zones');
+        return res.render('subscriptions.html', { ...user, zones });
+    });
 
 };
