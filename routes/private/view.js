@@ -98,7 +98,7 @@ module.exports = function (app) {
         // Register HTTP endpoint to render /senior requests page
         app.get('/manage/requests/seniors', async function (req, res) {
             const user = await getUser(req);
-            const seniors = await db.select('*').from('se_project.seniors');
+            const seniors = await db.select('*').from('se_project.senior_requests');
             return res.render('seniors.html', {...user, seniors});
         });
 
@@ -107,7 +107,7 @@ module.exports = function (app) {
         // Register HTTP endpoint to render /senior requests page
         app.get('/manage/requests/refunds', async function (req, res) {
             const user = await getUser(req);
-            const refunds = await db.select('*').from('se_project.refunds');
+            const refunds = await db.select('*').from('se_project.refund_requests');
             return res.render('refunds.html', {...user, refunds});
         });
 };
