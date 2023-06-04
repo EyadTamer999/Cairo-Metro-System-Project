@@ -583,10 +583,16 @@ app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
         .select("status")
         .first();
 
-    if (status['status'] === 'accepted') {
+        if (await db("se_project.senior_requests")
+        .where({ id: requestId })
+        .select("status")
+        .first() === 'accepted') {
         return res.status(400).send("Refund request has already been accepted");
     }
-    if (status['status'] === 'rejected') {
+    if (await db("se_project.senior_requests")
+            .where({ id: requestId })
+            .select("status")
+            .first() === 'rejected') {
         return res.status(400).send("Refund request has already been rejected");
     }
 
