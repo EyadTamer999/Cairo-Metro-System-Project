@@ -17,11 +17,15 @@
         .btn-container {
             display: flex;
             align-items: center;
-            
+            justify-content: center;
+            height: calc(100vh - 100px); /* Adjust the height to leave space for the navbar */
+            position: relative;
+            top: -50px; /* Adjust the value as needed to raise the buttons */
         }
         
         .btn {
-            padding: 0.5rem 1rem;
+            padding: 1rem 2rem;
+            font-size: 3rem;
             background-color: #4f46e5;
             color: #ffffff;
             border: none;
