@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <title>Seniors</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel='stylesheet' href='/styles/style.css'/>
+    <link rel="icon" type="png" href="/images/icon.png">
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <style>
+        #pageTitle {
+            font-size: 3rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .btn-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            background-color: #4f46e5;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .selected {
+            background-color: #4f46e5;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+        const sessionToken = document.cookie.includes('session_token');
+        if (!sessionToken) {
+            location.href = '/';
+        }
+
+        let selectedSeniorId = null;
+
+        function selectRow(seniorId) {
+            $('.selectable-row.selected').removeClass('selected');
+            $(`#row-${seniorId}`).addClass('selected');
+            selectedSeniorId = seniorId;
+        }
+
+        // Event listener for table row click
+        $(document).on('click', '.selectable-row', function () {
+            var seniorId = $(this).attr('data-senior-id');
+            selectRow(seniorId);
+        });
+
+        // Event listener for the Accept button click
+        $('#btnAccept').click(function () {
+            const requestId = selectedSeniorId;
+            const requestType = "Accept";
+            const data = {
+                requestId,
+                requestType
+            };
+
+            $.ajax({
+                type: "PUT",
+                url: `/api/v1/requests/seniors/${requestId}`,
+                data,
+                success: function (response) {
+                    alert(`Accepted: ${response}`);
+                },
+                error: function (error) {
+                    alert(`Error accepting: ${error.responseText}`);
+                }
+            });
+        });
+
+        // Event listener for the Reject button click
+        $('#btnReject').click(function () {
+            const requestId = selectedSeniorId;
+            const requestType = "Reject";
+            const data = {
+                requestId,
+                requestType
+            };
+
+            $.ajax({
+                type: "PUT",
+                url: `/api/v1/requests/seniors/${requestId}`,
+                data,
+                success: function (response) {
+                    alert(`Rejected: ${response}`);
+                },
+                error: function (error) {
+                    alert(`Error rejecting: ${error.responseText}`);
+                }
+            });
+        });
+    });
+</script>
+<div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
+    <nav id="navbar" class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
+        <ul class="flex-1 text-center">
+            <li class="list-none inline-block px-5">
+                <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
+            </li>
+            <li class="list-none inline-block px-5">
+                <a href="#Account" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Account</a>
+            </li>
+        </ul>
+
+        <a href="/"><img class="mr-7 w-7 h-7" src="/images/logout.png" alt="logout"></a>
+
+        <a href="/">
+            <img class="w-40 hover:animate-pulse" src="/images/icon.png" alt="logo"/>
+        </a>
+        <script>
+            $(function () {
+                var scroll = $(document).scrollTop();
+                var navHeight = $('#navbar').outerHeight();
+
+                $(window).scroll(function () {
+                    var scrolled = $(document).scrollTop();
+
+                    if (scrolled > navHeight) {
+                        $('#navbar').addClass('animate');
+                    } else {
+
+                        $('#navbar').removeClass('animate');
+                    }
+
+                    if (scrolled > scroll) {
+                        $('#navbar').removeClass('sticky');
+                    } else {
+                        $('#navbar').addClass('sticky');
+                    }
+
+                    scroll = $(document).scrollTop();
+
+                });
+            });
+        </script>
+    </nav>
+    <h1 id="pageTitle"></h1>
+
+    <div class="btn-container">
+        <button id="btnAccept" class="btn">Accept</button>
+        <button id="btnReject" class="btn">Reject</button>
+    </div>
+
+    <br/>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Status</th>
+            <th scope="col">User ID</th>
+            <th scope="col">National ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% seniors.forEach(senior => { %>
+        <tr id="row-<%= senior.id %>" data-senior-id="<%= senior.id %>" class="selectable-row">
+            <td><%= senior.id %></td>
+            <td><%= senior.status %></td>
+            <td><%= senior.userid %></td>
+            <td><%= senior.nationalid %></td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
