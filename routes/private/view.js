@@ -129,4 +129,14 @@ module.exports = function (app) {
         });
 
 
+                // Register HTTP endpoint to render /tickets page
+                app.get('/tickets/purchase', async function (req, res) {
+                    const user = await getUser(req);
+                   // const tickets = await db.select('*').from('se_project.tickets').where({ userid: user.userid });
+                    // console.log(JSON.stringify(user)); 
+                    // console.log(tickets);
+                    return res.render('purchase.html', { ...user, tickets });
+                });
+
+
 };

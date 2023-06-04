@@ -147,9 +147,6 @@
 
             if (selectedTicketId !== null) {
 
-          
-                    const data = {
-                    };
                 $.ajax({
               type: "POST",
               url: '/api/v1/refund/:ticketId',
@@ -169,6 +166,9 @@
             } else {
                 alert('Please select a ticket to Refund.');
             }
+
+          const data = {
+          };
 
 
         });
@@ -192,27 +192,7 @@
     </div>
     <br/>
     <div class="table-container bg-white p-5">
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Origin</th>
-            <th scope="col">Destination</th>            
-            <th scope="col">Sub ID</th>
-            <th scope="col">Trip Date</th>
-        </tr>
-        </thead>
-        <tbody>
-        <% tickets.forEach(ticket => { %>
-        <tr id="row-<%= ticket.id %>" data-ticket-id="<%= ticket.id %>" class="selectable-row">
-            <td><%= ticket.id %></td>
-            <td><%= ticket.origin %></td>
-            <td><%= ticket.destination %></td>
-            <td><%= ticket.subid %></td>
-            <td><%= ticket.tripdate %></td>
-        </tr>
-        <% }) %>
-        </tbody>
+
     </table>
 </div>
 </div>
