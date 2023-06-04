@@ -69,12 +69,10 @@
         });
 
         // Event listener for the Accept button click
-        $('#btnAccept').click(function () {
+        $('#btnAcceptReject').click(function () {
             const requestId = selectedRefundId;
-            const requestType = "Accept";
             const data = {
-                requestId,
-                requestType
+                requestId // should it be included or leave body empty
             };
 
             $.ajax({
@@ -82,35 +80,15 @@
                 url: `/api/v1/requests/refunds/${requestId}`,
                 data,
                 success: function (response) {
-                    alert(`Accepted: ${response}`);
+                    alert(`Handled: ${response}`);
                 },
                 error: function (error) {
-                    alert(`Error accepting: ${error.responseText}`);
+                    alert(`Error handling: ${error.responseText}`);
                 }
             });
         });
 
-        // Event listener for the Reject button click
-        $('#btnReject').click(function () {
-            const requestId = selectedRefundId;
-            const requestType = "Reject";
-            const data = {
-                requestId,
-                requestType
-            };
 
-            $.ajax({
-                type: "PUT",
-                url: `/api/v1/requests/refunds/${requestId}`,
-                data,
-                success: function (response) {
-                    alert(`Rejected: ${response}`);
-                },
-                error: function (error) {
-                    alert(`Error rejecting: ${error.responseText}`);
-                }
-            });
-        });
     });
 </script>
 <div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
@@ -159,8 +137,7 @@
     <h1 id="pageTitle"></h1>
 
     <div class="btn-container">
-        <button id="btnAccept" class="btn">Accept</button>
-        <button id="btnReject" class="btn">Reject</button>
+        <button id="btnAcceptReject" class="btn">Handle</button>
     </div>
 
     <br/>
