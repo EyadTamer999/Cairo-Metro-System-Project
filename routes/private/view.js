@@ -112,10 +112,21 @@ module.exports = function (app) {
         });
 
 
-            // Register HTTP endpoint to render /zones page
-    app.get('/subscriptions', async function (req, res) {
-        const user = await getUser(req);
-        const zones = await db.select('*').from('se_project.zones');
-        return res.render('subscriptions.html', { ...user, zones });
-    });
+            // Register HTTP endpoint to render /subscriptions page
+            app.get('/subscriptions', async function (req, res) {
+                const user = await getUser(req);
+                const zones = await db.select('*').from('se_project.zones');
+                return res.render('subscriptions.html', { ...user, zones });
+            });
+
+        // Register HTTP endpoint to render /tickets page
+        app.get('/tickets', async function (req, res) {
+            const user = await getUser(req);
+            const tickets = await db.select('*').from('se_project.tickets').where({ userid: user.userid });
+            // console.log(JSON.stringify(user)); 
+            // console.log(tickets);
+            return res.render('tickets.html', { ...user, tickets });
+        });
+
+
 };
