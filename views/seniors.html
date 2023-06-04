@@ -49,6 +49,7 @@
 <body>
 <script>
     $(document).ready(function () {
+        //todo check id logic thingy
         const sessionToken = document.cookie.includes('session_token');
         if (!sessionToken) {
             location.href = '/';
