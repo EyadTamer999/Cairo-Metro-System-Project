@@ -1,9 +1,12 @@
 // import the knex library that will allow us to
 // construct SQL statements
 const knex = require('knex');
+require("dotenv").config();
 
 // define the configuration settings to connect
 // to our local postgres server
+
+// //use this for local
 const config = {
     client: 'pg',
     connection: {
@@ -15,6 +18,12 @@ const config = {
         schema: 'se_project'
     }
 };
+
+// //use this for deployment
+// const config = {
+//     client: 'pg',
+//     connection: process.env.PG_CONNECTION_STRING,
+// };
 
 // create the connection with postgres
 const db = knex(config);
