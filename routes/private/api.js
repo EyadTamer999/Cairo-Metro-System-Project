@@ -722,9 +722,9 @@ module.exports = function (app) {
             return res.status(400).send("Senior request does not exist");
         }
         try {
-            const user = await getUser(req);
+            // const user = await getUser(req);
             // console.log(user)
-            const seniorUser = await db.select('*').from('se_project.senior_requests').where('userid', '=', user['userid'])
+            const seniorUser = await db.select('*').from('se_project.senior_requests').where('id', '=', requestId)
             console.log(seniorUser)
             let userNID = seniorUser[0]['nationalid'].toString();
             // console.log(userNID)
@@ -738,8 +738,8 @@ module.exports = function (app) {
                 if (thisYear - userBYear >= 60) {
                     //kda checks out and he's a senior
                     status = 'accepted'
-
-                    const updateUserRoleToSenior = await db("se_project.users").where('id', '=', user['userid']).update({
+                    console.log(seniorUser)
+                    const updateUserRoleToSenior = await db("se_project.users").where('id', '=', seniorUser[0]['userid']).update({
                         roleid: 3
                     })
 
