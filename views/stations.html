@@ -13,12 +13,12 @@
             text-align: center;
             margin-top: 2rem;
         }
-        
+
         .btn-container {
             display: flex;
             align-items: center;
         }
-        
+
         .btn {
             padding: 0.5rem 1rem;
             background-color: #4f46e5;
@@ -28,18 +28,18 @@
             cursor: pointer;
             margin-right: 1rem;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         th, td {
             padding: 0.5rem;
             text-align: left;
             border-bottom: 1px solid #ccc;
         }
-        
+
         .selected {
             background-color: #4f46e5;
             color: #ffffff;
@@ -61,7 +61,8 @@
     });
 </script>
 <div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
-    <nav id="navbar" class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
+    <nav id="navbar"
+         class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
         <ul class="flex-1 text-center">
             <li class="list-none inline-block px-5">
                 <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
@@ -107,7 +108,7 @@
 
     <div class="btn-container">
         <label for="AddStation"></label><input type="text" id="AddStation" placeholder="New Station Name">
-        <button id="btnAddStation" class="btn" >Add Station</button>
+        <button id="btnAddStation" class="btn">Add Station</button>
         <label for="EditStation"></label><input type="text" id="EditStation" placeholder="Edit Station">
         <button id="btnEditStation" class="btn">Edit Station</button>
     </div>
@@ -139,55 +140,57 @@
 </body>
 
 
-
 <script>
-  // add station button
-  $(document).ready(function () {
+    // add station button
+    $(document).ready(function () {
 
-      const sessionToken = document.cookie.includes('session_token');
-      if (!sessionToken) {
-          location.href = '/';
-      }
+        const sessionToken = document.cookie.includes('session_token');
+        if (!sessionToken) {
+            location.href = '/';
+        }
 
-      let selectedRefundId = null;
+        let selectedRefundId = null;
 
-      function selectRow(refundId) {
-          $('.selectable-row.selected').removeClass('selected');
-          $(`#row-${refundId}`).addClass('selected');
-          selectedRefundId = refundId;
-      }
+        function selectRow(refundId) {
+            $('.selectable-row.selected').removeClass('selected');
+            $(`#row-${refundId}`).addClass('selected');
+            selectedRefundId = refundId;
+        }
 
-      // Event listener for table row click
-      $(document).on('click', '.selectable-row', function () {
-          var refundId = $(this).attr('data-refund-id');
-          selectRow(refundId);
-      });
+        // Event listener for table row click
+        $(document).on('click', '.selectable-row', function () {
+            var refundId = $(this).attr('data-refund-id');
+            selectRow(refundId);
+        });
 
 
-      $("#btnAddStation").click(function () {
-          const stationNameInput = $('#AddStation').val();
-          const data = {
-            stationNameInput
-          };
+        $("#btnAddStation").click(function () {
+            const stationNameInput = $('#AddStation').val();
 
-          $.ajax({
-              type: "POST",
-              url: '/api/v1/station',
-              data,
-              success: function (serverResponse) {
-                  if (serverResponse) {
-                      alert(`Added successfully`);
-                  }
-              },
-              error: function (errorResponse) {
-                  if (errorResponse) {
-                      alert(`Error Adding : ${errorResponse.responseText}`);
-                          console.log("error")
-                  }
-              }
-          });
-      });
-  });
+            const data = {
+                stationNameInput
+            };
+
+            console.log(data)
+
+            $.ajax({
+                type: "POST",
+                url: '/api/v1/station',
+                data,
+                success: function (serverResponse) {
+                    if (serverResponse) {
+                        alert(`Added successfully`);
+                    }
+                },
+                error: function (errorResponse) {
+                    if (errorResponse) {
+                        alert(`Error Adding : ${errorResponse.responseText}`);
+                        console.log("error")
+                    }
+                }
+            });
+        });
+    });
 
 
 </script>
