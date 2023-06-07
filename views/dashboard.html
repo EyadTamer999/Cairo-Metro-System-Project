@@ -35,7 +35,7 @@
           alt="notifications"
         />
 
-        <!--todo add functionality-->
+        <!--TODO add functionality-->
         <dialog class="backdrop-blur-sm" id="notifications">
           <p>Greetings, one and all!</p>
           <form method="dialog">
@@ -328,7 +328,59 @@
           <div class="mt-5 self-center text-2xl font-medium">
             <h1>Tickets & Rides</h1>
           </div>
-          <!--todo add buy ticket button w fo2eeh haykoon feeh el tickets bt3t abl kda... ride hykoon feeha these rides w past ones-->
+
+          <!-- TODO add ticekts of user -->
+          <div
+            class="self-center w-full my-8 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <h5 class="text-xl font-bold leading-none text-gray-900">
+                Tickets
+              </h5>
+            </div>
+            <div class="flow-root">
+              <ul
+                role="list"
+                class="divide-y divide-gray-200 max-h-64 overflow-y-scroll"
+              >
+                <li class="py-3 sm:py-4">
+                  <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                      <img
+                        class="w-8 h-8 rounded-full"
+                        src="/images/MetroCarIcon.png"
+                        alt="Metro Car Icon"
+                      />
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-gray-900 truncate">
+                        ride ID
+                      </p>
+                      <p class="text-sm text-gray-500 truncate">
+                        origin -> dest
+                      </p>
+                    </div>
+                    <div
+                      class="inline-flex items-center text-base font-semibold text-gray-900"
+                    >
+                      DateTime
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <script></script>
+            </div>
+            <button
+              type="button"
+              onclick="window.location.href='/tickets'"
+              class="w-full h-20 my-6 rounded rounded-lg bg-orange-700 text-l font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-orange-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-orange-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-orange-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)](59,113,202,0.5)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              data-te-ripple-init
+            >
+              Buy Tickets!
+            </button>
+          </div>
+
+          <!--TODO ride hykoon feeha all rides of this user-->
           <div
             class="self-center w-full my-8 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8"
           >
@@ -378,7 +430,7 @@
               <h5 class="text-xl font-bold leading-none text-gray-900">
                 Zones
               </h5>
-              <!--todo                    redirect to subscriptions to show all zones -->
+              <!--TODO redirect to subscriptions to show all zones -->
             </div>
             <div class="flow-root">
               <ul
@@ -388,7 +440,7 @@
               ></ul>
 
               <script>
-                //todo check how to return value from ajax
+                //TODO check how to return value from ajax
                 $(document).ready(function () {
                   let jsonData = [];
 
@@ -477,7 +529,7 @@
               </span>
             </h3>
 
-            <!--todo add functionality-->
+            <!--TODO add functionality-->
             <button
               type="button"
               onclick="PayForSubscription.showModal()"
@@ -487,7 +539,7 @@
               Pay For Subscription
             </button>
 
-            <!--todo add functionality-->
+            <!--TODO add functionality-->
             <dialog class="rounded-2xl" id="PayForSubscription">
               <div class="flex justify-center items-center scrollbar-hide">
                 <div class="w-80 bg-white p-3 rounded-lg">
@@ -587,12 +639,12 @@
                       </select>
 
                       <script>
-                        //on change of SubscriptionTypeInput update the payment amount todo get zone prices
+                        //on change of SubscriptionTypeInput update the payment amount TODO get zone prices
                         $(document).ready(function () {});
                       </script>
 
                       <script>
-                        //todo check how to return value from ajax
+                        //TODO check how to return value from ajax
                         $(document).ready(function () {
 
                             $("#SubscriptionTypeInput").change(function () {
@@ -633,7 +685,7 @@
                                         html += '         </div>'
                                         html += ' </li>'
                                     });
-                                    //todo get zones then on change get the zone price based on that id
+                                    //TODO get zones then on change get the zone price based on that id
                                     // Insert the generated HTML into the element with the specified ID
                                     $('#ZonesList').html(html);
                                 });
@@ -667,7 +719,7 @@
                     </button>
 
                     <script>
-                      //todo kamel when ehab adds the rest
+                      //TODO kamel when ehab adds the rest
                       $(document).ready(function () {
                           $("#PayForSubscriptionButton").click(function () {
                               const user = <%-JSON.stringify(user) %>;
@@ -689,7 +741,7 @@
                                   zoneId: zoneId
                               }
 
-                              //todo handle if any of the inputs is empty
+                              //TODO handle if any of the inputs is empty
                               for(let i in data) {
                                   if (i !== "") {
                                       errorLabel.css("visibility", "visible")
@@ -950,7 +1002,7 @@
               </div>
             </dialog>
 
-            <!-- todo if request is already sent on this account make the button unclickable, and set the status in the account description -->
+            <!-- TODO if request is already sent on this account make the button unclickable, and set the status in the account description -->
             <button
               type="button"
               onclick="RequestSeniorAccountModal.showModal()"
