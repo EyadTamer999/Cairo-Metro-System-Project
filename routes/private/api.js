@@ -161,7 +161,7 @@ module.exports = function (app) {
 
                 console.log(newNumOfTickets)
 
-                return res.status(201).json(updateTickets);
+                // return res.status(201).json(updateTickets);
 
                 //send new data
                 //full ticket price
@@ -172,7 +172,6 @@ module.exports = function (app) {
                 const ticket_cost = 0;//TODO call CheckPrice
                 const origin_id = await db.select("id").from('se_project.stations').where('stationname', origin);
                 const des_id = await db.select("id").from('se_project.stations').where('stationname', destination);
-                console.log("ya ana mabdoon");
                 const origin_id_int = origin_id[0]['id'];
                 const des_id_int = des_id[0]['id'];
 
@@ -180,7 +179,6 @@ module.exports = function (app) {
                 console.log(des_id_int);
 
                 console.log(origin_id_int);
-                console.log("ya ana mabdoon");
 
                 if (!isEmpty(origin_id) && !isEmpty(des_id)) {
                     const potential_routs_data = await db.select("*").from('se_project.routes').where('tostationid', des_id_int).where('fromstationid', origin_id_int);//ret2
