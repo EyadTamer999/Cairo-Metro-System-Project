@@ -161,9 +161,9 @@
   // add station button
   $(document).ready(function () {
       $("#btnAddStation").click(function () {
-          const stationNameInput = $('#stationNameInput').val();
+          const stationname = $('#stationNameInput').val();
           const data = {
-            stationNameInput
+            stationname
           };
 
           $.ajax({
