@@ -135,8 +135,8 @@
 
     <div class="btn-container">
         <input type="text" id="RouteNameInput" class="textbox" placeholder="New route name">
-        <input type="text" id="FromStationInput" class="textbox" placeholder="New Station ID">
-        <input type="text" id="ToStationInput" class="textbox" placeholder="Connected Station ID">    
+        <input type="text" id="FromStationInput" class="textbox" placeholder="From Station ID">
+        <input type="text" id="ToStationInput" class="textbox" placeholder="To Station ID">    
         <button id="btnAddRoute" class="btn" >Add Route</button>
         <button id="btnEditRoute" class="btn">Edit Route</button>
     </div>
@@ -175,12 +175,14 @@
         const fromstationid = $('#FromStationInput').val();
         const tostationid = $('#ToStationInput').val();
           const data = {
-            RouteNameInput
+            routename,
+            fromstationid,
+            tostationid
           };
 
           $.ajax({
               type: "POST",
-              url: '/api/v1/routes',
+              url: '/api/v1/route',
               data,
               success: function (serverResponse) {
                   if (serverResponse) {
