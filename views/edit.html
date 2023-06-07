@@ -235,6 +235,7 @@
                 const entityType = $("#entityType").text();
                 const entityId = $("#entityId").text();
                 const entityName = $('#entityName').val();
+                console.log("ENTITY ID",`${entityId}`)
 
                 const data = {
                 };  //no data? or should we add id
@@ -242,12 +243,13 @@
                 let url;
                 if (entityType === "stations") {
                     url = `/api/v1/station/${entityId}`;
+
                   //  /api/v1/station/:stationId
                 } else if (entityType === "routes") {
-                    url = `/manage/routes/edit/${entityId}`;
+                    url = `/api/v1/route/${entityId}`;
                 } 
                 else if (entityType === "zones") {
-                    url = `/manage/zones/edit/${entityId}`;
+                    url = `/api/v1/zone/${entityId}`;
                 }
 
                 $.ajax({
