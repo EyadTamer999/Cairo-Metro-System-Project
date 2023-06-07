@@ -1,11 +1,13 @@
 -- DROP TABLE IF EXISTS se_project.users;
--- DROP TABLE IF EXISTS roles;
--- DROP TABLE IF EXISTS faculties;
--- DROP TABLE IF EXISTS courses;
--- DROP TABLE IF EXISTS sessions;
--- DROP TABLE IF EXISTS enrollments;
---- Note in pgadmin columns name will be lowerCase 
+-- DROP TABLE IF EXISTS se_project.roles;
+-- DROP TABLE IF EXISTS se_project.faculties;
+-- DROP TABLE IF EXISTS se_project.subsription;
+-- DROP TABLE IF EXISTS se_project.sessions;
+-- DROP TABLE IF EXISTS se_project.enrollments;
+--- Note in pgadmin columns name will be lowerCase
 --so either change them from pgadmin or change in the code to lower
+CREATE SCHEMA IF NOT EXISTS se_project;
+
 CREATE TABLE IF NOT EXISTS se_project.users
 (
     id        SERIAL  NOT NULL,
@@ -13,7 +15,7 @@ CREATE TABLE IF NOT EXISTS se_project.users
     lastname  text    NOT NULL,
     email     text    NOT NULL,
     password  text    NOT NULL,
-    roleid    integer NOT NULL,
+    roleId    integer NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS se_project.sessions
@@ -39,14 +41,14 @@ CREATE TABLE IF NOT EXISTS se_project.zones
     CONSTRAINT zones_pkey PRIMARY KEY (id)
 
 );
-CREATE TABLE IF NOT EXISTS se_project.subsription
+CREATE TABLE IF NOT EXISTS se_project.subscription
 (
     id          SERIAL  NOT NULL,
     subtype     text    NOT NULL, --annual --month -- quarterly
     zoneid      Integer NOT NULL,
     userid      INTEGER NOT NULL,
     nooftickets INTEGER NOT NULL,
-    CONSTRAINT subsription_pkey PRIMARY KEY (id),
+    CONSTRAINT subscriptions PRIMARY KEY (id),
     FOREIGN KEY (userid) REFERENCES se_project.users,
     FOREIGN KEY (zoneid) REFERENCES se_project.zones
 
@@ -60,7 +62,7 @@ CREATE TABLE IF NOT EXISTS se_project.tickets
     subiD       INTEGER,
     tripdate    timestamp not Null,
     FOREIGN KEY (userid) REFERENCES se_project.users,
-    FOREIGN KEY (subid) REFERENCES se_project.subsription,
+    FOREIGN KEY (subid) REFERENCES se_project.subscription,
     CONSTRAINT tickets_pkey PRIMARY KEY (id)
 );
 
@@ -74,15 +76,16 @@ CREATE TABLE IF NOT EXISTS se_project.rides
     ticketid    integer   not null,
     tripdate    timestamp not null,
     FOREIGN KEY (userid) REFERENCES se_project.users,
-    FOREIGN KEY (ticketid) REFERENCES se_project.rides,
+    FOREIGN KEY (ticketid) REFERENCES se_project.tickets,
     CONSTRAINT rides_pkey PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS se_project.transactions
 (
     id           SERIAL  NOT NULL,
-    amount       INTEGER NOT NULL,
+    amount       FLOAT NOT NULL, --should be FLOATs
     userid       INTEGER NOT NULL,
     purchasedIid text    NOT NULL,
+    purchasetype text    NOT NULL, --cash or subscription
     FOREIGN KEY (userid) REFERENCES se_project.users,
     CONSTRAINT transactions_pkey PRIMARY KEY (id)
 );
@@ -102,7 +105,7 @@ CREATE TABLE IF NOT EXISTS se_project.senior_requests
     id         SERIAL  NOT NULL,
     status     text    NOT NULL,
     userid     Integer NOT NULL,
-    nationalid INTEGER not null,
+    nationalid text not null,
     FOREIGN KEY (userid) REFERENCES se_project.users,
     CONSTRAINT senior_requests_pkey PRIMARY KEY (id)
 );
@@ -135,4 +138,14 @@ CREATE TABLE IF NOT EXISTS se_project.stationroutes
     CONSTRAINT stationRoutes_pkey PRIMARY KEY (id),
     FOREIGN KEY (stationid) REFERENCES se_project.stations on DELETE CASCADE on UPDATE CASCADE,
     FOREIGN KEY (routeid) REFERENCES se_project.routes on DELETE CASCADE on UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS se_project.creditcarddetails
+(
+    id SERIAL NOT NULL,
+    holder_name text NOT NULL,
+    creditCardNumber INTEGER NOT Null,
+    userId INTEGER NOT Null,
+    FOREIGN KEY( userId ) REFERENCES se_project.users,
+    CONSTRAINT cc_pkey PRIMARY KEY (id)
 );
