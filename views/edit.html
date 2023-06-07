@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
 <head>
-    <title>Stations</title>
+    <title>Edit</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link rel='stylesheet' href='/styles/style.css'/>
@@ -196,10 +196,28 @@
                 const entityId = $("#entityId").text();
                 const entityName = $('#entityName').val();
                 const stationname = $('#entityName').val();
-
-                const data = {
-                    stationname
-                };
+                const routename = $('#entityName').val();
+                const zonename = $('#entityName').val();
+                // const data = {
+                //         stationname
+                //          };
+                let data;
+                if (entityType === "stations") {
+                    // const stationname = $('#entityName').val();
+                     data = {
+                        stationname
+                         };
+                } else if (entityType === "routes") {
+                    // const routename = $('#entityName').val();
+                     data = {
+                        routename
+                         };
+                } else if (entityType === "zones") {
+                    // const zonename = $('#entityName').val();
+                     data = {
+                        zonename
+                         };
+                }
 
                 let url;
                 if (entityType === "stations") {

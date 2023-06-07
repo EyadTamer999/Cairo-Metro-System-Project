@@ -1183,9 +1183,9 @@ app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
                 })
                 .returning("*");
 
-            return res.status(200).json(updateRoute).send("Updated route");
+            return res.status(200).json(updateRoute);
         } catch (err) {
-            console.log("eror message", err.message);
+            console.log("error message", err.message);
             return res.status(400).send("Could not update route");
         }
     });
