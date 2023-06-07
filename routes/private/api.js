@@ -866,7 +866,7 @@ app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
             const user = await getUser(req);
             if (!user.isAdmin) return res.status(401);
             const {stationname} = req.body;
-            console.log(stationname);
+            console.log("station name",stationname);
             const existstation = await db("se_project.stations")
                 .where({stationname: stationname})
                 .select("*")
