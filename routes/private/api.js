@@ -116,8 +116,8 @@ module.exports = function (app) {
   })
   app.post("/api/v1/station", async (req, res) => {
     try{
-      const user = await getUser(req);
-      if (!user.isAdmin) return res.status(401);
+      //const user = await getUser(req);
+      //if (!user.isAdmin) return res.status(401);
       const { stationname } = req.body;
       console.log(stationname);
       const existstation =await db("se_project.stations")
@@ -175,8 +175,8 @@ module.exports = function (app) {
   })
   app.delete("/api/v1/station/:stationId", async (req,res)=>{
     try{
-      const user = await getUser(req);
-      if (!user.isAdmin) return res.status(401);
+      //const user = await getUser(req);
+      //if (!user.isAdmin) return res.status(401);
       const { stationId } = req.params;
       const stationid2 = parseInt(stationId);
       
