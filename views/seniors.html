@@ -70,6 +70,7 @@
 
         // Event listener for the Accept/Reject button click
         $('#btnAcceptReject').click(function () {
+            if (selectedSeniorId !== null) {
             const requestId = selectedSeniorId;
             const data = {
                 requestId // should it be included or leave body empty
@@ -86,7 +87,15 @@
                     alert(`Error handling: ${error.responseText}`);
                 }
             });
+
+        } else {
+                alert('Please select a request to edit.');
+            }
+
+            
         });
+
+        
 
 
     });
