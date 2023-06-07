@@ -241,7 +241,8 @@
 
                 let url;
                 if (entityType === "stations") {
-                    url = `/manage/stations/edit/${entityId}`;
+                    url = `/api/v1/station/${entityId}`;
+                  //  /api/v1/station/:stationId
                 } else if (entityType === "routes") {
                     url = `/manage/routes/edit/${entityId}`;
                 } 
