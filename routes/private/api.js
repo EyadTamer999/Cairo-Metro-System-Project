@@ -58,7 +58,6 @@ module.exports = function (app) {
     app.put("/api/v1/ride/simulate", async (req, res) => {
         try {
             const {origin, destination, tripdate} = req.body;
-            console.log("wooooo",req.body);
             const simulatedRide = await db('se_project.rides')
                 .where("destination", destination)
                 .where("origin", origin)
