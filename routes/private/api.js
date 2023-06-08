@@ -111,6 +111,131 @@ async (req,res)=>{
 
 
 
+
+
+
+
+    // Check Price-----------------------------------------------------------------------------------------
+    async function floydWarshall(adjMatrix) {
+      const n = adjMatrix.length;
+      const dist = [...adjMatrix];
+
+      for (let k = 0; k < n; k++) {
+          for (let i = 0; i < n; i++) {
+              for (let j = 0; j < n; j++) {
+                  if (
+                      dist[i][k] !== Infinity &&
+                      dist[k][j] !== Infinity &&
+                      dist[i][k] + dist[k][j] < dist[i][j]
+                  ) {
+                      dist[i][j] = dist[i][k] + dist[k][j];
+                  }
+              }
+          }
+      }
+      return dist;
+  }
+
+  //VIP
+  async function create2dmatrix() {
+      const stCount = await db("se_project.stations").count();
+      let stCountint = parseInt(stCount[0]["count"]);
+      let matrix = [];
+      // console.log("lol");
+
+      for (let i = 0; i < stCountint; i++) {
+          // console.log("i:",i);
+          matrix[i] = [];
+          const existST1 = await db("se_project.stations")
+              .where({id: i + 1})
+              .select("*")
+              .first();
+          if (isEmpty(existST1)) {
+              stCountint++;
+              // continue;
+          }
+          for (let j = 0; j < stCountint; j++) {
+              // console.log("stcount:",stCountint);
+              // console.log("j:",j);
+              const existRoute = await db("se_project.routes")
+                  .where({fromstationid: i + 1, tostationid: j + 1})
+                  .select("*")
+                  .first();
+
+              const existST2 = await db("se_project.stations")
+                  .where({id: j + 1})
+                  .select("*")
+                  .first();
+
+              if (isEmpty(existST2)) stCountint++;
+              else if (!isEmpty(existRoute)) matrix[i][j] = 1;
+              else if (i === j) matrix[i][j] = 0;
+              else matrix[i][j] = Infinity;
+          }
+      }
+      // console.log(matrix);
+      return matrix;
+  }
+
+  // Check Price:
+  app.get(
+      "/api/v1/tickets/price/:originId/:destinationId",
+      async (req, res) => {
+          // < 9 stations = 5 gneh,
+          // 10 - 16 stations = 7 gneh
+          // > 16 stations = 10 gneh
+          // 50% discount law senior
+          try {
+              const user = await getUser(req);
+              const {originId, destinationId} = req.params;
+              const originid = parseInt(originId);
+              const destinationid = parseInt(destinationId);
+              let startStation = await db
+                  .select("*")
+                  .from("se_project.stations")
+                  .where("id", "=", originid)
+                  .first();
+              let endStation = await db
+                  .select("*")
+                  .from("se_project.stations")
+                  .where("id", "=", destinationid)
+                  .first();
+              let matrix = await create2dmatrix();
+              let distMatrix = await floydWarshall(matrix);
+              const distance = distMatrix[originid][destinationid];
+              let price;
+              switch (true) {
+                  case distance <= 9:
+                      price = 5;
+                      break;
+                  case distance > 9 && distance <= 16:
+                      price = 7;
+                      break;
+                  default:
+                      price = 10;
+              }
+              if (user.isSenior) {
+                  price = price * 0.5;
+              }
+
+              // console.log(shortestPath);
+
+              return res.status(200).json(price);
+          } catch (err) {
+              console.log(err.message);
+              return res.status(400).send(err.message);
+          }
+      }
+  );
+
+
+
+
+
+
+
+
+
 //            const user = await db("se_project.users").insert(newUser).returning("*");
 //done
 //GET subscribtion GET zones Data
@@ -119,6 +244,7 @@ async (req,res)=>{
     try
         {
         const all_zones=await db.select("*").from('se_project.zones').returning("*") ;
+        //console.log(Get_price(originId,destinationId));
         return res.status(200).json(all_zones);
         }
     catch (e) 
@@ -132,9 +258,84 @@ async (req,res)=>{
 );
 
 
+///modifications
+
+async function Get_price(originid,destinationid)
+{
+  try {
+    const user = await getUser(req);
+  let startStation = await db
+  .select("*")
+  .from("se_project.stations")
+  .where("id", "=", originid)
+  .first();
+let endStation = await db
+  .select("*")
+  .from("se_project.stations")
+  .where("id", "=", destinationid)
+  .first();
+let matrix = await create2dmatrix();
+let distMatrix = await floydWarshall(matrix);
+const distance = distMatrix[originid][destinationid];
+let price;
+switch (true) {
+  case distance <= 9:
+      price = 5;
+      break;
+  case distance > 9 && distance <= 16:
+      price = 7;
+      break;
+  default:
+      price = 10;
+}
+if (user.isSenior) {
+  price = price * 0.5;
+}
+
+// console.log(shortestPath);
+
+return price;
+} catch (err) {
+console.log(err.message);
+return -1;
+}
+}
 
 
 
+
+
+app.post("/api/v1/station", async (req, res) => {
+  try {
+      const user = await getUser(req);
+      if (!user.isAdmin) return res.status(401);
+      const {stationname} = req.body;
+      console.log("station name",stationname);
+      const existstation = await db("se_project.stations")
+          .where({stationname: stationname})
+          .select("*")
+          .first();
+      if (existstation) {
+          console.log("station already exists")
+          return res.status(409).send("there already exists a station with that name");
+      } else {
+          let stationtype = 'normal';
+          let stationposition = null
+          let stationstatus = 'new';
+          let newStation = {
+              stationname,
+              stationtype,
+              stationposition,
+              stationstatus,
+          };
+          const addedStation = await db("se_project.stations").insert(newStation).returning("*");
+          return res.status(201).json(addedStation);
+      }
+  } catch (err) {
+      console.log("error message ", err.message);
+      return res.status(400).send(err.message);
+  }
+})
 
 
 //paying for tickets online need work 
@@ -156,8 +357,26 @@ try{
     
     const user=await getUser(req);
     const uid=user.userid;
-    
+    console.log("dammmmm1");
+    const origin_id=await db.select("id").from('se_project.stations').where('stationname',origin) ;
+    const des_id=await db.select("id").from('se_project.stations').where('stationname',destination) ;
+    console.log(origin_id);
+    let ticket_cost=0;
+    if(isEmpty(des_id) || isEmpty(origin_id) )
+    {
+      return res.status(400).send("invalid destination or origin ");
 
+  }
+
+
+  else{
+    
+    const origin_id_int=origin_id[0]['id'];
+
+    const des_id_int=des_id[0]['id'];
+
+     ticket_cost=await Get_price(origin_id_int,des_id_int);
+  
     const existsubsription = await db.select("*").from("se_project.subscription").where('userid',uid);
     if(!isEmpty(existsubsription))
     {
@@ -208,7 +427,8 @@ try{
           }
 
           //TODO checkprice before inserting   
-          else{
+          if(ticket_cost<=payedAmount){
+
                 const ret1=await db('se_project.tickets').insert({
                   origin:origin,
                   destination:destination,
@@ -253,13 +473,7 @@ try{
                   
                 }).returning("*");
 
-                const ticket_cost=0;//TODO call CheckPrice
-                const origin_id=await db.select("id").from('se_project.stations').where('stationname',origin) ;
-                const des_id=await db.select("id").from('se_project.stations').where('stationname',destination) ;
-                console.log("ya ana mabdoon");
-                const origin_id_int=origin_id[0]['id'];
-                const des_id_int=des_id[0]['id'];
-
+                //TODO call CheckPrice
 
                 console.log(des_id_int);
   
@@ -337,10 +551,15 @@ try{
                 return res.status(400).send("origin or destination is invalid station");
 
               }
+            
+           }//end of if(ticket_cost<=payedAmount)
+        else
+        {
+          return res.status(400).send("not enough for the payment");
         }
   }
 
-} 
+} }
 catch (e) {
   console.log("Could not buy online tickets",e.message);
   return res.status(400).send(e.message);
@@ -471,10 +690,16 @@ catch (e) {
           //check on user if there exists a subscription under his/her user id
           const user = await getUser(req);
           let userid = user["userid"]
+          
           const userSubscription = await db
               .select('*')
               .from('se_project.subscription')
               .where("userid", '=', userid)
+
+              const subid = userSubscription[0]['id']
+              //userSubscription is in an array, so we need to access that array first then access id
+              // console.log(userSubscription[0]['id'])
+              // console.log(subid)
 
           // console.log(userSubscription)
           // console.log(isEmpty(userSubscription))
@@ -491,20 +716,9 @@ catch (e) {
 
               // get the sub id from the user session and getUser
               // get origin and dest and data from user input
-              const subid = userSubscription[0]['id']
-              //userSubscription is in an array, so we need to access that array first then access id
-              // console.log(userSubscription[0]['id'])
-              // console.log(subid)
-              const {origin, destination, tripdate} = req.body;
+              
 
-              let newPaymentBySubscription = {
-                  origin,
-                  destination,
-                  userid,
-                  subid,
-                  tripdate
-              };
-
+              
               const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets");
 
               let newNumOfTickets = userSubscription[0]['nooftickets'] - 1
@@ -530,6 +744,19 @@ catch (e) {
               })
 
 
+
+              const {origin, destination, tripdate} = req.body;
+
+              let newPaymentBySubscription = {
+                  origin,
+                  destination,
+                  userid,
+                  subid,
+                  tripdate
+              };
+
+ 
+
               const ticket_cost=0;//TODO call CheckPrice
               const origin_id=await db.select("id").from('se_project.stations').where('stationname',origin) ;
               const des_id=await db.select("id").from('se_project.stations').where('stationname',destination) ;
@@ -545,7 +772,9 @@ catch (e) {
 
               if(!isEmpty(origin_id) && !isEmpty(des_id) ){
               const potential_routs_data=await db.select("*").from('se_project.routes').where('tostationid',des_id_int  ).where('fromstationid',origin_id_int) ;//ret2
-            
+
+              let ticket_cost=await Get_price(origin_id_int,des_id_int);
+
               
               const t="transfer";
 
@@ -1014,5 +1243,194 @@ catch (e) {
           }
         }
       );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      app.delete("/api/v1/station/:stationId", async (req, res) => {
+        try {
+            const user = await getUser(req);
+            if (!user.isAdmin) return res.status(401);
+            const {stationId} = req.params;
+            const stationid2 = parseInt(stationId);
+
+            const existstation = await db("se_project.stations")
+                .where({id: stationid2})
+                .select("*")
+                .first();
+            if (!existstation) {
+                return res.status(404).send("no station exists with such ID");
+            } else {
+                //const stationT = await db.select("*").from("se_project.stations").where( "id", stationid2) ;
+                if (existstation.stationtype === "transfer") {
+                    const newTransfer = await db.select("*").from("se_project.routes").where("tostationid", stationid2).first();
+                    let stationtype = "transfer";
+                    console.log("test0");
+                    const NormToTrans = await db("se_project.stations").where("id", newTransfer.fromstationid).update({stationtype: stationtype}).returning("*");
+                    const fromStationid = NormToTrans.id;
+                    let tostationid = NormToTrans.id;
+                    let stationid = NormToTrans.id;
+                    console.log("test1");
+                    const updatingTransfer = await db("se_project.routes")
+                        .where("fromstationid", stationid2)
+                        .update({fromstationid: newTransfer.fromstationid})
+                        .returning("*");
+                    const updatingTransfer2 = await db("se_project.routes")
+                        .where("tostationid", stationid2)
+                        .update({tostationid: newTransfer.fromstationid})
+                        .returning("*");
+                    console.log("test2");
+                    const deleteDupeRoute = await db("se_project.routes")
+                        .where("fromstationid", newTransfer.fromstationid)
+                        .andWhere("tostationid", newTransfer.fromstationid)
+                        .del()
+                        .returning("*");
+                    const updateRS = await db("se_project.stationroutes")
+                        .where("stationid", stationid2)
+                        .update({stationid: newTransfer.id})
+                        .returning("*");
+                    const deletedStation = await db("se_project.stations")
+                        .where("id", stationid2)
+                        .del()
+                        .returning("*");
+                    return res.status(200).json(deletedStation);
+                } else {
+                    console.log(stationid2);
+                    //const stationP = await db.select("*").from("se_project.stations").where( "id", stationid2) ;
+                    if (existstation.stationposition === "start") {
+                        console.log("test");
+                        const newStart = await db("se_project.routes")
+                            .where({fromstationid: stationid2})
+                            .select("*")
+                            .first();
+                        console.log(newStart.tostationid);
+                        let stationposition = "start";
+                        console.log(stationposition);
+                        const updatedStart = await db("se_project.stations")
+                            .where("id", newStart.tostationid)
+                            .update({stationposition: stationposition})
+                            .returning("*");
+                        const deleteRS = await db("se_project.stationroutes")
+                            .where("stationid", stationid2)
+                            .del()
+                            .returning("*");
+                        const deletedStation = await db("se_project.stations")
+                            .where("id", stationid2)
+                            .del()
+                            .returning("*");
+                        return res.status(200).json(deletedStation);
+                    } else if (existstation.stationposition === "end") {
+                        const newEnd = await db("se_project.routes")
+                            .where({tostationid: stationid2})
+                            .select("*")
+                            .first();
+                        let stationposition = "end";
+                        const updatedEnd = await db("se_project.stations")
+                            .where("id", newEnd.fromstationid)
+                            .update({stationposition: stationposition})
+                            .returning("*");
+                        //const unwantedRoute = await db.select("*").from("se_project.routes").where( "fromstationid", stationid2).orWhere("tostationid" , stationid2) ;
+                        const deleteRS = await db("se_project.stationroutes")
+                            .where("stationid", stationid2)
+                            .del()
+                            .returning("*");
+                        const deletedStation = await db("se_project.stations")
+                            .where("id", stationid2)
+                            .del()
+                            .returning("*");
+                        return res.status(200).json(deletedStation);
+                    } else {
+                        //const newRS = await db.select("tostationid").from("se_project.routes").where( "fromstationid" , existstation.id) ;
+                        const newRS = await db.select("*").from("se_project.routes").where("tostationid", stationid2);
+                        let fromstationid = newRS[0].fromstationid;
+                        let tostationid = newRS[1].fromstationid;
+                        let routename = "new";
+                        console.log(fromstationid);
+                        console.log(tostationid);
+                        let newRoute1 = {
+                            routename,
+                            fromstationid,
+                            tostationid,
+                        };
+                        fromstationid = newRS[1].fromstationid;
+                        tostationid = newRS[0].fromstationid;
+                        console.log(fromstationid);
+                        console.log(tostationid);
+                        let newRoute2 = {
+                            routename,
+                            fromstationid,
+                            tostationid,
+                        };
+                        const addedRoute1 = await db("se_project.routes").insert(newRoute1).returning("*");
+                        const addedRoute2 = await db("se_project.routes").insert(newRoute2).returning("*");
+                        console.log(addedRoute1);
+                        console.log(addedRoute2);
+                        let routeid = addedRoute1[0].id;
+                        let stationid = tostationid;
+                        console.log(tostationid);
+                        console.log(stationid);
+                        let newRstation = {
+                            stationid,
+                            routeid,
+                        };
+                        console.log(newRstation);
+                        routeid = addedRoute2[0].id;
+                        let newRstation2 = {
+                            stationid,
+                            routeid,
+                        };
+                        console.log(newRstation2);
+                        routeid = addedRoute1[0].id;
+                        stationid = fromstationid;
+                        let newRstation3 = {
+                            stationid,
+                            routeid,
+                        };
+                        console.log(newRstation3);
+                        routeid = addedRoute2[0].id;
+                        let newRstation4 = {
+                            stationid,
+                            routeid,
+                        };
+                        console.log(newRstation4);
+                        const addedRS = await db("se_project.stationroutes").insert(newRstation).returning("*");
+                        const addedRS2 = await db("se_project.stationroutes").insert(newRstation2).returning("*");
+                        const addedRS3 = await db("se_project.stationroutes").insert(newRstation3).returning("*");
+                        const addedRS4 = await db("se_project.stationroutes").insert(newRstation4).returning("*");
+                        const deletedStation = await db("se_project.stations")
+                            .where("id", stationid2)
+                            .del()
+                            .returning("*");
+                        return res.status(200).json(deletedStation);
+                    }
+                }
+            }
+        } catch (err) {
+            console.log("error message ", err.message);
+            return res.status(400).send(err.message);
+        }
+    })
+
+
+
+
+
+
+
+
+    
 
 };
