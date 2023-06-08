@@ -41,7 +41,7 @@ module.exports = function (app) {
   app.put("/users", async function (req, res) {
     try {
        const user = await getUser(req);
-     // const {userId}=req.body
+     // const {userid}=req.body
      console.log("hiiiiiiiiiii");
       const users = await db.select('*').from("se_project.users")
         
@@ -765,33 +765,43 @@ app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
     })
 
 
-    app.post("/api/v1/refund/:ticketId", async (req, res) => {
+    app.post("/api/v1/refund/:ticketid", async (req, res) => {
         try {
             const user = await getUser(req);
             if (user.isAdmin) return res.status(401);
-            var {ticketId} = req.params;
-            console.log("waaaaaa",ticketId);
-            ticketId = parseInt(ticketId);
-            const existTicket = await db.select("*").from("se_project.tickets").where("id", ticketId);
-            console.log("elexist",existTicket);
+            var {ticketid} = req.params;
+            console.log("waaaaaa",ticketid);
+            ticketid = parseInt(ticketid);
+            const existTicket = await db.select("*").from("se_project.tickets").where("id", ticketid);
 
             if (existTicket) {
-                const existRequest = await db.select("*").from("se_project.refund_requests").where("ticketid", ticketId);
-                if (!existRequest) {
-                    const ticketPurchase = await db.select("amount").from("se_project.transactions").where("purchaseid", ticketId);
+                
+                const existRequest = await db.select("*").from("se_project.refund_requests").where("ticketid", ticketid);
+
+                if (isEmpty(existRequest)) {
+                    let z = ticketid + "";
+                    const originalticketPurchase = await db.select("amount").from("se_project.transactions").where("purchasedid", z);
+                    ticketPurchase = originalticketPurchase[0]['amount'];
+                    console.log("tickitpur",ticketPurchase);
+
                     if (ticketPurchase) {
-                        refundAmount = ticketPurchase;
+                        refundamount = ticketPurchase;
                     } else {
-                        refundAmount = 0;
+                        refundamount = 0;
                     }
-                    const userId = await db.select("userId").from("se_project.tickets").where("id", ticketId);
+                    const theuserid = await db.select("userid").from("se_project.tickets").where("id", ticketid);
+                    var userid = theuserid[0]['userid'];
                     let status = "pending";
+                    // console.log("useris",userid);
+                    // console.log("ticketis",ticketid);
+                    
                     let newRequest = {
+                        refundamount,
                         status,
-                        userId,
-                        refundAmount,
-                        ticketId,
+                        ticketid,
+                        userid
                     };
+
                     const addedRequest = await db("se_project.refund_requests").insert(newRequest).returning("*");
                     return res.status(201).json(addedRequest);
                 } else {
