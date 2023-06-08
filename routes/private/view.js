@@ -137,5 +137,9 @@ module.exports = function (app) {
                     return res.render('purchase.html', { ...user });
                 });
 
-
+                app.get('/rides', async (req, res) =>{
+                    const user = await getUser(req);
+                    const rides = await db("se_project.rides").select("*").where({userid : user.userid});
+                    return res.render('rides.html',{...user,rides});
+                });
 };
