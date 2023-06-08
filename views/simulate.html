@@ -161,11 +161,26 @@
         <br/>
 
         <div class="btn-container">
-            <select id="origin" class="textbox" placeholder="Origin"></select>
-            <select id="destination" class="textbox" placeholder="Destination"></select>
             <input type="datetime-local" id="tripdate" class="textbox" placeholder="Trip Date">
             <button id="SimulateRide" class="btn">Simulate Ride</button>
         </div>
+
+        <div class="btn-container">
+            <select id="originrideDropdown" class="textbox">
+              <option disabled selected value="">Origin</option>
+              <% rides.forEach(ride => { %>
+                <option value="<%= ride.id %>"><%= ride.origin %></option>
+              <% }) %>
+            </select>            
+            <select id="destinationrideDropdown" class="textbox">
+              <option disabled selected value="">Destination</option>
+              <% rides.forEach(ride => { %>
+                <option value="<%= ride.id %>"><%= ride.destination %></option>
+              <% }) %>
+            </select>
+          </div>
+          
+          
         
         <script>
             // Fetch data from backend endpoint
@@ -190,6 +205,8 @@
                         option.textContent = ride.destination;
                         destinationDropdown.appendChild(option);
                     });
+
+                    
                 })
                 .catch(error => console.error('Error fetching data:', error));
         </script>
