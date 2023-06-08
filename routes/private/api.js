@@ -5,6 +5,7 @@ const db = require("../../connectors/db");
 const roles = require("../../constants/roles");
 const {getSessionToken} = require('../../utils/session')
 const {json} = require("express");
+const { parse } = require("path");
 const getUser = async function (req) {
     const sessionToken = getSessionToken(req);
     if (!sessionToken) {
@@ -768,8 +769,12 @@ app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
         try {
             const user = await getUser(req);
             if (user.isAdmin) return res.status(401);
-            const {ticketId} = req.params;
+            var {ticketId} = req.params;
+            console.log("waaaaaa",ticketId);
+            ticketId = parseInt(ticketId);
             const existTicket = await db.select("*").from("se_project.tickets").where("id", ticketId);
+            console.log("elexist",existTicket);
+
             if (existTicket) {
                 const existRequest = await db.select("*").from("se_project.refund_requests").where("ticketid", ticketId);
                 if (!existRequest) {

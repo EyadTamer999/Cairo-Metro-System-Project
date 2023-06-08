@@ -94,7 +94,7 @@
         
         .btn {
             padding: 0.5rem 1rem;
-            background-color: #4f46e5;
+            background-color: #e56b46 ;
             color: #ffffff;
             border: none;
             border-radius: 4px;
@@ -121,7 +121,7 @@
 </head>
 <body>
 <script>
-    $(document).ready(function () {
+        $(document).ready(function () {
         const sessionToken = document.cookie.includes('session_token');
         if (!sessionToken) {
             location.href = '/';
@@ -141,47 +141,40 @@
             selectRow(ticketId);
         });
 
-
-        // Event listener for the edit button click
+        // Event listener for the refund button click
         $('#btnRefund').click(function () {
-
             if (selectedTicketId !== null) {
+            const ticketId = selectedTicketId; 
 
-          
-                    const data = {
-                    };
-                $.ajax({
-              type: "POST",
-              url: '/api/v1/refund/:ticketId',
-              data,
-              success: function (serverResponse) {
-                  if (serverResponse) {
-                      alert(`Refunded successfully`);
-                  }
-              },
-              error: function (errorResponse) {
-                  if (errorResponse) {
-                      alert(`Error Refunding : ${errorResponse.responseText}`);
-                          console.log("error")
-                  }
-              }
-          });
+            const data = {};
+
+            $.ajax({
+                type: "POST",
+                url: `/api/v1/refund/${ticketId}`, 
+                data,
+                success: function (serverResponse) {
+                if (serverResponse) {
+                    alert(`Refunded successfully`);
+                }
+                },
+                error: function (errorResponse) {
+                if (errorResponse) {
+                    alert(`Error Refunding: ${errorResponse.responseText}`);
+                    console.log("error");
+                }
+                }
+            });
             } else {
-                alert('Please select a ticket to Refund.');
+            alert('Please select a ticket to refund.');
             }
-
-
         });
 
-
-
-
-        // Event listener for the edit button click
-            $('#btnPurchase').click(function () {
-                    location.href = `/tickets/purchase`;
-    
-            });
-    });        
+        // Event listener for the purchase button click
+        $('#btnPurchase').click(function () {
+            location.href = '/tickets/purchase';
+        });
+        });
+        
 </script>
 
 </script>
