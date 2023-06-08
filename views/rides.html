@@ -106,6 +106,7 @@
                 border-radius: 4px;
                 cursor: pointer;
                 margin-right: 1rem;
+                margin-bottom: 1rem;
             }
             
             table {
@@ -147,12 +148,18 @@
                 selectRow(rideId);
             });
     
-          
         });
+
+  
     </script>
         <h1 id="pageTitle"></h1>
     
         <br/>
+
+        <div class="btn-container">
+
+            <button id="btnSimulateRide" class="btn">Simulate Ride</button>
+        </div>
         <div class="table-container bg-white p-5">
         <table class="table">
             <thead>
@@ -178,6 +185,13 @@
         </table>
     </div>
     </div>
+<script>
+          // Event listener for the simulate button click
+          $('#btnSimulateRide').click(function () {
+                location.href = `/rides/simulate`;          
+        });
+</script>
+
     </body>
     
     
