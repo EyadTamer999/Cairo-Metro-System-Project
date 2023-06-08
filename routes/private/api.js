@@ -1388,7 +1388,7 @@ app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
         return matrix;
     }
 
-    // Check Price:
+    // Check Price Method:
     app.get(
         "/api/v1/tickets/price/:originId/:destinationId",
         async (req, res) => {
