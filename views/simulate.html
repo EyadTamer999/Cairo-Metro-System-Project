@@ -156,7 +156,7 @@
 
   
     </script>
-        <h1 id="pageTitle"></h1>
+        <h1 id="pageTitle">Simulate Ride</h1>
     
         <br/>
 
@@ -217,7 +217,34 @@
 <script>
           // Event listener for the simulate button click
           $('#SimulateRide').click(function () {
-        });
+            const origin = $('#originrideDropdown option:selected').text();
+            const destination = $('#destinationrideDropdown option:selected').text();
+            const tripdate = $('#tripdate').val();
+          const data = {
+            origin,
+            destination,
+            tripdate
+          };
+
+          $.ajax({
+              type: "PUT",
+              url: '/api/v1/ride/simulate',
+              data,
+              success: function (serverResponse) {
+                  if (serverResponse) {
+                      alert(`Ride completed successfully`);
+                  }
+              },
+              error: function (errorResponse) {
+                  if (errorResponse) {
+                      alert(`Error Simulating Ride : ${errorResponse.responseText}`);
+                          console.log("error")
+                  }
+              }
+          });
+      });
+
+
 </script>
 
     </body>
