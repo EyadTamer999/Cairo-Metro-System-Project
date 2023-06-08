@@ -133,6 +133,8 @@
             $('.selectable-row.selected').removeClass('selected');
             $(`#row-${ticketId}`).addClass('selected');
             selectedTicketId = ticketId;
+            originid = origin;
+            destination = destination;
         }
 
         // Event listener for table row click
@@ -172,6 +174,9 @@
         // Event listener for the purchase button click
         $('#btnPurchase').click(function () {
             location.href = '/tickets/purchase';
+        });        
+        $('#btnCheckPrice').click(function () {
+            location.href = `/prices/${originid}`;
         });
         });
         
@@ -182,6 +187,7 @@
     <div class="btn-container">
         <button id="btnRefund" class="btn" >Refund Ticket</button>
         <button id="btnPurchase" class="btn">Purchase Ticket Online</button>
+        <button id="btnCheckPrice" class="btn">Check Price</button>
     </div>
     <br/>
     <div class="table-container bg-white p-5">
