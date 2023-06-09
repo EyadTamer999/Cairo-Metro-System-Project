@@ -19,7 +19,8 @@ const config = {
     }
 };
 
-//use this for deployment
+
+// //use this for deployment
 // const config = {
 //     client: 'pg',
 //     connection: process.env.PG_CONNECTION_STRING,
