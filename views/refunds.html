@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
 <head>
-    <title>Requests</title>
+    <title>Refunds</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link rel='stylesheet' href='/styles/style.css'/>
@@ -17,15 +17,10 @@
         .btn-container {
             display: flex;
             align-items: center;
-            justify-content: center;
-            height: calc(100vh - 100px); /* Adjust the height to leave space for the navbar */
-            position: relative;
-            top: -50px; /* Adjust the value as needed to raise the buttons */
         }
         
         .btn {
-            padding: 1rem 2rem;
-            font-size: 3rem;
+            padding: 0.5rem 1rem;
             background-color: #4f46e5;
             color: #ffffff;
             border: none;
@@ -59,20 +54,43 @@
             location.href = '/';
         }
 
-        // Event listener for the redirect buttons
-        $('#btnRedirectStations').click(function () {
-            window.location.href = '/stations';
+        let selectedRefundId = null;
+
+        function selectRow(refundId) {
+            $('.selectable-row.selected').removeClass('selected');
+            $(`#row-${refundId}`).addClass('selected');
+            selectedRefundId = refundId;
+        }
+
+        // Event listener for table row click
+        $(document).on('click', '.selectable-row', function () {
+            var refundId = $(this).attr('data-refund-id');
+            selectRow(refundId);
         });
 
-        $('#btnRedirectRoutes').click(function () {
-            window.location.href = '/routes';
-        });
-        $('#btnRedirectZones').click(function () {
-            window.location.href = '/zones';
-        });
+        // Event listener for the Accept button click
+        $('#btnAcceptReject').click(function () {
+            if (selectedRefundId !== null) {
+            const requestId = selectedRefundId;
+            const data = {
+                requestId // should it be included or leave body empty
+            };
 
-        $('#btnRedirectRequests').click(function () {
-            window.location.href = '/requests';
+            $.ajax({
+                type: "PUT",
+                url: `/api/v1/requests/refunds/${requestId}`,
+                data,
+                success: function (response) {
+                    alert(`Handled: ${response}`);
+                },
+                error: function (error) {
+                    alert(`Error handling: ${error.responseText}`);
+                }
+            });
+        } else {
+                alert('Please select a refund to edit.');
+            }
+
         });
     });
 </script>
@@ -122,17 +140,32 @@
     <h1 id="pageTitle"></h1>
 
     <div class="btn-container">
-        <button id="btnRedirectStations" class="btn">Stations</button>
-        <button id="btnRedirectRoutes" class="btn">Routes</button>
-        <button id="btnRedirectZones" class="btn">Zones</button>
-        <button id="btnRedirectRequests" class="btn">Requests</button>
-
+        <button id="btnAcceptReject" class="btn">Handle</button>
     </div>
 
     <br/>
-
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Status</th>
+            <th scope="col">User ID</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Ticket ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% refunds.forEach(refund => { %>
+        <tr id="row-<%= refund.id %>" data-refund-id="<%= refund.id %>" class="selectable-row">
+            <td><%= refund.id %></td>
+            <td><%= refund.status %></td>
+            <td><%= refund.userid %></td>
+            <td><%= refund.refundamount %></td>
+            <td><%= refund.ticketid %></td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
 </div>
 </body>
-
-
 </html>

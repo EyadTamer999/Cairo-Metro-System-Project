@@ -60,19 +60,12 @@
         }
 
         // Event listener for the redirect buttons
-        $('#btnRedirectStations').click(function () {
-            window.location.href = '/stations';
+        $('#btnRedirectSenior').click(function () {
+            window.location.href = '/manage/requests/seniors';
         });
 
-        $('#btnRedirectRoutes').click(function () {
-            window.location.href = '/routes';
-        });
-        $('#btnRedirectZones').click(function () {
-            window.location.href = '/zones';
-        });
-
-        $('#btnRedirectRequests').click(function () {
-            window.location.href = '/requests';
+        $('#btnRedirectRefund').click(function () {
+            window.location.href = '/manage/requests/refunds';
         });
     });
 </script>
@@ -122,11 +115,8 @@
     <h1 id="pageTitle"></h1>
 
     <div class="btn-container">
-        <button id="btnRedirectStations" class="btn">Stations</button>
-        <button id="btnRedirectRoutes" class="btn">Routes</button>
-        <button id="btnRedirectZones" class="btn">Zones</button>
-        <button id="btnRedirectRequests" class="btn">Requests</button>
-
+        <button id="btnRedirectSenior" class="btn">Senior Requests</button>
+        <button id="btnRedirectRefund" class="btn">Refund Requests</button>
     </div>
 
     <br/>

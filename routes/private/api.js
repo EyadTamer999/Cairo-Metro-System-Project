@@ -4,6 +4,7 @@ const db = require("../../connectors/db");
 const roles = require("../../constants/roles");
 const {getSessionToken} = require('../../utils/session')
 const {json} = require("express");
+const { parse } = require("path");
 const getUser = async function (req) {
     const sessionToken = getSessionToken(req);
     if (!sessionToken) {
@@ -26,6 +27,7 @@ const getUser = async function (req) {
         )
         .first();
 
+    //test
     // console.log("user =>", user);
     user.isNormal = user.roleid === roles.user;
     user.isAdmin = user.roleid === roles.admin;
@@ -35,24 +37,22 @@ const getUser = async function (req) {
 };
 
 module.exports = function (app) {
-    // example
-    app.put("/users", async function (req, res) {
-        try {
-            const user = await getUser(req);
-            const users = await db.select('*').from("se_project.users")
-            return res.status(200).json(user);
-        } catch (e) {
-            console.log(e.message);
-            return res.status(400).send("Could not get users");
-        }
-    });
 
-<<<<<<< HEAD
-    // Pay for ticket by subscription
-    //look through el subscription using el user id
-    //check if user has sub, if no sub then no pay.
-    //if sub then make ticket! 💪🏽
-=======
+  // example
+  app.put("/users", async function (req, res) {
+    try {
+       const user = await getUser(req);
+     // const {userid}=req.body
+     console.log("hiiiiiiiiiii");
+      const users = await db.select('*').from("se_project.users")
+        
+      return res.status(200).json(users);
+    } catch (e) {
+      console.log(e.message);
+      return res.status(400).send("Could not get users");
+    }
+  });
+
 
     // Simulate Ride
     app.put("/api/v1/ride/simulate", async (req, res) => {
@@ -81,16 +81,23 @@ module.exports = function (app) {
 //check if user has sub, if no sub then no pay.
 //if sub then make ticket! 💪🏽
     //todo add check price here and send back the upcoming ride
->>>>>>> b79762399366305b2401ffa08b946d4a646c0275
     app.post("/api/v1/tickets/purchase/subscription", async (req, res) => {
         try {
             //check on user if there exists a subscription under his/her user id
             const user = await getUser(req);
             let userid = user["userid"]
+
             const userSubscription = await db
                 .select('*')
                 .from('se_project.subscription')
                 .where("userid", '=', userid)
+
+
+            const subid = userSubscription[0]['id']
+            //userSubscription is in an array, so we need to access that array first then access id
+            // console.log(userSubscription[0]['id'])
+            // console.log(subid)
+
 
             // console.log(userSubscription)
             // console.log(isEmpty(userSubscription))
@@ -107,19 +114,7 @@ module.exports = function (app) {
 
                 // get the sub id from the user session and getUser
                 // get origin and dest and data from user input
-                const subid = userSubscription[0]['id']
-                //userSubscription is in an array, so we need to access that array first then access id
-                // console.log(userSubscription[0]['id'])
-                // console.log(subid)
-                const {origin, destination, tripdate} = req.body;
 
-                let newPaymentBySubscription = {
-                    origin,
-                    destination,
-                    userid,
-                    subid,
-                    tripdate
-                };
 
                 const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets");
 
@@ -145,15 +140,24 @@ module.exports = function (app) {
                     tripdate: tripdate
                 })
 
-<<<<<<< HEAD
-                // console.log(newNumOfTickets)
-                return res.status(201).json(newPaymentBySubscription);
-=======
+
+
+                // return res.status(201).json(updateTickets);
+
+                const {origin, destination, tripdate} = req.body;
+
+                let newPaymentBySubscription = {
+                    origin,
+                    destination,
+                    userid,
+                    subid,
+                    tripdate
+                };
+
 
                 const ticket_cost = 0;//TODO call CheckPrice
                 const origin_id = await db.select("id").from('se_project.stations').where('stationname', origin);
                 const des_id = await db.select("id").from('se_project.stations').where('stationname', destination);
-                console.log("ya ana mabdoon");
                 const origin_id_int = origin_id[0]['id'];
                 const des_id_int = des_id[0]['id'];
 
@@ -161,10 +165,11 @@ module.exports = function (app) {
                 console.log(des_id_int);
 
                 console.log(origin_id_int);
-                console.log("ya ana mabdoon");
 
                 if (!isEmpty(origin_id) && !isEmpty(des_id)) {
                     const potential_routs_data = await db.select("*").from('se_project.routes').where('tostationid', des_id_int).where('fromstationid', origin_id_int);//ret2
+
+                    let ticket_cost = await Get_price(origin_id_int, des_id_int);
 
 
                     const t = "transfer";
@@ -233,7 +238,6 @@ module.exports = function (app) {
                     return res.status(400).send("origin or destination is invalid station");
 
                 }
->>>>>>> b79762399366305b2401ffa08b946d4a646c0275
             }
         } catch (err) {
             console.log("Error paying for ticket by subscription", err.message);
@@ -375,7 +379,7 @@ module.exports = function (app) {
 //POST pay for ticket online
 
 
-//todo paying for tickets online need work
+//paying for tickets online need work
     app.post("/api/v1/payment/ticket",
         async (req, res) => {
             try {
@@ -393,164 +397,178 @@ module.exports = function (app) {
 
                 const user = await getUser(req);
                 const uid = user.userid;
-
-
-                const existsubsription = await db.select("*").from("se_project.subscription").where('userid', uid);
-                if (!isEmpty(existsubsription)) {
-                    return res.status(400).send("user have subscription");
+                console.log("dammmmm1");
+                const origin_id = await db.select("id").from('se_project.stations').where('stationname', origin);
+                const des_id = await db.select("id").from('se_project.stations').where('stationname', destination);
+                console.log(origin_id);
+                let ticket_cost = 0;
+                if (isEmpty(des_id) || isEmpty(origin_id)) {
+                    return res.status(400).send("invalid destination or origin ");
 
                 } else {
-                    if (user.isSenior) {
-                        payedAmount = payedAmount * 0.9;
-                    } else if (creditCardNumber === null) {
-                        return res.status(400).send("you must entered creditCardNumber");
-                    } else if (holderName === null) {
-                        return res.status(400).send("you must enter the name of credit Card holder");
-                    } else if (destination == origin) {
-                        return res.status(400).send("invalid trip");
-                    } else if (payedAmount === null) {
-                        return res.status(400).send("you must enter the paid amount");
-                    } else if (tripDate === null) {
-                        return res.status(400).send("you must enter the trip date");
 
-                    } else if (origin === "") {
-                        return res.status(400).send("you must enter the origin");
+                    const origin_id_int = origin_id[0]['id'];
 
-                    } else if (destination === "") {
-                        return res.status(400).send("you must enter the destination");
+                    const des_id_int = des_id[0]['id'];
 
-                    }
+                    ticket_cost = await Get_price(origin_id_int, des_id_int);
 
-                    //TODO checkprice before inserting
-                    else {
-                        const ret1 = await db('se_project.tickets').insert({
-                            origin: origin,
-                            destination: destination,
-                            subid: null,//as we are paying online without subscription
-                            userid: uid,
-                            tripdate: tripDate
+                    const existsubsription = await db.select("*").from("se_project.subscription").where('userid', uid);
+                    if (!isEmpty(existsubsription)) {
+                        return res.status(400).send("user have subscription");
+
+                    } else {
 
 
-                        }).returning("*");
+                        if (creditCardNumber === null) {
+                            return res.status(400).send("you must entered creditCardNumber");
+                        } else if (holderName === null) {
+                            return res.status(400).send("you must enter the name of credit Card holder");
+                        } else if (destination == origin) {
+                            return res.status(400).send("invalid trip");
+                        } else if (payedAmount === null) {
+                            return res.status(400).send("you must enter the paid amount");
+                        } else if (tripDate === null) {
+                            return res.status(400).send("you must enter the trip date");
 
+                        } else if (origin === "") {
+                            return res.status(400).send("you must enter the origin");
 
-                        const id_trip = Number(ret1[0]["id"]);
-
-                        const ret2 = await db('se_project.transactions').insert({
-                            amount: payedAmount,
-                            userid: uid,
-                            purchasedid: toString(id_trip),
-                            purchasetype: "ticket"
-
-
-                        }).returning("*");
-
-
-                        const ret3 = await db('se_project.creditcarddetails').insert({
-                            holder_name: holderName,
-                            userid: uid,
-                            creditcardnumber: creditCardNumber
-
-
-                        }).returning("*");
-
-
-                        const ret4 = await db('se_project.rides').insert({
-                            status: "activated",
-                            origin: origin,
-                            destination: destination,
-                            userid: uid,
-                            ticketid: id_trip,
-                            tripdate: tripDate
-
-                        }).returning("*");
-
-                        const ticket_cost = 0;//TODO call CheckPrice
-                        const origin_id = await db.select("id").from('se_project.stations').where('stationname', origin);
-                        const des_id = await db.select("id").from('se_project.stations').where('stationname', destination);
-                        console.log("ya ana mabdoon");
-                        const origin_id_int = origin_id[0]['id'];
-                        const des_id_int = des_id[0]['id'];
-
-
-                        console.log(des_id_int);
-
-                        console.log(origin_id_int);
-                        console.log("ya ana mabdoon");
-
-                        if (!isEmpty(origin_id) && !isEmpty(des_id)) {
-                            const potential_routs_data = await db.select("*").from('se_project.routes').where('tostationid', des_id_int).where('fromstationid', origin_id_int);//ret2
-
-
-                            const t = "transfer";
-
-                            const transfer_stations = await db.select("stationname").from('se_project.stations').where('stationtype', t);//ret3
-
-
-                            ////////////////////////////////////////////////////
-                            // current date problem in date time methods
-
-                            let date1 = new Date(tripDate);
-                            // adjust 0 before single digit date
-                            let date = ("0" + date1.getDate()).slice(-2);
-
-                            // current month
-                            let month = ("0" + (date1.getMonth() + 1)).slice(-2);
-
-                            // current year
-                            let year = date1.getFullYear();
-
-                            // current hours
-                            let hours = date1.getHours();
-
-                            // current minutes
-                            let minutes = date1.getMinutes();
-
-                            // current seconds
-                            let seconds = date1.getSeconds();
-
-
-                            let up_date_bound = new Date();
-                            up_date_bound.setFullYear(year);
-                            up_date_bound.setMonth(month);
-                            up_date_bound.setDate(date);
-                            up_date_bound.setHours(23);
-                            up_date_bound.setMinutes(59);
-                            up_date_bound.setSeconds(59);
-
-                            /*knex.raw(
-                            'select * from users where first_name is null'
-                            ),*/
-                            //const todayCloseDate = DF.format(new Date(), 'yyyy-MM-dd');
-
-                            const upcome_rides = await db.select("*").from('se_project.rides')
-                                .where('tripdate', '>', tripDate)
-                                .where('tripdate', '<', up_date_bound);
-                            //TODO ret4 not finished  .where('published_date', '<', 2000)
-
-                            //  { tripdate >= currentdate}
-                            //1-full ticket price, check price
-                            //2-route
-                            //3-transfer stations,
-                            //4-upcoming ride on the date of the ticket
-
-
-                            //  { tripdate >= currentdate}
-                            //1-full ticket price, check price
-                            //2-route
-                            //3-transfer stations,
-                            //4-upcoming ride on the date of the ticket
-
-                            const ret = {ticket_cost, potential_routs_data, transfer_stations, upcome_rides};//and add the pricecheck price ,upcome_rides
-                            return res.status(201).json(ret);
-
-                        } else {
-                            return res.status(400).send("origin or destination is invalid station");
+                        } else if (destination === "") {
+                            return res.status(400).send("you must enter the destination");
 
                         }
-                    }
-                }
 
+                        //TODO checkprice before inserting
+                        if (ticket_cost <= payedAmount) {
+
+                            const ret1 = await db('se_project.tickets').insert({
+                                origin: origin,
+                                destination: destination,
+                                subid: null,//as we are paying online without subscription
+                                userid: uid,
+                                tripdate: tripDate
+
+
+                            }).returning("*");
+
+
+                            const id_trip = Number(ret1[0]["id"]);
+
+                            const ret2 = await db('se_project.transactions').insert({
+                                amount: payedAmount,
+                                userid: uid,
+                                purchasedid: toString(id_trip),
+                                purchasetype: "ticket"
+
+
+                            }).returning("*");
+
+
+                            const ret3 = await db('se_project.creditcarddetails').insert({
+                                holder_name: holderName,
+                                userid: uid,
+                                creditcardnumber: creditCardNumber
+
+
+                            }).returning("*");
+
+
+                            const ret4 = await db('se_project.rides').insert({
+                                status: "activated",
+                                origin: origin,
+                                destination: destination,
+                                userid: uid,
+                                ticketid: id_trip,
+                                tripdate: tripDate
+
+                            }).returning("*");
+
+                            //TODO call CheckPrice
+
+                            console.log(des_id_int);
+
+                            console.log(origin_id_int);
+                            console.log("ya ana mabdoon");
+
+                            if (!isEmpty(origin_id) && !isEmpty(des_id)) {
+                                const potential_routs_data = await db.select("*").from('se_project.routes').where('tostationid', des_id_int).where('fromstationid', origin_id_int);//ret2
+
+
+                                const t = "transfer";
+
+                                const transfer_stations = await db.select("stationname").from('se_project.stations').where('stationtype', t);//ret3
+
+
+                                ////////////////////////////////////////////////////
+                                // current date problem in date time methods
+
+                                let date1 = new Date(tripDate);
+                                // adjust 0 before single digit date
+                                let date = ("0" + date1.getDate()).slice(-2);
+
+                                // current month
+                                let month = ("0" + (date1.getMonth() + 1)).slice(-2);
+
+                                // current year
+                                let year = date1.getFullYear();
+
+                                // current hours
+                                let hours = date1.getHours();
+
+                                // current minutes
+                                let minutes = date1.getMinutes();
+
+                                // current seconds
+                                let seconds = date1.getSeconds();
+
+
+                                let up_date_bound = new Date();
+                                up_date_bound.setFullYear(year);
+                                up_date_bound.setMonth(month);
+                                up_date_bound.setDate(date);
+                                up_date_bound.setHours(23);
+                                up_date_bound.setMinutes(59);
+                                up_date_bound.setSeconds(59);
+
+                                /*knex.raw(
+                                'select * from users where first_name is null'
+                                ),*/
+                                //const todayCloseDate = DF.format(new Date(), 'yyyy-MM-dd');
+
+                                const upcome_rides = await db.select("*").from('se_project.rides')
+                                    .where('tripdate', '>', tripDate)
+                                    .where('tripdate', '<', up_date_bound);
+                                //TODO ret4 not finished  .where('published_date', '<', 2000)
+
+                                //  { tripdate >= currentdate}
+                                //1-full ticket price, check price
+                                //2-route
+                                //3-transfer stations,
+                                //4-upcoming ride on the date of the ticket
+
+
+                                //  { tripdate >= currentdate}
+                                //1-full ticket price, check price
+                                //2-route
+                                //3-transfer stations,
+                                //4-upcoming ride on the date of the ticket
+
+                                const ret = {ticket_cost, potential_routs_data, transfer_stations, upcome_rides};//and add the pricecheck price ,upcome_rides
+                                return res.status(201).json(ret);
+
+                            } else {
+                                return res.status(400).send("origin or destination is invalid station");
+
+                            }
+
+                        }//end of if(ticket_cost<=payedAmount)
+                        else {
+                            return res.status(400).send("not enough for the payment");
+                        }
+                    }
+
+                }
             } catch (e) {
                 console.log("Could not buy online tickets", e.message);
                 return res.status(400).send(e.message);
@@ -564,49 +582,46 @@ module.exports = function (app) {
     app.put("/api/v1/requests/refunds/:requestId", async (req, res) => {
         const requestId = parseInt(req.params.requestId);//Number(ret1[0]["id"]);
 
+    const existRequest = await db("se_project.refund_requests")
+        .where({ id: requestId })
+        .select("*")
+        .first();
+    if (isEmpty(existRequest)) {
+        return res.status(400).send("Refund request does not exist");
+    }
 
-        const existRequest = await db("se_project.refund_requests")
-            .where({id: requestId})
+    try {
+        let updateRefundRequestStatus;
+        //check if the ticket associated with the refund request has a future trip date
+        const ticket = await db("se_project.tickets")
+            .where({ id: existRequest.ticketid })
             .select("*")
             .first();
-        if (isEmpty(existRequest)) {
-            return res.status(400).send("Refund request does not exist");
+        if (ticket.tripdate <= new Date()) {
+             updateRefundRequestStatus = await db("se_project.refund_requests")
+                .where("id", requestId)
+                .update({ status: "rejected" })
+                .returning("*");
+            return res.status(200).json(updateRefundRequestStatus);
+            // return res.status(400).send("Only future-dated tickets can be refunded"); //should i also return rejected with it or not
         }
 
-        try {
-            //check if the ticket associated with the refund request has a future trip date
-            const ticket = await db("se_project.tickets")
-                .where({id: existRequest.ticketid})
-                .select("*")
-                .first();
-            if (ticket.tripdate <= new Date()) {
-                return res.status(400).send("Only future-dated tickets can be refunded"); //should i also return rejected with it or not
-            }
 
-            const {status: refundStatus} = req.body;
-            if (refundStatus !== "accepted" && refundStatus !== "rejected") {
-                return res.status(400).send("Invalid status value");
-            }
-            const stat = await db("se_project.refund_requests")
-                .where("id", requestId)
-                .returning("status")
 
-            const updateRefundRequestStatus = await db("se_project.refund_requests")
-                .where("id", requestId)
-                .update({status: refundStatus})
-                .returning("*");
-            if (stat === "accepted") {
-                return res.status(400).send("Request has already been accepted");
-            }
-            if (stat === "rejected") {
-                return res.status(400).send("Request has already been accepted");
-            }
+        // Check if the user has a subscription
+        const subscription = await db("se_project.subscription")
+            .where({ userid: existRequest.userid })
+            .select("*")
+            .first();
 
-            // Check if the user has a subscription
-            const subscription = await db("se_project.subscription")
-                .where({userid: existRequest.userid})
-                .select("*")
-                .first();
+        if (!isEmpty(subscription)) {
+            //get the number of tickets and insert it into a variable 
+            const numberoftickets = await db("se_project.subscription")
+                .select("nooftickets")
+                .where({ userid: existRequest.userid })
+                // console.log("ay7aga", numberoftickets)
+            let x = numberoftickets[0]['nooftickets']
+
 
             if (!isEmpty(subscription)) {
                 //get the number of tickets and insert it into a variable
@@ -616,25 +631,56 @@ module.exports = function (app) {
 
                 //refund with subscription
 
-                //getting remaining values
-                const refundamount = await db("se_project.transaction")
-                    .where({userid: existRequest.userid})
-                    .returning("amount");
 
+            const purchaseid = await db("se_project.transactions")
+                .where({ userid: existRequest.userid })
+                .returning("purchasedid");
+
+            await db('se_project.transactions').insert({
+                amount: x+1,
+                userid: existRequest.userid,
+                purchasedid: purchaseid,
+                purchasetype: "subscription"
+            })
+                .returning('*');
+             updateRefundRequestStatus = await db("se_project.refund_requests")
+                .select("*")
+                .where("id", requestId)
+                .update({ status: "accepted" });
+
+        } else {
+            //refund with online payment
+            const purchaseid = await db("se_project.transactions")
+                .where({ userid: existRequest.userid })
+                .returning("purchasedid");
+
+            const refundamount = await db("se_project.transactions")
+                .where({ userid: existRequest.userid })
+                .returning("amount");
+
+            await db('se_project.transactions').insert({
+                amount: (-refundamount),
+                userid: existRequest.userid,
+                purchasedid: purchaseid,
+                purchasetype: "transactions"
+            })
+                .returning('*');
+             updateRefundRequestStatus = await db("se_project.refund_requests")
+                .select("*")
+                .where("id", requestId)
+                .update({ status: "accepted" });
+        }
+
+
+            } else {
+                //refund with online payment
                 const purchasedIid = await db("se_project.transaction")
                     .where({userid: existRequest.userid})
                     .returning("purchasedid");
 
-                await db('se_project.transactions').insert({
-                    amount: (numberoftickets + 1),
-                    userid: existRequest.userid,
-                    purchasedIid: purchasedIid,
-                    purchasetype: "subscription"
-                })
-                    .returning('*');
-
-            } else {
-                //refund with online payment
+                const refundamount = await db("se_project.transaction")
+                    .where({userid: existRequest.userid})
+                    .returning("amount");
 
                 await db('se_project.transactions').insert({
                     amount: (-refundamount),
@@ -643,7 +689,10 @@ module.exports = function (app) {
                     purchasetype: "transaction"
                 })
                     .returning('*');
-
+                const updateRefundRequestStatus = await db("se_project.refund_requests")
+                    .where("id", requestId)
+                    .update({status: "accepted"})
+                    .returning("*");
             }
 
             return res.status(200).json(updateRefundRequestStatus);
@@ -652,9 +701,6 @@ module.exports = function (app) {
             return res.status(400).send("Could not update refund request status");
         }
     });
-
-
->>>>>>> b79762399366305b2401ffa08b946d4a646c0275
 // -Request Senior PUT
 
     app.put("/api/v1/requests/senior/:requestId", async (req, res) => {
@@ -680,9 +726,9 @@ module.exports = function (app) {
             return res.status(400).send("Senior request does not exist");
         }
         try {
-            const user = await getUser(req);
+            // const user = await getUser(req);
             // console.log(user)
-            const seniorUser = await db.select('*').from('se_project.senior_requests').where('userid', '=', user['userid'])
+            const seniorUser = await db.select('*').from('se_project.senior_requests').where('id', '=', requestId)
             console.log(seniorUser)
             let userNID = seniorUser[0]['nationalid'].toString();
             // console.log(userNID)
@@ -696,8 +742,8 @@ module.exports = function (app) {
                 if (thisYear - userBYear >= 60) {
                     //kda checks out and he's a senior
                     status = 'accepted'
-
-                    const updateUserRoleToSenior = await db("se_project.users").where('id', '=', user['userid']).update({
+                    console.log(seniorUser)
+                    const updateUserRoleToSenior = await db("se_project.users").where('id', '=', seniorUser[0]['userid']).update({
                         roleid: 3
                     })
 
@@ -726,23 +772,17 @@ module.exports = function (app) {
         const visited = {};
         const previous = {};
 
-        // Initialize distances with infinity, except for the startNode which is 0
-        for (let node in graph) {
-            distances[node] = Infinity;
+    app.put("/api/v1/zones/:zoneId", async (req, res) => {
+        const zoneId = parseInt(req.params.zoneId);//Number(ret1[0]["id"]);
+
+        const existZone = await db("se_project.zones")
+            .where({id: zoneId})
+            .select("*")
+            .first();
+        if (isEmpty(existZone)) {
+            console.log("dammmmmmmmmmmmmm");
+            return res.status(400).send("Zone does not exist");
         }
-        distances[startNode] = 0;
-
-        while (true) {
-            let closestNode = null;
-            let shortestDistance = Infinity;
-
-            // Find the unvisited node with the shortest distance
-            for (let node in graph) {
-                if (!visited[node] && distances[node] < shortestDistance) {
-                    closestNode = node;
-                    shortestDistance = distances[node];
-                }
-            }
 
             if (closestNode === null || closestNode === destination) {
                 break; // No more unvisited nodes or destination reached
@@ -817,9 +857,13 @@ module.exports = function (app) {
         // https://www.npmjs.com/package/graphlib?activeTab=readme
         //i changed the link while testing cuz i think it wasnt working but give the original a try it's: /api/v1/tickets/price/:originId& :destinationId
         try {
-            const {originId, destinationId} = req.params;
-            let startStation = await db.select('*').from("se_project.stations").where('id', '=', originId);
-            let endStation = await db.select('*').from("se_project.stations").where('id', '=', destinationId);
+            const {price} = req.body;
+            const updateZonePrice = await db("se_project.zones")
+                .where("id", zoneId)
+                .update({
+                    price: price
+                }).returning("*");
+            console.log(updateZonePrice);
 
             //calculate the shortest path
             console.log(shortestPath(startStation, endStation))
@@ -833,29 +877,43 @@ module.exports = function (app) {
     //rewrite all of this to the private api
 
 
-    app.post("/api/v1/refund/:ticketId", async (req, res) => {
+    app.post("/api/v1/refund/:ticketid", async (req, res) => {
         try {
             const user = await getUser(req);
             if (user.isAdmin) return res.status(401);
-            const {ticketId} = req.params;
-            const existTicket = await db.select("*").from("se_project.tickets").where("id", ticketId);
+            var {ticketid} = req.params;
+            console.log("waaaaaa",ticketid);
+            ticketid = parseInt(ticketid);
+            const existTicket = await db.select("*").from("se_project.tickets").where("id", ticketid);
+
             if (existTicket) {
-                const existRequest = await db.select("*").from("se_project.refund_requests").where("ticketid", ticketId);
-                if (!existRequest) {
-                    const ticketPurchase = await db.select("amount").from("se_project.transactions").where("purchasedIid", ticketId);
+                
+                const existRequest = await db.select("*").from("se_project.refund_requests").where("ticketid", ticketid);
+
+                if (isEmpty(existRequest)) {
+                    let z = ticketid + "";
+                    const originalticketPurchase = await db.select("amount").from("se_project.transactions").where("purchasedid", z);
+                    ticketPurchase = originalticketPurchase[0]['amount'];
+                    console.log("tickitpur",ticketPurchase);
+
                     if (ticketPurchase) {
-                        refundAmount = ticketPurchase;
+                        refundamount = ticketPurchase;
                     } else {
-                        refundAmount = 0;
+                        refundamount = 0;
                     }
-                    const userId = await db.select("userId").from("se_project.tickets").where("id", ticketId);
+                    const theuserid = await db.select("userid").from("se_project.tickets").where("id", ticketid);
+                    var userid = theuserid[0]['userid'];
                     let status = "pending";
+                    // console.log("useris",userid);
+                    // console.log("ticketis",ticketid);
+                    
                     let newRequest = {
+                        refundamount,
                         status,
-                        userId,
-                        refundAmount,
-                        ticketId,
+                        ticketid,
+                        userid
                     };
+
                     const addedRequest = await db("se_project.refund_requests").insert(newRequest).returning("*");
                     return res.status(201).json(addedRequest);
                 } else {
@@ -902,10 +960,12 @@ module.exports = function (app) {
         try {
             const user = await getUser(req);
             if (!user.isAdmin) return res.status(401);
-            const {stationname} = req.body;
-            console.log(stationname);
+
+            const body = req.body;
+            const stationname = body['stationNameInput']
+            
             const existstation = await db("se_project.stations")
-                .where({stationname: stationname})
+                .where('stationname', stationname)
                 .select("*")
                 .first();
             if (existstation) {
@@ -955,170 +1015,172 @@ module.exports = function (app) {
         }
     })
 
-
-    app.delete("/api/v1/station/:stationId", async (req, res) => {
-        try {
-            const user = await getUser(req);
-            if (!user.isAdmin) return res.status(401);
-            const {stationId} = req.params;
-            const stationid2 = parseInt(stationId);
-
-            const existstation = await db("se_project.stations")
-                .where({id: stationid2})
+    app.delete("/api/v1/station/:stationId", async (req,res)=>{
+        try{
+          //const user = await getUser(req);
+          //if (!user.isAdmin) return res.status(401);
+          const { stationId } = req.params;
+          const stationid2 = parseInt(stationId);
+          
+          const existstation =await db("se_project.stations")
+          .where({ id: stationid2 })
+          .select("*")
+          .first();      
+          if(!existstation){
+            return res.status(404).send("no station exists with such ID");
+          }
+          else{
+            //const stationT = await db.select("*").from("se_project.stations").where( "id", stationid2) ;
+            if(existstation.stationtype==="transfer"){
+              const newTransfer = await db.select("*").from("se_project.routes").where( "tostationid", stationid2).first();
+              let stationtype = "transfer";
+              console.log("test0");
+              const NormToTrans = await db("se_project.stations").where("id",newTransfer.fromstationid).update({stationtype:stationtype}).returning("*");
+              const fromStationid = NormToTrans.id;
+              let tostationid = NormToTrans.id;
+              let stationid = NormToTrans.id;
+              console.log("test1");
+              const updatingTransfer= await db("se_project.routes")
+              .where("fromstationid",stationid2)
+              .update({fromstationid : newTransfer.fromstationid})
+              .returning("*");
+              const updatingTransfer2= await db("se_project.routes")
+              .where("tostationid",stationid2)
+              .update({tostationid : newTransfer.fromstationid})
+              .returning("*");
+              console.log("test2");
+              const deleteDupeRoute = await db("se_project.routes")
+              .where("fromstationid" , newTransfer.fromstationid)
+              .andWhere("tostationid" , newTransfer.fromstationid)
+              .del()
+              .returning("*");
+              const updateRS = await db("se_project.stationroutes")
+              .where("stationid" , stationid2)
+              .update({stationid : newTransfer.id})
+              .returning("*");
+              const deletedStation = await db("se_project.stations")
+              .where("id" , stationid2)
+              .del()
+              .returning("*");
+              return res.status(200).json(deletedStation);
+            }else{
+              console.log(stationid2);
+              //const stationP = await db.select("*").from("se_project.stations").where( "id", stationid2) ;
+              if(existstation.stationposition==="start"){
+                console.log("test");
+                const newStart= await db("se_project.routes")
+                .where({ fromstationid: stationid2 })
                 .select("*")
                 .first();
-            if (!existstation) {
-                return res.status(404).send("no station exists with such ID");
-            } else {
-                //const stationT = await db.select("*").from("se_project.stations").where( "id", stationid2) ;
-                if (existstation.stationtype === "transfer") {
-                    const newTransfer = await db.select("*").from("se_project.routes").where("tostationid", stationid2).first();
-                    let stationtype = "transfer";
-                    console.log("test0");
-                    const NormToTrans = await db("se_project.stations").where("id", newTransfer.fromstationid).update({stationtype: stationtype}).returning("*");
-                    const fromStationid = NormToTrans.id;
-                    let tostationid = NormToTrans.id;
-                    let stationid = NormToTrans.id;
-                    console.log("test1");
-                    const updatingTransfer = await db("se_project.routes")
-                        .where("fromstationid", stationid2)
-                        .update({fromstationid: newTransfer.fromstationid})
-                        .returning("*");
-                    const updatingTransfer2 = await db("se_project.routes")
-                        .where("tostationid", stationid2)
-                        .update({tostationid: newTransfer.fromstationid})
-                        .returning("*");
-                    console.log("test2");
-                    const deleteDupeRoute = await db("se_project.routes")
-                        .where("fromstationid", newTransfer.fromstationid)
-                        .andWhere("tostationid", newTransfer.fromstationid)
-                        .del()
-                        .returning("*");
-                    const updateRS = await db("se_project.stationroutes")
-                        .where("stationid", stationid2)
-                        .update({stationid: newTransfer.id})
-                        .returning("*");
-                    const deletedStation = await db("se_project.stations")
-                        .where("id", stationid2)
-                        .del()
-                        .returning("*");
-                    return res.status(200).json(deletedStation);
-                } else {
-                    console.log(stationid2);
-                    //const stationP = await db.select("*").from("se_project.stations").where( "id", stationid2) ;
-                    if (existstation.stationposition === "start") {
-                        console.log("test");
-                        const newStart = await db("se_project.routes")
-                            .where({fromstationid: stationid2})
-                            .select("*")
-                            .first();
-                        console.log(newStart.tostationid);
-                        let stationposition = "start";
-                        console.log(stationposition);
-                        const updatedStart = await db("se_project.stations")
-                            .where("id", newStart.tostationid)
-                            .update({stationposition: stationposition})
-                            .returning("*");
-                        const deleteRS = await db("se_project.stationroutes")
-                            .where("stationid", stationid2)
-                            .del()
-                            .returning("*");
-                        const deletedStation = await db("se_project.stations")
-                            .where("id", stationid2)
-                            .del()
-                            .returning("*");
-                        return res.status(200).json(deletedStation);
-                    } else if (existstation.stationposition === "end") {
-                        const newEnd = await db("se_project.routes")
-                            .where({tostationid: stationid2})
-                            .select("*")
-                            .first();
-                        let stationposition = "end";
-                        const updatedEnd = await db("se_project.stations")
-                            .where("id", newEnd.fromstationid)
-                            .update({stationposition: stationposition})
-                            .returning("*");
-                        //const unwantedRoute = await db.select("*").from("se_project.routes").where( "fromstationid", stationid2).orWhere("tostationid" , stationid2) ;
-                        const deleteRS = await db("se_project.stationroutes")
-                            .where("stationid", stationid2)
-                            .del()
-                            .returning("*");
-                        const deletedStation = await db("se_project.stations")
-                            .where("id", stationid2)
-                            .del()
-                            .returning("*");
-                        return res.status(200).json(deletedStation);
-                    } else {
-                        //const newRS = await db.select("tostationid").from("se_project.routes").where( "fromstationid" , existstation.id) ;
-                        const newRS = await db.select("*").from("se_project.routes").where("tostationid", stationid2);
-                        let fromstationid = newRS[0].fromstationid;
-                        let tostationid = newRS[1].fromstationid;
-                        let routename = "new";
-                        console.log(fromstationid);
-                        console.log(tostationid);
-                        let newRoute1 = {
-                            routename,
-                            fromstationid,
-                            tostationid,
-                        };
-                        fromstationid = newRS[1].fromstationid;
-                        tostationid = newRS[0].fromstationid;
-                        console.log(fromstationid);
-                        console.log(tostationid);
-                        let newRoute2 = {
-                            routename,
-                            fromstationid,
-                            tostationid,
-                        };
-                        const addedRoute1 = await db("se_project.routes").insert(newRoute1).returning("*");
-                        const addedRoute2 = await db("se_project.routes").insert(newRoute2).returning("*");
-                        console.log(addedRoute1);
-                        console.log(addedRoute2);
-                        let routeid = addedRoute1[0].id;
-                        let stationid = tostationid;
-                        console.log(tostationid);
-                        console.log(stationid);
-                        let newRstation = {
-                            stationid,
-                            routeid,
-                        };
-                        console.log(newRstation);
-                        routeid = addedRoute2[0].id;
-                        let newRstation2 = {
-                            stationid,
-                            routeid,
-                        };
-                        console.log(newRstation2);
-                        routeid = addedRoute1[0].id;
-                        stationid = fromstationid;
-                        let newRstation3 = {
-                            stationid,
-                            routeid,
-                        };
-                        console.log(newRstation3);
-                        routeid = addedRoute2[0].id;
-                        let newRstation4 = {
-                            stationid,
-                            routeid,
-                        };
-                        console.log(newRstation4);
-                        const addedRS = await db("se_project.stationroutes").insert(newRstation).returning("*");
-                        const addedRS2 = await db("se_project.stationroutes").insert(newRstation2).returning("*");
-                        const addedRS3 = await db("se_project.stationroutes").insert(newRstation3).returning("*");
-                        const addedRS4 = await db("se_project.stationroutes").insert(newRstation4).returning("*");
-                        const deletedStation = await db("se_project.stations")
-                            .where("id", stationid2)
-                            .del()
-                            .returning("*");
-                        return res.status(200).json(deletedStation);
-                    }
-                }
+                console.log(newStart.tostationid);
+                let stationposition = "start";
+                console.log(stationposition);
+                const updatedStart= await db("se_project.stations")
+                .where( "id" , newStart.tostationid)
+                .update({ stationposition: stationposition})
+                .returning("*");
+                const deleteRS  = await db("se_project.stationroutes")
+                .where("stationid" , stationid2)
+                .del()
+                .returning("*");
+                const deletedStation = await db("se_project.stations")
+                .where("id" , stationid2)
+                .del()
+                .returning("*");
+                return res.status(200).json(deletedStation);
+              }
+              else if(existstation.stationposition==="end"){
+                const newEnd= await db("se_project.routes")
+                .where({ tostationid: stationid2 })
+                .select("*")
+                .first();
+                let stationposition = "end";
+                const updatedEnd= await db("se_project.stations")
+                .where( "id" , newEnd.fromstationid)
+                .update({ stationposition: stationposition})
+                .returning("*");
+                //const unwantedRoute = await db.select("*").from("se_project.routes").where( "fromstationid", stationid2).orWhere("tostationid" , stationid2) ;
+                const deleteRS  = await db("se_project.stationroutes")
+                .where("stationid" , stationid2)
+                .del()
+                .returning("*");
+                const deletedStation = await db("se_project.stations")
+                .where( "id" , stationid2)
+                .del()
+                .returning("*");
+                return res.status(200).json(deletedStation);
+              }
+              else{
+                //const newRS = await db.select("tostationid").from("se_project.routes").where( "fromstationid" , existstation.id) ;
+                const newRS = await db.select("*").from("se_project.routes").where( "tostationid" , stationid2) ;
+                let fromstationid = newRS[0].fromstationid;
+                let tostationid = newRS[1].fromstationid;
+                let routename = "new";
+                console.log(fromstationid);
+                console.log(tostationid);
+                let newRoute1 = {
+                  routename,
+                  fromstationid,
+                  tostationid, 
+                };
+                 fromstationid = newRS[1].fromstationid;
+                 tostationid = newRS[0].fromstationid;
+                 console.log(fromstationid);
+                console.log(tostationid);
+                let newRoute2 = {
+                  routename,
+                  fromstationid,
+                  tostationid, 
+                };
+                const addedRoute1 = await db("se_project.routes").insert(newRoute1).returning("*");
+                const addedRoute2 = await db("se_project.routes").insert(newRoute2).returning("*");
+                console.log(addedRoute1);
+                console.log(addedRoute2);
+                let routeid = addedRoute1[0].id;
+                let stationid = tostationid;
+                console.log(tostationid);
+                console.log(stationid);
+                let newRstation={
+                  stationid,
+                  routeid,
+                };
+                console.log(newRstation);
+                routeid = addedRoute2[0].id;
+                let newRstation2={
+                  stationid,
+                  routeid,
+                };
+                console.log(newRstation2);
+                routeid = addedRoute1[0].id;
+                stationid = fromstationid;
+                let newRstation3={
+                  stationid,
+                  routeid,
+                };
+                console.log(newRstation3);
+                routeid = addedRoute2[0].id;
+                let newRstation4={
+                  stationid,
+                  routeid,
+                };
+                console.log(newRstation4);
+                const addedRS = await db("se_project.stationroutes").insert(newRstation).returning("*");
+                const addedRS2 = await db("se_project.stationroutes").insert(newRstation2).returning("*");
+                const addedRS3 = await db("se_project.stationroutes").insert(newRstation3).returning("*");
+                const addedRS4 = await db("se_project.stationroutes").insert(newRstation4).returning("*");
+                const deletedStation = await db("se_project.stations")
+                .where( "id" , stationid2)
+                .del()
+                .returning("*");
+                return res.status(200).json(deletedStation);
+              }
             }
-        } catch (err) {
-            console.log("error message ", err.message);
-            return res.status(400).send(err.message);
+            }
+        }catch(err){
+          console.log("error message ",err.message);
+          return res.status(400).send(err.message);
         }
-    })
+      });
 
     app.post("/api/v1/route", async (req, res) => {
         // need to add some defensibe programming
@@ -1197,6 +1259,7 @@ module.exports = function (app) {
         if (!user.isAdmin) return res.status(401);
 
         const {routename} = req.body;
+        // console.log("ay messge",routename)
 
         if (!routename) return res.status(422).send("Missing route name.");
 
@@ -1219,9 +1282,9 @@ module.exports = function (app) {
                 })
                 .returning("*");
 
-            return res.status(200).json(updateRoute).send("Updated route");
+            return res.status(200).json(updateRoute);
         } catch (err) {
-            console.log("eror message", err.message);
+            console.log("error message", err.message);
             return res.status(400).send("Could not update route");
         }
     });
@@ -1439,7 +1502,7 @@ module.exports = function (app) {
         return matrix;
     }
 
-    // Check Price:
+    // Check Price Method:
     app.get(
         "/api/v1/tickets/price/:originId/:destinationId",
         async (req, res) => {
@@ -1489,6 +1552,7 @@ module.exports = function (app) {
             }
         }
     );
+
 
 };
 

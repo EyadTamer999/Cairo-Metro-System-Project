@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
 <head>
-    <title>Requests</title>
+    <title>Zones</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link rel='stylesheet' href='/styles/style.css'/>
@@ -13,19 +13,15 @@
             text-align: center;
             margin-top: 2rem;
         }
-        
+
         .btn-container {
             display: flex;
             align-items: center;
-            justify-content: center;
-            height: calc(100vh - 100px); /* Adjust the height to leave space for the navbar */
-            position: relative;
-            top: -50px; /* Adjust the value as needed to raise the buttons */
+
         }
-        
+
         .btn {
-            padding: 1rem 2rem;
-            font-size: 3rem;
+            padding: 0.5rem 1rem;
             background-color: #4f46e5;
             color: #ffffff;
             border: none;
@@ -33,18 +29,18 @@
             cursor: pointer;
             margin-right: 1rem;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         th, td {
             padding: 0.5rem;
             text-align: left;
             border-bottom: 1px solid #ccc;
         }
-        
+
         .selected {
             background-color: #4f46e5;
             color: #ffffff;
@@ -54,30 +50,38 @@
 <body>
 <script>
     $(document).ready(function () {
-        const sessionToken = document.cookie.includes('session_token');
-        if (!sessionToken) {
-            location.href = '/';
-        }
+        // Event listener for the edit button click
+        $('#btnEditZone').click(function () {
+            let selectedzoneId = $('#ZoneId').val();
+            let selectedzonePrice = $('#ZonePrice').val();
 
-        // Event listener for the redirect buttons
-        $('#btnRedirectStations').click(function () {
-            window.location.href = '/stations';
-        });
+            const data = {
+                selectedzonePrice
+            };
 
-        $('#btnRedirectRoutes').click(function () {
-            window.location.href = '/routes';
-        });
-        $('#btnRedirectZones').click(function () {
-            window.location.href = '/zones';
-        });
-
-        $('#btnRedirectRequests').click(function () {
-            window.location.href = '/requests';
+            $.ajax({
+                type: "PUT",
+                url: `/api/v1/zones/${selectedzoneId}`,
+                data,
+                success: function (serverResponse) {
+                    if (serverResponse) {
+                        console.log("success")
+                        location.href = '/zones';
+                    }
+                },
+                error: function (errorResponse) {
+                    if (errorResponse) {
+                        alert(`${errorResponse.responseText}`);
+                        console.log("error")
+                    }
+                }
+            });
         });
     });
 </script>
 <div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
-    <nav id="navbar" class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
+    <nav id="navbar"
+         class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
         <ul class="flex-1 text-center">
             <li class="list-none inline-block px-5">
                 <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
@@ -121,16 +125,36 @@
     </nav>
     <h1 id="pageTitle"></h1>
 
-    <div class="btn-container">
-        <button id="btnRedirectStations" class="btn">Stations</button>
-        <button id="btnRedirectRoutes" class="btn">Routes</button>
-        <button id="btnRedirectZones" class="btn">Zones</button>
-        <button id="btnRedirectRequests" class="btn">Requests</button>
+    <div class="flex-col btn-container">
 
+        <label for="ZoneId">Zone ID</label><input id="ZoneId">
+
+
+        <label for="ZonePrice">Zone Price</label><input id="ZonePrice">
+
+
+        <button id="btnEditZone" class="btn">Edit Zone</button>
     </div>
 
     <br/>
-
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Zone Type</th>
+            <th scope="col">Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% zones.forEach(zone => { %>
+        <tr id="row-<%= zone.id %>" data-zone-id="<%= zone.id %>" class="selectable-row">
+            <td><%= zone.id %></td>
+            <td><%= zone.zonetype %></td>
+            <td><%= zone.price %></td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
 </div>
 </body>
 

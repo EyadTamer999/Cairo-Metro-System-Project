@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
 <head>
-    <title>Requests</title>
+    <title>Routes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link rel='stylesheet' href='/styles/style.css'/>
@@ -17,15 +17,11 @@
         .btn-container {
             display: flex;
             align-items: center;
-            justify-content: center;
-            height: calc(100vh - 100px); /* Adjust the height to leave space for the navbar */
-            position: relative;
-            top: -50px; /* Adjust the value as needed to raise the buttons */
+            
         }
         
         .btn {
-            padding: 1rem 2rem;
-            font-size: 3rem;
+            padding: 0.5rem 1rem;
             background-color: #4f46e5;
             color: #ffffff;
             border: none;
@@ -49,6 +45,13 @@
             background-color: #4f46e5;
             color: #ffffff;
         }
+
+        
+        .textbox {
+            margin-right: 10px; 
+        }
+
+    
     </style>
 </head>
 <body>
@@ -59,20 +62,27 @@
             location.href = '/';
         }
 
-        // Event listener for the redirect buttons
-        $('#btnRedirectStations').click(function () {
-            window.location.href = '/stations';
+        let selectedrouteId = null;
+
+        function selectRow(routeId) {
+            $('.selectable-row.selected').removeClass('selected');
+            $(`#row-${routeId}`).addClass('selected');
+            selectedrouteId = routeId;
+        }
+
+        // Event listener for table row click
+        $(document).on('click', '.selectable-row', function () {
+            var routeId = $(this).attr('data-route-id');
+            selectRow(routeId);
         });
 
-        $('#btnRedirectRoutes').click(function () {
-            window.location.href = '/routes';
-        });
-        $('#btnRedirectZones').click(function () {
-            window.location.href = '/zones';
-        });
-
-        $('#btnRedirectRequests').click(function () {
-            window.location.href = '/requests';
+        // Event listener for the edit button click
+        $('#btnEditRoute').click(function () {
+            if (selectedrouteId !== null) {
+                location.href = `/manage/routes/edit/${selectedrouteId}`;
+            } else {
+                alert('Please select a route to edit.');
+            }
         });
     });
 </script>
@@ -121,18 +131,75 @@
     </nav>
     <h1 id="pageTitle"></h1>
 
-    <div class="btn-container">
-        <button id="btnRedirectStations" class="btn">Stations</button>
-        <button id="btnRedirectRoutes" class="btn">Routes</button>
-        <button id="btnRedirectZones" class="btn">Zones</button>
-        <button id="btnRedirectRequests" class="btn">Requests</button>
 
+
+    <div class="btn-container">
+        <input type="text" id="RouteNameInput" class="textbox" placeholder="New route name">
+        <input type="text" id="FromStationInput" class="textbox" placeholder="From Station ID">
+        <input type="text" id="ToStationInput" class="textbox" placeholder="To Station ID">    
+        <button id="btnAddRoute" class="btn" >Add Route</button>
+        <button id="btnEditRoute" class="btn">Edit Route</button>
     </div>
 
     <br/>
-
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">From Station ID</th>
+            <th scope="col">To Station ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% routes.forEach(route => { %>
+        <tr id="row-<%= route.id %>" data-route-id="<%= route.id %>" class="selectable-row">
+            <td><%= route.id %></td>
+            <td><%= route.routename %></td>
+            <td><%= route.fromstationid %></td>
+            <td><%= route.tostationid %></td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
 </div>
 </body>
 
+
+
+<script>
+  // add route button
+  $(document).ready(function () {
+      $("#btnAddRoute").click(function () {
+        const routename = $('#RouteNameInput').val();
+        const fromstationid = $('#FromStationInput').val();
+        const tostationid = $('#ToStationInput').val();
+          const data = {
+            routename,
+            fromstationid,
+            tostationid
+          };
+
+          $.ajax({
+              type: "POST",
+              url: '/api/v1/route',
+              data,
+              success: function (serverResponse) {
+                  if (serverResponse) {
+                      alert(`Added successfully`);
+                  }
+              },
+              error: function (errorResponse) {
+                  if (errorResponse) {
+                      alert(`Error Adding : ${errorResponse.responseText}`);
+                          console.log("error")
+                  }
+              }
+          });
+      });
+  });
+
+
+</script>
 
 </html>

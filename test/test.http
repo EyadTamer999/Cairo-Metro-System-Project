@@ -39,7 +39,7 @@ POST localhost:3000/api/v1/user/login
 Content-Type: application/json
 
 {
-  "email": "senior",
+  "email": "admin",
   "password": "1234"
 }
 
@@ -53,7 +53,7 @@ Content-Type: application/json
 }
 
 ###
-PUT localhost:3000/api/v1/requests/senior/1
+PUT localhost:3000/api/v1/requests/senior/7
 
 ###
 GET localhost:3000/api/v1/tickets/price/4/1
@@ -65,4 +65,12 @@ Content-Type: application/json
 
 {
   "nationalid": "312"
+}
+
+###
+PUT localhost:3000/api/v1/zones/1
+Content-Type: application/json
+
+{
+  "price": "12"
 }
