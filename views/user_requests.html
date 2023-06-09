@@ -1,188 +1,323 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
+
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <link rel='stylesheet' href='/styles/style.css'/>
+    <link rel='stylesheet' href='/styles/style.css' />
     <link rel="icon" type="png" href="/images/icon.png">
     <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
 </head>
-<body>
-<script>
-    $(document).ready(function () {
-        const sessionToken = document.cookie.includes('session_token');
-        if (!sessionToken) {
-            location.href = '/';
-        }
-    });
-</script>
-<div class="container bg-[url('/images/background.jpg')] min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
 
-    <nav id="navbar"
-         class="flex items-center bg-white bg-opacity-25 rounded-2xl px-2 h-fit shadow-2xl duration-300">
-        <img class="ml-3 cursor-pointer" onclick="notifications.showModal()" src="/images/Bell-Empty.svg"
-             alt="notifications">
+<body>
+    <script>
+        $(document).ready(function () {
+            const sessionToken = document.cookie.includes('session_token');
+            if (!sessionToken) {
+                location.href = '/';
+            }
+        });
+    </script>
+    <div
+        class="container bg-[url('/images/background.jpg')] min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
+
+        <nav id="navbar"
+            class="flex items-center bg-white bg-opacity-25 rounded-2xl px-2 h-fit shadow-2xl duration-300">
+            <img class="ml-3 cursor-pointer" onclick="notifications.showModal()" src="/images/Bell-Empty.svg"
+                alt="notifications">
 
 
             </form>
-        </dialog>
+            </dialog>
 
-        <ul class="flex-1 text-center">
+            <ul class="flex-1 text-center">
 
-            <li class="list-none inline-block px-5">
-                <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
-            </li>
-            <li class="list-none inline-block px-5">
-                <a href="#Requests/Rides"
-                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Requests/Rides</a>
-            </li>
-            <li class="list-none inline-block px-5">
-                <a href="#Account"
-                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Account</a>
-            </li>
-        </ul>
+                <li class="list-none inline-block px-5">
+                    <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
+                </li>
+                <li class="list-none inline-block px-5">
+                    <a href="#Requests/Rides"
+                        class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Requests/Rides</a>
+                </li>
+                <li class="list-none inline-block px-5">
+                    <a href="#Account"
+                        class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Account</a>
+                </li>
+            </ul>
 
-        <a href="/"><img class="mr-7 w-7 h-7" src="/images/logout.png" alt="logout"></a>
+            <a href="/"><img class="mr-7 w-7 h-7" src="/images/logout.png" alt="logout"></a>
 
-        <a href="/">
-            <img
+            <a href="/">
+                <img class="w-40 hover:animate-pulse" src="/images/icon.png" alt="logo" />
+            </a>
+            <script>
+                $(function () {
+                    var scroll = $(document).scrollTop();
+                    var navHeight = $('#navbar').outerHeight();
 
-                    class="w-40 hover:animate-pulse"
-                    src="/images/icon.png"
-                    alt="logo"/>
-        </a>
-        <script>
-            $(function () {
-                var scroll = $(document).scrollTop();
-                var navHeight = $('#navbar').outerHeight();
+                    $(window).scroll(function () {
+                        var scrolled = $(document).scrollTop();
 
-                $(window).scroll(function () {
-                    var scrolled = $(document).scrollTop();
+                        if (scrolled > navHeight) {
+                            $('#navbar').addClass('animate');
+                        } else {
 
-                    if (scrolled > navHeight) {
-                        $('#navbar').addClass('animate');
-                    } else {
+                            $('#navbar').removeClass('animate');
+                        }
 
-                        $('#navbar').removeClass('animate');
+                        if (scrolled > scroll) {
+                            $('#navbar').removeClass('sticky');
+                        } else {
+                            $('#navbar').addClass('sticky');
+                        }
+
+                        scroll = $(document).scrollTop();
+
+                    });
+                });
+            </script>
+        </nav>
+
+        <head>
+            <style>
+                #pageTitle {
+                    font-size: 3rem;
+                    text-align: center;
+                    margin-top: 2rem;
+                }
+
+                .btn-container {
+                    display: flex;
+                    align-items: center;
+
+                }
+
+                .btn {
+                    padding: 5rem 5rem;
+                    background-color: #e56b46;
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    margin: 0 auto;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 2rem;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+
+                th,
+                td {
+                    padding: 0.5rem;
+                    text-align: left;
+                    border-bottom: 1px solid #ccc;
+                }
+
+                .selected {
+                    background-color: #e56b46;
+                    color: #ffffff;
+                }
+            </style>
+        </head>
+
+        <body>
+            <script>
+                $(document).ready(function () {
+                    const sessionToken = document.cookie.includes('session_token');
+                    if (!sessionToken) {
+                        location.href = '/';
                     }
 
-                    if (scrolled > scroll) {
-                        $('#navbar').removeClass('sticky');
-                    } else {
-                        $('#navbar').addClass('sticky');
-                    }
+                    //let selectedRequestId = null;
 
-                    scroll = $(document).scrollTop();
+                    ////function selectRow(requestId) {
+                    //    $('.selectable-row.selected').removeClass('selected');
+                    //    $(`#row-${requestId}`).addClass('selected');
+                    //    selectedRequestId = requestId;
+                    //    originid = origin;
+                    //    destination = destination;
+                    //} 
+
+                    //// Event listener for table row click
+                    //$(document).on('click', '.selectable-row', function () {
+                    //    var requestId = $(this).attr('data-request-id');
+                    //    selectRow(requestId);
+                    //});
+
+                    // Event listener for the refund button click
+                    $('#btnView').click(function () {
+                        if (selectedRequestId !== null) {
+                            const requestId = selectedRequestId;
+
+                            const data = {};
+
+                            $.ajax({
+                                type: "POST",
+                                url: `/api/v1/refund/${requestId}`,
+                                data,
+                                success: function (serverResponse) {
+                                    if (serverResponse) {
+                                        alert(`Refund Requested successfully`);
+                                    }
+                                },
+                                error: function (errorResponse) {
+                                    if (errorResponse) {
+                                        alert(`Error Refunding: ${errorResponse.responseText}`);
+                                        console.log("error");
+                                    }
+                                }
+                            });
+                        } else {
+                            alert('Please select a request to refund.');
+                        }
+                    });
+
+                    // Event listener for the purchase button click
+                    $('#ViewRefunds').click(function () {
+                        location.href = '/user_requests/refund';
+                    });
 
                 });
-            });
-        </script>
-    </nav>
-<head>
-    <style>
-        #pageTitle {
-            font-size: 3rem;
-            text-align: center;
-            margin-top: 2rem;
-        }
-        
-        .btn-container {
-            display: flex;
-            align-items: center;
-            
-        }
-        
-        .btn {
-            padding: 5rem 5rem; 
-            background-color: #e56b46;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 0 auto; 
-            display: flex;
-            justify-content: center; 
-            align-items: center; 
-            font-size: 2rem; 
-            }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 0.5rem;
-            text-align: left;
-            border-bottom: 1px solid #ccc;
-        }
-        
-        .selected {
-            background-color: #e56b46;
-            color: #ffffff;
-        }
-    </style>
-</head>
-<body>
-<script>
-        $(document).ready(function () {
-        const sessionToken = document.cookie.includes('session_token');
-        if (!sessionToken) {
-            location.href = '/';
-        }
 
-        //let selectedRequestId = null;
+            </script>
 
-        ////function selectRow(requestId) {
-        //    $('.selectable-row.selected').removeClass('selected');
-        //    $(`#row-${requestId}`).addClass('selected');
-        //    selectedRequestId = requestId;
-        //    originid = origin;
-        //    destination = destination;
-        //} 
+            </script>
+            <section id="Account" class="flex flex-col">
 
-        //// Event listener for table row click
-        //$(document).on('click', '.selectable-row', function () {
-        //    var requestId = $(this).attr('data-request-id');
-        //    selectRow(requestId);
-        //});
+                <h1 id="pageTitle"></h1>
+                <div
+                    class="self-center mt-6 w-2/3 rounded-2xl bg-white text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
+                    <div class="text-3xl border-b-2 border-neutral-100 px-6 py-3">
+                        My Account
+                    </div>
+                    <div class="p-6">
+                        <div class="container flex flex-col">
+                            <button id="ViewRefunds" class="btn">View Refund Requests</button>
 
-        // Event listener for the refund button click
-        $('#btnView').click(function () {
-            if (selectedRequestId !== null) {
-            const requestId = selectedRequestId; 
+                            <button id="RequestSeniorAccountBtn" type="button"
+                                onclick="RequestSeniorAccountModal.showModal()"
+                                class="w-full h-20 my-6 rounded rounded-lg bg-slate-300 text-l border border-gray-400 font-medium uppercase leading-normal text-black shadow-black/5 transition duration-150 ease-in-out hover:bg-slate-500 hover:shadow-2xl focus:bg-slate-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)](59,113,202,0.5)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                                data-te-ripple-init>
+                                Request Senior Account
+                            </button>
+                            <script>
+                                $(document).ready(function () {
 
-            const data = {};
+                                    if (<%- JSON.stringify(user) %> ['role'] === 'senior') {
+                                        $('#RequestSeniorAccountBtn').css("visibility", "hidden")
+                                    }
+                                    else {
+                                        $('#RequestSeniorAccountBtn').css("visibility", "visible")
+                                    }
 
-            $.ajax({
-                type: "POST",
-                url: `/api/v1/refund/${requestId}`, 
-                data,
-                success: function (serverResponse) {
-                if (serverResponse) {
-                    alert(`Refund Requested successfully`);
-                }
-                },
-                error: function (errorResponse) {
-                if (errorResponse) {
-                    alert(`Error Refunding: ${errorResponse.responseText}`);
-                    console.log("error");
-                }
-                }
-            });
-            } else {
-            alert('Please select a request to refund.');
-            }
-        });
+                                });
+                            </script>
 
-        // Event listener for the purchase button click
-        $('#ViewRefunds').click(function () {
-            location.href = '/user_requests/refund';
-        });        
+                            <dialog class="" id="RequestSeniorAccountModal">
+                                <div class="container flex flex-col">
+                                    <form class="flex flex-col container" method="dialog">
+                                        <button id="closeRequestSeniorAccountModal" type="reset"
+                                            class="rounded-3xl bg-blue-500 text-bold text-2xl justify-self-end self-end mx-2 my-2 px-2 py-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                            </svg>
+                                        </button>
+                                        <script>
+                                            $(document).ready(function () {
+                                                const dialog = document.querySelector(
+                                                    "#RequestSeniorAccountModal"
+                                                );
+                                                const closeButton = document.querySelector(
+                                                    "#closeRequestSeniorAccountModal"
+                                                );
+                                                closeButton.addEventListener("click", () => {
+                                                    dialog.close();
+                                                });
+                                            });
+                                        </script>
 
-        });
-        
-</script>
+                                        <div class="relative mb-3">
+                                            <input type="text"
+                                                class="peer m-0 block h-[58px] w-full rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-6 py-4 text-2xl font-normal leading-tight text-neutral-700 transition duration-200 ease-linear placeholder:text-transparent focus:border-primary focus:pb-[0.625rem] focus:pt-[1.625rem] focus:text-neutral-700 focus:outline-none peer-focus:text-primary [&:not(:placeholder-shown)]:pb-[0.625rem] [&:not(:placeholder-shown)]:pt-[1.625rem]"
+                                                id="NationalId" placeholder="National ID" />
+                                            <label for="NationalId"
+                                                class="pointer-events-none absolute left-0 top-0 origin-[0_0] border border-solid border-transparent px-3 py-4 text-neutral-500 transition-[opacity,_transform] duration-200 ease-linear peer-focus:-translate-y-2 peer-focus:translate-x-[0.15rem] peer-focus:scale-[0.85] peer-focus:text-primary peer-[:not(:placeholder-shown)]:-translate-y-2 peer-[:not(:placeholder-shown)]:translate-x-[0.15rem] peer-[:not(:placeholder-shown)]:scale-[0.85] motion-reduce:transition-none">National
+                                                ID</label>
+                                        </div>
+                                        <p class="text-red-700" id="NationalIdError" style="visibility: hidden">
+                                            Please Enter your National ID
+                                        </p>
+                                        <div class="container flex-row">
+                                            <button onclick="RequestSeniorAccountModal.showModal()"
+                                                id="SubmitSeniorRequest" class="bg-blue-500 mr-4 px-1 py-1 mx-2 my-2">
+                                                Submit Request
+                                            </button>
+                                            <script>
+                                                $(document).ready(function () {
+
+
+                                                    $("#SubmitSeniorRequest").click(function () {
+
+                                                        const user = <%- JSON.stringify(user) %>;
+                                                        const nationalID = $('#NationalId').val();
+                                                        const inputError = $('#NationalIdError');
+                                                        let inputErrorVal = $('#NationalIdError').val();
+
+                                                        data = {
+                                                            nationalid: nationalID,
+                                                        }
+                                                        console.log(data)
+
+                                                        if (nationalID === '') {
+                                                            inputError.css("visibility", "visible")
+                                                            inputErrorVal = "Please Enter your National ID"
+                                                            $('#NationalId').text("");
+                                                            return
+                                                        }
+                                                        inputError.css("visibility", "hidden")
+
+                                                        $.ajax({
+                                                            type: "POST",
+                                                            url: '/api/v1/senior/request',
+                                                            data,
+                                                            success: function (serverResponse) {
+                                                                if (serverResponse) {
+                                                                    console.log("success")
+                                                                }
+                                                            },
+                                                            error: function (errorResponse) {
+                                                                if (errorResponse) {
+                                                                    $('#NationalIdError').text(errorResponse.responseText);
+                                                                    inputError.css("visibility", "visible")
+
+
+                                                                    console.log("error")
+                                                                }
+                                                            }
+                                                        });
+                                                    });
+                                                });
+                                            </script>
+                                            <button class="bg-red-500 mr-4 px-1 py-1 mx-2 my-2">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </dialog>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </body>
 
 </script>
     <h1 id="pageTitle"></h1>
@@ -190,6 +325,7 @@
         <button id="ViewRefunds" class="btn" >View Refund Requests</button>
         
 </body>
+
 
 
 

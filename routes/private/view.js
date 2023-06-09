@@ -134,6 +134,7 @@ module.exports = function (app) {
         // const tickets = await db.select('*').from('se_project.tickets').where({ userid: user.userid });
         // console.log(JSON.stringify(user));
         // console.log(tickets);
+
         return res.render('purchase.html', {...user});
     });
 
