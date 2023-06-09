@@ -246,13 +246,13 @@ module.exports = function (app) {
     });
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-//reset password for admin and user PUT
-=======
-    //reset password for admin and user PUT
->>>>>>> b3e45256c2a7a76efcb36a6e612f73664d445d31
+// <<<<<<< HEAD
+// <<<<<<< HEAD
+// =======
+// //reset password for admin and user PUT
+// =======
+//     //reset password for admin and user PUT
+// >>>>>>> b3e45256c2a7a76efcb36a6e612f73664d445d31
     app.put("/api/v1/password/reset",
         async (req, res) => {
             try {
@@ -788,9 +788,9 @@ module.exports = function (app) {
             return res.status(400).send("Zone does not exist");
         }
 
-            if (closestNode === null || closestNode === destination) {
-                break; // No more unvisited nodes or destination reached
-            }
+            // if (closestNode === null || closestNode === destination) {
+            //     break; // No more unvisited nodes or destination reached
+            // }
 
             // Mark the node as visited
             visited[closestNode] = true;
@@ -805,7 +805,7 @@ module.exports = function (app) {
                     previous[neighbor] = closestNode;
                 }
             }
-        }
+        });
 
         // Build the shortest path from startNode to destination
         const path = [destination];

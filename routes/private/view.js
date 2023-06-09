@@ -150,7 +150,19 @@ module.exports = function (app) {
 
     app.get('/prices', async (req, res) => {
         const user = await getUser(req);
-        const tickets = await db("se_project.tickets").select("*").where({ userid: user.userid });
-        return res.render('prices.html', { ...user, tickets });
+        const user_request = await db("se_project.user_request").select("*").where({ userid: user.userid });
+        return res.render('prices.html', { ...user, user_request });
+    });
+
+    
+     app.get('/user_requests/refund', async function (req, res) {
+        const user = await getUser(req);
+        const requests = await db.select('*').from('se_project.refund_requests').where({ userid: user.userid });
+        return res.render('refund.html', { ...user, requests });
+    });
+
+    app.get('/user_requests', async function (req, res) {
+        const user = await getUser(req);
+        return res.render('user_requests.html', { ...user });
     });
 };

@@ -33,8 +33,8 @@
                 <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
             </li>
             <li class="list-none inline-block px-5">
-                <a href="#Tickets/Rides"
-                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Tickets/Rides</a>
+                <a href="#Requests/Rides"
+                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Requests/Rides</a>
             </li>
             <li class="list-none inline-block px-5">
                 <a href="#Account"
@@ -127,32 +127,32 @@
             location.href = '/';
         }
 
-        let selectedTicketId = null;
+        //let selectedRequestId = null;
 
-        <!-- function selectRow(ticketId) {
-            $('.selectable-row.selected').removeClass('selected');
-            $(`#row-${ticketId}`).addClass('selected');
-            selectedTicketId = ticketId;
-            originid = origin;
-            destination = destination;
-        }
+        ////function selectRow(requestId) {
+        //    $('.selectable-row.selected').removeClass('selected');
+        //    $(`#row-${requestId}`).addClass('selected');
+        //    selectedRequestId = requestId;
+        //    originid = origin;
+        //    destination = destination;
+        //} 
 
-        // Event listener for table row click
-        $(document).on('click', '.selectable-row', function () {
-            var ticketId = $(this).attr('data-ticket-id');
-            selectRow(ticketId);
-        }); -->
+        //// Event listener for table row click
+        //$(document).on('click', '.selectable-row', function () {
+        //    var requestId = $(this).attr('data-request-id');
+        //    selectRow(requestId);
+        //});
 
         // Event listener for the refund button click
-        $('#btnRefund').click(function () {
-            if (selectedTicketId !== null) {
-            const ticketId = selectedTicketId; 
+        $('#btnView').click(function () {
+            if (selectedRequestId !== null) {
+            const requestId = selectedRequestId; 
 
             const data = {};
 
             $.ajax({
                 type: "POST",
-                url: `/api/v1/refund/${ticketId}`, 
+                url: `/api/v1/refund/${requestId}`, 
                 data,
                 success: function (serverResponse) {
                 if (serverResponse) {
@@ -167,13 +167,13 @@
                 }
             });
             } else {
-            alert('Please select a ticket to refund.');
+            alert('Please select a request to refund.');
             }
         });
 
         // Event listener for the purchase button click
         $('#btnPurchase').click(function () {
-            location.href = '/tickets/purchase';
+            location.href = '/requests/purchase';
         });        
         $('#btnCheckPrice').click(function () {
             location.href = `/prices/${originid}`;
@@ -185,10 +185,9 @@
 </script>
     <h1 id="pageTitle"></h1>
     <div class="btn-container">
-        <button id="btnRefund" class="btn" >Refund Ticket</button>
+        <button id="btnView" class="btn" >View Requests</button>
 <!--todo handle ig        -->
-        <button id="btnPurchase" class="btn">Purchase Ticket Online</button>
-        <button id="btnCheckPrice" class="btn">Check Price</button>
+
     </div>
     <br/>
     <div class="table-container bg-white p-5">
@@ -196,20 +195,20 @@
         <thead>
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">Origin</th>
-            <th scope="col">Destination</th>            
-            <th scope="col">Sub ID</th>
-            <th scope="col">Trip Date</th>
+            <th scope="col">Status</th>
+            <th scope="col">User ID</th>            
+            <th scope="col">Refund Amount</th>
+            <th scope="col">Ticket ID</th>
         </tr>
         </thead>
         <tbody>
-        <% tickets.forEach(ticket => { %>
-        <tr id="row-<%= ticket.id %>" data-ticket-id="<%= ticket.id %>" class="selectable-row">
-            <td><%= ticket.id %></td>
-            <td><%= ticket.origin %></td>
-            <td><%= ticket.destination %></td>
-            <td><%= ticket.subid %></td>
-            <td><%= ticket.tripdate %></td>
+        <% refund_requests.forEach(request => { %>
+        <tr id="row-<%= refund_requests.id %>" data-request-id="<%= refund_requests.id %>" class="selectable-row">
+            <td><%= refund_requests.id %></td>
+            <td><%= refund_requests.status %></td>
+            <td><%= refund_requests.userid %></td>
+            <td><%= refund_requests.refundamount %></td>
+            <td><%= refund_requests.ticketid %></td>
         </tr>
         <% }) %>
         </tbody>
