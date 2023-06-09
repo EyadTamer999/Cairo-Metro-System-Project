@@ -130,13 +130,22 @@
                     }
 
                     let selectedTicketId = null;
+                    let origin = null;
+                    let destination = null;
+
 
                     function selectRow(ticketId) {
                         $('.selectable-row.selected').removeClass('selected');
                         $(`#row-${ticketId}`).addClass('selected');
                         selectedTicketId = ticketId;
-                        originid = origin;
-                        destination = destination;
+                        //   origin = $(`#row-${ticketId} .origin-column`).text();
+                        //   destination = $(`#row-${ticketId} .destination-column`).text();\
+                        origin = stations.find(station => station.stationname === $(`#row-${ticketId} .Origin`).text()).id;
+                        destination = stations.find(station => station.stationname === $(`#row-${ticketId} .Destination`).text()).id;
+                        // const obj= {origin, destination};
+                        // return obj;
+                         // Match the origin and destination IDs to the station names
+                   
                     }
 
                     // Event listener for table row click
@@ -145,6 +154,11 @@
                         selectRow(ticketId);
                     });
 
+                    // // Function to get station id based on station name
+                    // function getStationId(stationName) {
+                    //     const station = stations.find(station => station.stationname === stationName);
+                    //     return station ? station.id : null;
+                    // }
                     // Event listener for the refund button click
                     $('#btnRefund').click(function () {
                         if (selectedTicketId !== null) {
@@ -178,7 +192,7 @@
                         location.href = '/tickets/purchase';
                     });
                     $('#btnCheckPrice').click(function () {
-                        location.href = '/prices';
+                        location.href = `/prices/${origin}/${destination}`;
                     });
                 });
 

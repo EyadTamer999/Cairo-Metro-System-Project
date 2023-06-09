@@ -121,9 +121,10 @@ module.exports = function (app) {
     app.get('/tickets', async function (req, res) {
         const user = await getUser(req);
         const tickets = await db.select('*').from('se_project.tickets').where({ userid: user.userid });
+        const stations = await db.select('*').from('se_project.stations');
         // console.log(JSON.stringify(user));
         // console.log(tickets);
-        return res.render('tickets.html', { ...user, tickets });
+        return res.render('tickets.html', { ...user, tickets, stations });
     });
 
 
@@ -133,36 +134,37 @@ module.exports = function (app) {
         // const tickets = await db.select('*').from('se_project.tickets').where({ userid: user.userid });
         // console.log(JSON.stringify(user));
         // console.log(tickets);
-        return res.render('purchase.html', { user });
+
+        return res.render('purchase.html', {...user});
     });
 
-    app.get('/rides', async (req, res) => {
-        const user = await getUser(req);
-        const rides = await db("se_project.rides").select("*").where({ userid: user.userid });
-        return res.render('rides.html', { ...user, rides });
-    });
+                app.get('/rides', async (req, res) =>{
+                    const user = await getUser(req);
+                    const rides = await db("se_project.rides").select("*").where({userid : user.userid});
+                    return res.render('rides.html',{...user,rides});
+                });
 
-    app.get('/rides/simulate', async (req, res) => {
-        const user = await getUser(req);
-        const rides = await db("se_project.rides").select("*").where({ userid: user.userid });
-        return res.render('simulate.html', { ...user, rides });
-    });
+                app.get('/rides/simulate', async (req, res) =>{
+                    const user = await getUser(req);
+                     const rides = await db("se_project.rides").select("*").where({userid : user.userid});
+                    return res.render('simulate.html',{...user, rides});
+                });
 
-    app.get('/prices', async (req, res) => {
-        const user = await getUser(req);
-        const tickets = await db("se_project.tickets").select("*").where({ userid: user.userid });
-        return res.render('prices.html', { ...user, tickets });
-    });
+                app.get('/prices/:originid/:destinationid', async (req, res) =>{
+                    const user = await getUser(req);
+                    const tickets = await db("se_project.tickets").select("*").where({userid : user.userid});
+                    return res.render('prices.html',{...user, tickets});
+                });
 
-    app.get('/user_requests/refund', async function (req, res) {
-        const user = await getUser(req);
-        const refund_requests = await db.select('*').from('se_project.refund_requests').where({ userid: user.userid });
-        return res.render('refund.html', { ...user, refund_requests });
-    });
-
-    app.get('/user_requests', async function (req, res) {
-        const user = await getUser(req);
-        return res.render('user_requests.html', { user });
-    });
+                app.get('/user_requests/refund', async function (req, res) {
+                    const user = await getUser(req);
+                    const refund_requests = await db.select('*').from('se_project.refund_requests').where({ userid: user.userid });
+                    return res.render('refund.html', { ...user, refund_requests });
+                });
+            
+                app.get('/user_requests', async function (req, res) {
+                    const user = await getUser(req);
+                    return res.render('user_requests.html', { ...user });
+                });
 
 };
