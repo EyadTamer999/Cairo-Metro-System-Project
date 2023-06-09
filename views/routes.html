@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
 <head>
-    <title>Stations</title>
+    <title>Routes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link rel='stylesheet' href='/styles/style.css'/>
@@ -45,6 +45,13 @@
             background-color: #4f46e5;
             color: #ffffff;
         }
+
+        
+        .textbox {
+            margin-right: 10px; 
+        }
+
+    
     </style>
 </head>
 <body>
@@ -124,8 +131,12 @@
     </nav>
     <h1 id="pageTitle"></h1>
 
+
+
     <div class="btn-container">
-        <input type="text" id="RouteNameInput" placeholder="New route name">
+        <input type="text" id="RouteNameInput" class="textbox" placeholder="New route name">
+        <input type="text" id="FromStationInput" class="textbox" placeholder="From Station ID">
+        <input type="text" id="ToStationInput" class="textbox" placeholder="To Station ID">    
         <button id="btnAddRoute" class="btn" >Add Route</button>
         <button id="btnEditRoute" class="btn">Edit Route</button>
     </div>
@@ -157,17 +168,21 @@
 
 
 <script>
-  // add station button
+  // add route button
   $(document).ready(function () {
       $("#btnAddRoute").click(function () {
-          const RouteNameInput = $('#RouteNameInput').val();
+        const routename = $('#RouteNameInput').val();
+        const fromstationid = $('#FromStationInput').val();
+        const tostationid = $('#ToStationInput').val();
           const data = {
-            RouteNameInput
+            routename,
+            fromstationid,
+            tostationid
           };
 
           $.ajax({
               type: "POST",
-              url: '/api/v1/routes',
+              url: '/api/v1/route',
               data,
               success: function (serverResponse) {
                   if (serverResponse) {

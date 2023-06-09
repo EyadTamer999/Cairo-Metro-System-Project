@@ -70,6 +70,7 @@
 
         // Event listener for the Accept button click
         $('#btnAcceptReject').click(function () {
+            if (selectedRefundId !== null) {
             const requestId = selectedRefundId;
             const data = {
                 requestId // should it be included or leave body empty
@@ -86,9 +87,11 @@
                     alert(`Error handling: ${error.responseText}`);
                 }
             });
+        } else {
+                alert('Please select a refund to edit.');
+            }
+
         });
-
-
     });
 </script>
 <div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">

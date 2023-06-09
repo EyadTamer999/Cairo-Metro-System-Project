@@ -136,5 +136,21 @@ module.exports = function (app) {
         return res.render('purchase.html', {...user});
     });
 
+                app.get('/rides', async (req, res) =>{
+                    const user = await getUser(req);
+                    const rides = await db("se_project.rides").select("*").where({userid : user.userid});
+                    return res.render('rides.html',{...user,rides});
+                });
 
+                app.get('/rides/simulate', async (req, res) =>{
+                    const user = await getUser(req);
+                     const rides = await db("se_project.rides").select("*").where({userid : user.userid});
+                    return res.render('simulate.html',{...user, rides});
+                });
+
+                app.get('/prices', async (req, res) =>{
+                    const user = await getUser(req);
+                     const tickets = await db("se_project.tickets").select("*").where({userid : user.userid});
+                    return res.render('prices.html',{...user, tickets});
+                });
 };
