@@ -881,8 +881,7 @@ module.exports = function (app) {
             if (!user.isAdmin) return res.status(401);
 
             const body = req.body;
-            const stationname = body['stationNameInput']
-            
+            const stationname = body['stationname']
             const existstation = await db("se_project.stations")
                 .where('stationname', stationname)
                 .select("*")
