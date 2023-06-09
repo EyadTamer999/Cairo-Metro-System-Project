@@ -70,7 +70,12 @@
 
 
         $('#btnAcceptReject').click(function () {
+
+            if (selectedSeniorId !== null) {
+            const requestId = selectedSeniorId;
+              //TODO check again
             const requestId = $('#RequestID').val();
+
             const data = {
                 requestId
             }
@@ -85,7 +90,14 @@
                     alert(`Error handling: ${error.responseText}`);
                 }
             });
+
+        } else {
+                alert('Please select a request to edit.');
+            }
+
+            
         });
+
     });
 </script>
 <div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
