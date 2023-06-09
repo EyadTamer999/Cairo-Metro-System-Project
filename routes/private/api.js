@@ -139,11 +139,7 @@ module.exports = function (app) {
                     ticketid: ticketid[0]['id'],
                     tripdate: tripdate
                 })
-
-
-
-                // return res.status(201).json(updateTickets);
-
+                
                 const { origin, destination, tripdate } = req.body;
 
                 let newPaymentBySubscription = {
