@@ -1,174 +1,463 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
+
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <link rel='stylesheet' href='/styles/style.css'/>
+    <link rel='stylesheet' href='/styles/style.css' />
     <link rel="icon" type="png" href="/images/icon.png">
     <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
 </head>
-<body>
-<script>
-    //todo add el pay for subs
-    $(document).ready(function () {
-        const sessionToken = document.cookie.includes('session_token');
-        if (!sessionToken) {
-            location.href = '/';
-        }
-    });
-</script>
-<div class="container bg-[url('/images/background.jpg')] min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
 
-    <nav id="navbar"
-         class="flex items-center bg-white bg-opacity-25 rounded-2xl px-2 h-fit shadow-2xl duration-300">
-        <img class="ml-3 cursor-pointer" onclick="notifications.showModal()" src="/images/Bell-Empty.svg"
-             alt="notifications">
+<body>
+    <script>
+        //todo add el pay for subs
+        $(document).ready(function () {
+            const sessionToken = document.cookie.includes('session_token');
+            if (!sessionToken) {
+                location.href = '/';
+            }
+        });
+    </script>
+    <div
+        class="container bg-[url('/images/background.jpg')] min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
+
+        <nav id="navbar"
+            class="flex items-center bg-white bg-opacity-25 rounded-2xl px-2 h-fit shadow-2xl duration-300">
+            <img class="ml-3 cursor-pointer" onclick="notifications.showModal()" src="/images/Bell-Empty.svg"
+                alt="notifications">
 
 
             </form>
-        </dialog>
+            </dialog>
 
-        <ul class="flex-1 text-center">
+            <ul class="flex-1 text-center">
 
-            <li class="list-none inline-block px-5">
-                <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
-            </li>
-            <li class="list-none inline-block px-5">
-                <a href="#Tickets/Rides"
-                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Tickets/Rides</a>
-            </li>
-            <li class="list-none inline-block px-5">
-                <a href="#Account"
-                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Account</a>
-            </li>
-        </ul>
+                <li class="list-none inline-block px-5">
+                    <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
+                </li>
+                <li class="list-none inline-block px-5">
+                    <a href="#Tickets/Rides"
+                        class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Tickets/Rides</a>
+                </li>
+                <li class="list-none inline-block px-5">
+                    <a href="#Account"
+                        class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Account</a>
+                </li>
+            </ul>
 
-        <a href="/"><img class="mr-7 w-7 h-7" src="/images/logout.png" alt="logout"></a>
+            <a href="/"><img class="mr-7 w-7 h-7" src="/images/logout.png" alt="logout"></a>
 
-        <a href="/">
-            <img
+            <a href="/">
+                <img class="w-40 hover:animate-pulse" src="/images/icon.png" alt="logo" />
+            </a>
+            <script>
+                $(function () {
+                    var scroll = $(document).scrollTop();
+                    var navHeight = $('#navbar').outerHeight();
 
-                    class="w-40 hover:animate-pulse"
-                    src="/images/icon.png"
-                    alt="logo"/>
-        </a>
-        <script>
-            $(function () {
-                var scroll = $(document).scrollTop();
-                var navHeight = $('#navbar').outerHeight();
+                    $(window).scroll(function () {
+                        var scrolled = $(document).scrollTop();
 
-                $(window).scroll(function () {
-                    var scrolled = $(document).scrollTop();
+                        if (scrolled > navHeight) {
+                            $('#navbar').addClass('animate');
+                        } else {
 
-                    if (scrolled > navHeight) {
-                        $('#navbar').addClass('animate');
-                    } else {
+                            $('#navbar').removeClass('animate');
+                        }
 
-                        $('#navbar').removeClass('animate');
+                        if (scrolled > scroll) {
+                            $('#navbar').removeClass('sticky');
+                        } else {
+                            $('#navbar').addClass('sticky');
+                        }
+
+                        scroll = $(document).scrollTop();
+
+                    });
+                });
+            </script>
+        </nav>
+
+        <head>
+            <style>
+                #pageTitle {
+                    font-size: 3rem;
+                    text-align: center;
+                    margin-top: 2rem;
+                }
+
+                .btn-container {
+                    display: flex;
+                    align-items: center;
+
+                }
+
+                .btn {
+                    padding: 0.5rem 1rem;
+                    background-color: #e56b46;
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    margin-right: 1rem;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+
+                th,
+                td {
+                    padding: 0.5rem;
+                    text-align: left;
+                    border-bottom: 1px solid #ccc;
+                }
+
+                .selected {
+                    background-color: #e56b46;
+                    color: #ffffff;
+                }
+            </style>
+        </head>
+
+        <body>
+            <script>
+                $(document).ready(function () {
+                    const sessionToken = document.cookie.includes('session_token');
+                    if (!sessionToken) {
+                        location.href = '/';
                     }
 
-                    if (scrolled > scroll) {
-                        $('#navbar').removeClass('sticky');
-                    } else {
-                        $('#navbar').addClass('sticky');
+                    let selectedzoneId = null;
+
+                    function selectRow(zoneId) {
+                        $('.selectable-row.selected').removeClass('selected');
+                        $(`#row-${zoneId}`).addClass('selected');
+                        selectedzoneId = zoneId;
                     }
 
-                    scroll = $(document).scrollTop();
+                    // Event listener for table row click
+                    $(document).on('click', '.selectable-row', function () {
+                        var zoneId = $(this).attr('data-zone-id');
+                        selectRow(zoneId);
+                    });
+
 
                 });
-            });
-        </script>
-    </nav>
-<head>
-    <style>
-        #pageTitle {
-            font-size: 3rem;
-            text-align: center;
-            margin-top: 2rem;
-        }
-        
-        .btn-container {
-            display: flex;
-            align-items: center;
-            
-        }
-        
-        .btn {
-            padding: 0.5rem 1rem;
-            background-color: #e56b46;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 1rem;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 0.5rem;
-            text-align: left;
-            border-bottom: 1px solid #ccc;
-        }
-        
-        .selected {
-            background-color: #e56b46;
-            color: #ffffff;
-        }
-    </style>
-</head>
-<body>
-<script>
-    $(document).ready(function () {
-        const sessionToken = document.cookie.includes('session_token');
-        if (!sessionToken) {
-            location.href = '/';
-        }
+            </script>
 
-        let selectedzoneId = null;
+            <section id="Subscription" class="flex flex-col">
 
-        function selectRow(zoneId) {
-            $('.selectable-row.selected').removeClass('selected');
-            $(`#row-${zoneId}`).addClass('selected');
-            selectedzoneId = zoneId;
-        }
+                <div
+                    class="self-center mt-6 w-full rounded-2xl bg-white text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
+                    <h1 id="pageTitle"></h1>
 
-        // Event listener for table row click
-        $(document).on('click', '.selectable-row', function () {
-            var zoneId = $(this).attr('data-zone-id');
-            selectRow(zoneId);
-        });
+                    <br />
+                    <div class="table-container bg-white p-5">
 
-      
-    });
-</script>
-    <h1 id="pageTitle"></h1>
 
-    <br/>
-    <div class="table-container bg-white p-5">
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Zone Type</th>
-            <th scope="col">Price</th>
-        </tr>
-        </thead>
-        <tbody>
-        <% zones.forEach(zone => { %>
-        <tr id="row-<%= zone.id %>" data-zone-id="<%= zone.id %>" class="selectable-row">
-            <td><%= zone.id %></td>
-            <td><%= zone.zonetype %></td>
-            <td><%= zone.price %></td>
-        </tr>
-        <% }) %>
-        </tbody>
-    </table>
-</div>
-</div>
+
+                        <!--TODO add functionality-->
+                        <button type="button" onclick="PayForSubscription.showModal()"
+                            class="w-1/2 h-20 my-6 rounded rounded-lg bg-orange-700 text-l font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-orange-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-orange-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-orange-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)](59,113,202,0.5)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                            data-te-ripple-init>
+                            Pay For Subscription
+                        </button>
+
+                        <!--TODO add functionality-->
+                        <dialog class="rounded-2xl" id="PayForSubscription">
+                            <div class="flex justify-center items-center scrollbar-hide">
+                                <div class="w-80 bg-white p-3 rounded-lg">
+                                    <p class="text-xl font-semibold">Payment Details</p>
+                                    <div class="input_text mt-6 relative">
+                                        <input id="CardHolderNameInput" type="text"
+                                            class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b"
+                                            placeholder="John Row" />
+                                        <span class="absolute left-0 text-sm -top-4">Cardholder Name</span>
+                                        <i class="absolute left-2 top-4 text-gray-400 fa fa-user"></i>
+                                    </div>
+                                    <div class="input_text mt-8 relative">
+                                        <input id="CardNumberInput" type="text"
+                                            class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b"
+                                            placeholder="0000 0000 0000 0000" data-slots="0" data-accept="\d"
+                                            size="19" />
+                                        <span class="absolute left-0 text-sm -top-4">Card Number</span>
+                                        <i
+                                            class="absolute left-2 top-[14px] text-gray-400 text-sm fa fa-credit-card"></i>
+                                    </div>
+                                    <div class="mt-8 flex gap-5">
+                                        <div class="input_text relative w-full">
+                                            <input id="ExpiryInput" type="text"
+                                                class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b"
+                                                placeholder="mm/yyyy" data-slots="my" />
+                                            <span class="absolute left-0 text-sm -top-4">Expiry</span>
+                                            <i class="absolute left-2 top-4 text-gray-400 fa fa-calendar-o"></i>
+                                        </div>
+                                        <div class="input_text relative w-full">
+                                            <input id="CVVInput" type="text"
+                                                class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b"
+                                                placeholder="000" data-slots="0" data-accept="\d" size="3" />
+                                            <span class="absolute left-0 text-sm -top-4">CVV</span>
+                                            <i class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-8 flex gap-5">
+                                        <div class="input_text relative w-full">
+                                            <input id="ZoneIdInput" type="text"
+                                                class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b"
+                                                placeholder="0" data-slots="0" data-accept="\d" size="3" />
+                                            <span class="absolute left-0 text-sm -top-4">Zone ID</span>
+                                            <i class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label>Choose Subscription Type:
+                                            <select id="SubscriptionTypeInput"
+                                                class="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                                <option value="None">Choose Your Subscription</option>
+                                                <option value="annual">Year (100 Tickets)</option>
+                                                <option value="quarterly">Quarterly (50 Ticket)</option>
+                                                <option value="month">Month (10 Tickets)</option>
+
+                                            </select>
+
+                                            <script>
+                                                //on change of SubscriptionTypeInput update the payment amount TODO get zone prices
+                                                $(document).ready(function () {
+                                                    $("#SubscriptionTypeInput").change(function () {
+                                                        if ($("#SubscriptionTypeInput").val() == "annual") {
+                                                            $("#PaymentAmountLabel").text("Payment amount: 200EGP");
+                                                        } else if ($("#SubscriptionTypeInput").val() == "month") {
+                                                            $("#PaymentAmountLabel").text("Payment amount: 50EGP");
+                                                        } else if ($("#SubscriptionTypeInput").val() == "quarterly") {
+                                                            $("#PaymentAmountLabel").text("Payment amount: 150EGP");
+                                                        }
+                                                        else {
+                                                            $("#PaymentAmountLabel").text("Payment amount:");
+                                                        }
+                                                    });
+                                                });
+                                            </script>
+
+                                        </label>
+                                    </div>
+
+                                    <p id="PaymentAmountLabel"
+                                        class="text-lg text-center mt-4 text-gray-600 font-semibold">
+                                        Payment amount:
+                                    </p>
+                                    <p id="ErrorLabel" style="visibility: hidden"
+                                        class="text-lg text-center mt-4 text-red-700 font-semibold"></p>
+                                    <div class="flex flex-col justify-center mt-4">
+                                        <button id="PayForSubscriptionButton"
+                                            class="self-center outline-none pay h-12 bg-orange-600 text-white mb-3 hover:bg-orange-700 rounded-lg w-1/2 cursor-pointer transition-all">
+                                            Pay
+                                        </button>
+
+                                        <script>
+
+                                            function getPaymentAmount(subscriptionType) {
+                                                if (subscriptionType == "annual") {
+                                                    return 200;
+                                                } else if (subscriptionType == "month") {
+                                                    return 50;
+                                                } else if (subscriptionType == "quarterly") {
+                                                    return 150;
+                                                }
+                                                else {
+                                                    return 0;
+                                                }
+                                            }
+
+                                            $(document).ready(function () {
+                                                $("#PayForSubscriptionButton").click(function () {
+                                                    console.log("clicked");
+                                                    const user = <%- JSON.stringify(user) %>;
+                                                    const cardHolderName = $('#CardHolderNameInput').val();
+                                                    const cardNumber = $('#CardNumberInput').val();
+                                                    const expiry = $('#ExpiryInput').val();
+                                                    const cVV = $('#CVVInput').val();
+                                                    const zoneId = $('#ZoneIdInput').val();
+                                                    const subscriptionType = $('#SubscriptionTypeInput').val();
+                                                    const paymentAmount = getPaymentAmount(subscriptionType);
+                                                    const errorLabel = $('#ErrorLabel');
+
+
+
+                                                    console.log(user);
+
+                                                    data = {
+                                                        creditCardNumber: cardNumber,
+                                                        holderName: cardHolderName,
+                                                        payedAmount: paymentAmount,
+                                                        subType: subscriptionType,
+                                                        zoneId: zoneId
+                                                    }
+
+                                                    console.log(data);
+
+                                                    //TODO handle if any of the inputs is empty
+                                                    // for (let i in data) {
+                                                    //     if (i !== "") {
+                                                    //         errorLabel.css("visibility", "visible")
+                                                    //         errorLabel.text(i, "is missing!")
+                                                    //         $('#CurrentPassword').text("")
+                                                    //         $('#NewPassword').text("");
+                                                    //         return
+                                                    //     }
+                                                    // }
+
+                                                    // console.log(user);
+
+                                                    errorLabel.css("visibility", "hidden")
+
+                                                    $.ajax({
+                                                        type: "POST",
+                                                        url: '/api/v1/payment/subscription',
+                                                        data,
+                                                        success: function (serverResponse) {
+                                                            if (serverResponse) {
+                                                                console.log("success")
+                                                            }
+                                                        },
+                                                        error: function (errorResponse) {
+                                                            if (errorResponse) {
+                                                                alert(`error: ${errorResponse.responseText}`);
+                                                                console.log("error")
+                                                            }
+                                                        }
+                                                    });
+                                                });
+                                            });
+                                        </script>
+
+                                        <button type="button" id="ClosePayForSubscription"
+                                            class="self-center focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                                            Cancel
+                                        </button>
+                                        <script>
+                                            const dialog = document.querySelector(
+                                                "#PayForSubscription"
+                                            );
+                                            const closeButton = document.querySelector(
+                                                "#ClosePayForSubscription"
+                                            );
+                                            closeButton.addEventListener("click", () => {
+                                                dialog.close();
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                document.addEventListener("DOMContentLoaded", () => {
+                                    for (const el of document.querySelectorAll(
+                                        "[placeholder][data-slots]"
+                                    )) {
+                                        const pattern = el.getAttribute("placeholder"),
+                                            slots = new Set(el.dataset.slots || "_"),
+                                            prev = ((j) =>
+                                                Array.from(pattern, (c, i) =>
+                                                    slots.has(c) ? (j = i + 1) : j
+                                                ))(0),
+                                            first = [...pattern].findIndex((c) => slots.has(c)),
+                                            accept = new RegExp(el.dataset.accept || "\\d", "g"),
+                                            clean = (input) => {
+                                                input = input.match(accept) || [];
+                                                return Array.from(pattern, (c) =>
+                                                    input[0] === c || slots.has(c)
+                                                        ? input.shift() || c
+                                                        : c
+                                                );
+                                            },
+                                            format = () => {
+                                                const [i, j] = [el.selectionStart, el.selectionEnd].map(
+                                                    (i) => {
+                                                        i = clean(el.value.slice(0, i)).findIndex((c) =>
+                                                            slots.has(c)
+                                                        );
+                                                        return i < 0
+                                                            ? prev[prev.length - 1]
+                                                            : back
+                                                                ? prev[i - 1] || first
+                                                                : i;
+                                                    }
+                                                );
+                                                el.value = clean(el.value).join``;
+                                                el.setSelectionRange(i, j);
+                                                back = false;
+                                            };
+                                        let back = false;
+                                        el.addEventListener(
+                                            "keydown",
+                                            (e) => (back = e.key === "Backspace")
+                                        );
+                                        el.addEventListener("input", format);
+                                        el.addEventListener("focus", format);
+                                        el.addEventListener(
+                                            "blur",
+                                            () => el.value === pattern && (el.value = "")
+                                        );
+                                    }
+                                });
+
+                                var pay = document.querySelector(".pay");
+                                var allinputs = document.querySelectorAll(".input_text input");
+                                pay.addEventListener("click", function () {
+                                    allinputs.forEach((e) => {
+                                        e.classList.remove("warning");
+                                        if (e.value.length < 1) {
+                                            e.classList.add("warning");
+                                        }
+                                    });
+                                });
+
+                                allinputs.forEach((all) => {
+                                    all.addEventListener("keyup", function () {
+                                        if (all.value.length < 1) {
+                                            all.classList.add("warning");
+                                        } else {
+                                            all.classList.remove("warning");
+                                        }
+                                    });
+                                });
+                            </script>
+                        </dialog>
+
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Zone Type</th>
+                                    <th scope="col">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% zones.forEach(zone=> { %>
+                                    <tr id="row-<%= zone.id %>" data-zone-id="<%= zone.id %>" class="selectable-row">
+                                        <td>
+                                            <%= zone.id %>
+                                        </td>
+                                        <td>
+                                            <%= zone.zonetype %>
+                                        </td>
+                                        <td>
+                                            <%= zone.price %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+    </div>
+    </section>
 </body>
 
 

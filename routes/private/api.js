@@ -307,6 +307,7 @@ module.exports = function (app) {
     app.post("/api/v1/payment/subscription",
         async (req, res) => {
             try {
+                
                 const creditCardNumber = req.body.creditCardNumber;
                 const holderName = req.body.holderName;
                 let payedAmount = req.body.payedAmount;
@@ -318,6 +319,7 @@ module.exports = function (app) {
                 const uid = user.userid;
                 const existZone = await db.select("*").from("se_project.zones")
                     .where({ id: zoneId });
+
 
                 if (user.isSenior) {
                     payedAmount = payedAmount * 0.9;
@@ -347,7 +349,7 @@ module.exports = function (app) {
                     const ret2 = await db('se_project.transactions').insert({
                         amount: payedAmount,
                         userid: uid,
-                        purchasedid: toString(id_trip),
+                        purchasediid: toString(id_trip),
                         purchasetype: "subscription"
 
                     }).returning("*");
