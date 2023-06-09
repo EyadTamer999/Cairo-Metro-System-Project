@@ -162,9 +162,10 @@ module.exports = function (app) {
                     return res.render('refund.html', { ...user, refund_requests });
                 });
             
-                app.get('/user_requests', async function (req, res) {
-                    const user = await getUser(req);
-                    return res.render('user_requests.html', { ...user });
-                });
+                
+    app.get('/user_requests', async function (req, res) {
+        const user = await getUser(req);
+        return res.render('user_requests.html', { user });
+    });
 
 };
