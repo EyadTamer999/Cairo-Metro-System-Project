@@ -92,8 +92,10 @@ module.exports = function (app) {
                 .from('se_project.subscription')
                 .where("userid", '=', userid)
 
-
+            
             const subid = userSubscription[0]['id']
+
+            console.log(subid)
             //userSubscription is in an array, so we need to access that array first then access id
             // console.log(userSubscription[0]['id'])
             // console.log(subid)
@@ -115,6 +117,15 @@ module.exports = function (app) {
                 // get the sub id from the user session and getUser
                 // get origin and dest and data from user input
 
+                const { origin, destination, tripdate } = req.body;
+
+                let newPaymentBySubscription = {
+                    origin,
+                    destination,
+                    userid,
+                    subid,
+                    tripdate
+                };
 
                 const paidBySubscription = await db.insert(newPaymentBySubscription).into("se_project.tickets");
 
@@ -139,17 +150,10 @@ module.exports = function (app) {
                     ticketid: ticketid[0]['id'],
                     tripdate: tripdate
                 })
+
                 
-                const { origin, destination, tripdate } = req.body;
 
-                let newPaymentBySubscription = {
-                    origin,
-                    destination,
-                    userid,
-                    subid,
-                    tripdate
-                };
-
+                console.log(newPaymentBySubscription);
 
                 const ticket_cost = 0;//TODO call CheckPrice
                 const origin_id = await db.select("id").from('se_project.stations').where('stationname', origin);
@@ -343,7 +347,7 @@ module.exports = function (app) {
                     const ret2 = await db('se_project.transactions').insert({
                         amount: payedAmount,
                         userid: uid,
-                        purchasediid: toString(id_trip),
+                        purchasedid: toString(id_trip),
                         purchasetype: "subscription"
 
                     }).returning("*");
@@ -373,6 +377,31 @@ module.exports = function (app) {
     //POST pay for ticket online
 
 
+    async function Get_price(originid, destinationid) {
+        try {
+            let matrix = await create2dmatrix();
+            let distMatrix = await floydWarshall(matrix);
+            const distance = distMatrix[originid][destinationid];
+            let price;
+            switch (true) {
+                case distance <= 9:
+                    price = 5;
+                    break;
+                case distance > 9 && distance <= 16:
+                    price = 7;
+                    break;
+                default:
+                    price = 10;
+            }
+
+
+            return price;
+        } catch (err) {
+            console.log(err.message);
+            return 1;
+        }
+    }
+
     //paying for tickets online need work
     app.post("/api/v1/payment/ticket",
         async (req, res) => {
@@ -380,20 +409,21 @@ module.exports = function (app) {
 
 
                 const {
-                    creditCardNumber,//Integer
+                    creditCardNumber,//string
                     holderName,//string
                     payedAmount,//integer
-
                     origin,//string
                     destination,//string
                     tripDate //dateTime
                 } = req.body;
+                
+                console.log(origin);
 
                 const user = await getUser(req);
                 const uid = user.userid;
                 console.log("dammmmm1");
-                const origin_id = await db.select("id").from('se_project.stations').where('stationname', origin);
-                const des_id = await db.select("id").from('se_project.stations').where('stationname', destination);
+                const origin_id = await db.select("*").from('se_project.stations').where('stationname', origin);
+                const des_id = await db.select("*").from('se_project.stations').where('stationname', destination);
                 console.log(origin_id);
                 let ticket_cost = 0;
                 if (isEmpty(des_id) || isEmpty(origin_id)) {
@@ -405,7 +435,11 @@ module.exports = function (app) {
 
                     const des_id_int = des_id[0]['id'];
 
-                    ticket_cost = await Get_price(origin_id_int, des_id_int);
+                    if (user.isSenior) {
+                        ticket_cost = await Get_price(origin_id_int, des_id_int) * 0.5;
+                    } else {
+                        ticket_cost = await Get_price(origin_id_int, des_id_int);
+                    }
 
                     const existsubsription = await db.select("*").from("se_project.subscription").where('userid', uid);
                     if (!isEmpty(existsubsription)) {
@@ -436,6 +470,8 @@ module.exports = function (app) {
                         //TODO checkprice before inserting
                         if (ticket_cost <= payedAmount) {
 
+
+
                             const ret1 = await db('se_project.tickets').insert({
                                 origin: origin,
                                 destination: destination,
@@ -447,12 +483,13 @@ module.exports = function (app) {
                             }).returning("*");
 
 
-                            const id_trip = Number(ret1[0]["id"]);
+                            const id_trip = (ret1[0]["id"]).toString();
+                            console.log(id_trip);
 
                             const ret2 = await db('se_project.transactions').insert({
-                                amount: payedAmount,
+                                amount: ticket_cost,
                                 userid: uid,
-                                purchasedid: toString(id_trip),
+                                purchasedid: id_trip,
                                 purchasetype: "ticket"
 
 
@@ -483,7 +520,7 @@ module.exports = function (app) {
                             console.log(des_id_int);
 
                             console.log(origin_id_int);
-                            console.log("ya ana mabdoon");
+                            
 
                             if (!isEmpty(origin_id) && !isEmpty(des_id)) {
                                 const potential_routs_data = await db.select("*").from('se_project.routes').where('tostationid', des_id_int).where('fromstationid', origin_id_int);//ret2
@@ -797,7 +834,7 @@ module.exports = function (app) {
             const user = await getUser(req);
             if (user.isAdmin) return res.status(401);
             var { ticketid } = req.params;
-            console.log("waaaaaa", ticketid);
+            // console.log("waaaaaa", ticketid);
             ticketid = parseInt(ticketid);
             const existTicket = await db.select("*").from("se_project.tickets").where("id", ticketid);
 

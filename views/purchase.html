@@ -1,202 +1,592 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
+
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <link rel='stylesheet' href='/styles/style.css'/>
+    <link rel='stylesheet' href='/styles/style.css' />
     <link rel="icon" type="png" href="/images/icon.png">
     <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
 </head>
-<body>
-<script>
-    $(document).ready(function () {
-        const sessionToken = document.cookie.includes('session_token');
-        if (!sessionToken) {
-            location.href = '/';
-        }
-    });
-</script>
-<div class="container bg-[url('/images/background.jpg')] min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
 
-    <nav id="navbar"
-         class="flex items-center bg-white bg-opacity-25 rounded-2xl px-2 h-fit shadow-2xl duration-300">
-        <img class="ml-3 cursor-pointer" onclick="notifications.showModal()" src="/images/Bell-Empty.svg"
-             alt="notifications">
+<body>
+    <script>
+        $(document).ready(function () {
+            const sessionToken = document.cookie.includes('session_token');
+            if (!sessionToken) {
+                location.href = '/';
+            }
+        });
+    </script>
+    <div
+        class="container bg-[url('/images/background.jpg')] min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
+
+        <nav id="navbar"
+            class="flex items-center bg-white bg-opacity-25 rounded-2xl px-2 h-fit shadow-2xl duration-300">
+            <img class="ml-3 cursor-pointer" onclick="notifications.showModal()" src="/images/Bell-Empty.svg"
+                alt="notifications">
 
 
             </form>
-        </dialog>
+            </dialog>
 
-        <ul class="flex-1 text-center">
+            <ul class="flex-1 text-center">
 
-            <li class="list-none inline-block px-5">
-                <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
-            </li>
-            <li class="list-none inline-block px-5">
-                <a href="#Tickets/Rides"
-                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Tickets/Rides</a>
-            </li>
-            <li class="list-none inline-block px-5">
-                <a href="#Account"
-                   class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Account</a>
-            </li>
-        </ul>
+                <li class="list-none inline-block px-5">
+                    <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
+                </li>
+                <li class="list-none inline-block px-5">
+                    <a href="#Tickets/Rides"
+                        class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Tickets/Rides</a>
+                </li>
+                <li class="list-none inline-block px-5">
+                    <a href="#Account"
+                        class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Account</a>
+                </li>
+            </ul>
 
-        <a href="/"><img class="mr-7 w-7 h-7" src="/images/logout.png" alt="logout"></a>
+            <a href="/"><img class="mr-7 w-7 h-7" src="/images/logout.png" alt="logout"></a>
 
-        <a href="/">
-            <img
+            <a href="/">
+                <img class="w-40 hover:animate-pulse" src="/images/icon.png" alt="logo" />
+            </a>
+            <script>
+                $(function () {
+                    var scroll = $(document).scrollTop();
+                    var navHeight = $('#navbar').outerHeight();
 
-                    class="w-40 hover:animate-pulse"
-                    src="/images/icon.png"
-                    alt="logo"/>
-        </a>
-        <script>
-            $(function () {
-                var scroll = $(document).scrollTop();
-                var navHeight = $('#navbar').outerHeight();
+                    $(window).scroll(function () {
+                        var scrolled = $(document).scrollTop();
 
-                $(window).scroll(function () {
-                    var scrolled = $(document).scrollTop();
+                        if (scrolled > navHeight) {
+                            $('#navbar').addClass('animate');
+                        } else {
 
-                    if (scrolled > navHeight) {
-                        $('#navbar').addClass('animate');
-                    } else {
+                            $('#navbar').removeClass('animate');
+                        }
 
-                        $('#navbar').removeClass('animate');
-                    }
+                        if (scrolled > scroll) {
+                            $('#navbar').removeClass('sticky');
+                        } else {
+                            $('#navbar').addClass('sticky');
+                        }
 
-                    if (scrolled > scroll) {
-                        $('#navbar').removeClass('sticky');
-                    } else {
-                        $('#navbar').addClass('sticky');
-                    }
+                        scroll = $(document).scrollTop();
 
-                    scroll = $(document).scrollTop();
-
+                    });
                 });
-            });
-        </script>
-    </nav>
-<head>
-    <style>
-        #pageTitle {
-            font-size: 3rem;
-            text-align: center;
-            margin-top: 2rem;
-        }
-        
-        .btn-container {
-            display: flex;
-            align-items: center;
-            
-        }
-        
-        .btn {
-            padding: 0.5rem 1rem;
-            background-color: #4f46e5;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 1rem;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 0.5rem;
-            text-align: left;
-            border-bottom: 1px solid #ccc;
-        }
-        
-        .selected {
-            background-color: #e56b46;
-            color: #ffffff;
-        }
-    </style>
-</head>
-<body>
-<script>
-    $(document).ready(function () {
-        const sessionToken = document.cookie.includes('session_token');
-        if (!sessionToken) {
-            location.href = '/';
-        }
+            </script>
+        </nav>
 
-        let selectedTicketId = null;
+        <head>
+            <style>
+                #pageTitle {
+                    font-size: 3rem;
+                    text-align: center;
+                    margin-top: 2rem;
+                }
 
-        function selectRow(ticketId) {
-            $('.selectable-row.selected').removeClass('selected');
-            $(`#row-${ticketId}`).addClass('selected');
-            selectedTicketId = ticketId;
-        }
+                .btn-container {
+                    display: flex;
+                    align-items: center;
 
-        // Event listener for table row click
-        $(document).on('click', '.selectable-row', function () {
-            var ticketId = $(this).attr('data-ticket-id');
-            selectRow(ticketId);
-        });
+                }
+
+                .btn {
+                    padding: 0.5rem 1rem;
+                    background-color: #4f46e5;
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    margin-right: 1rem;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+
+                th,
+                td {
+                    padding: 0.5rem;
+                    text-align: left;
+                    border-bottom: 1px solid #ccc;
+                }
+
+                .selected {
+                    background-color: #e56b46;
+                    color: #ffffff;
+                }
+            </style>
+        </head>
+
+        <body>
+            <section id="BuyTickets" class="flex flex-col">
+                <div
+                    class="self-center mt-6 w-2/3 rounded-2xl bg-white text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
+
+                    <button type="button" onclick="PayOnline.showModal()"
+                        class="w-1/2 h-20 my-6 rounded rounded-lg bg-orange-700 text-l font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-orange-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-orange-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-orange-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)](59,113,202,0.5)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                        data-te-ripple-init>
+                        Pay Online
+                    </button>
 
 
-        // Event listener for the edit button click
-        $('#btnRefund').click(function () {
+                    <dialog class="rounded-2xl" id="PayOnline">
+                        <div class="flex justify-center items-center scrollbar-hide">
+                            <div class="w-80 bg-white p-3 rounded-lg">
+                                <p class="text-xl font-semibold">Payment Details</p>
+                                <div class="input_text mt-6 relative">
+                                    <input id="CardHolderNameInput" type="text"
+                                        class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b"
+                                        placeholder="John Row" />
+                                    <span class="absolute left-0 text-sm -top-4">Cardholder Name</span>
+                                    <i class="absolute left-2 top-4 text-gray-400 fa fa-user"></i>
+                                </div>
+                                <div class="input_text mt-8 relative">
+                                    <input id="CardNumberInput" type="text"
+                                        class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b"
+                                        placeholder="0000 0000 0000 0000" data-slots="0" data-accept="\d" size="19" />
+                                    <span class="absolute left-0 text-sm -top-4">Card Number</span>
+                                    <i class="absolute left-2 top-[14px] text-gray-400 text-sm fa fa-credit-card"></i>
+                                </div>
+                                <div class="mt-8 flex gap-5">
+                                    <div class="input_text relative w-full">
+                                        <input id="ExpiryInput" type="text"
+                                            class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b"
+                                            placeholder="mm/yyyy" data-slots="my" />
+                                        <span class="absolute left-0 text-sm -top-4">Expiry</span>
+                                        <i class="absolute left-2 top-4 text-gray-400 fa fa-calendar-o"></i>
+                                    </div>
+                                    <div class="input_text relative w-full">
+                                        <input id="CVVInput" type="text"
+                                            class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b"
+                                            placeholder="000" data-slots="0" data-accept="\d" size="3" />
+                                        <span class="absolute left-0 text-sm -top-4">CVV</span>
+                                        <i class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i>
+                                    </div>
+                                </div>
+                                <div class="mt-8 flex gap-5">
+                                    <div class="input_text relative w-full">
+                                        <input id="originId" type="text"
+                                            class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b" />
+                                        <span class="absolute left-0 text-sm -top-4">origin ID</span>
+                                        <i class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i>
+                                    </div>
 
-            if (selectedTicketId !== null) {
+                                    <div class="input_text relative w-full">
+                                        <input id="destinationId" type="text"
+                                            class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b" />
+                                        <span class="absolute left-0 text-sm -top-4">Destination ID</span>
+                                        <i class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i>
+                                    </div>
+                                </div>
 
-                $.ajax({
-              type: "POST",
-              url: '/api/v1/refund/:ticketId',
-              data,
-              success: function (serverResponse) {
-                  if (serverResponse) {
-                      alert(`Refunded successfully`);
-                  }
-              },
-              error: function (errorResponse) {
-                  if (errorResponse) {
-                      alert(`Error Refunding : ${errorResponse.responseText}`);
-                          console.log("error")
-                  }
-              }
-          });
-            } else {
-                alert('Please select a ticket to Refund.');
-            }
+                                <div class="mt-8 flex gap-5">
+                                    <div class="input_text relative w-full">
+                                        <input id="TripDate" type="date"
+                                            class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b"
+                                            placeholder="dd-mm-yyyy" />
+                                        <span class="absolute left-0 text-sm -top-4">Trip Date</span>
 
-          const data = {
-          };
+                                    </div>
+                                </div>
+
+                                <p id="ErrorLabel" style="visibility: hidden"
+                                    class="text-lg text-center mt-4 text-red-700 font-semibold">
+                                </p>
+                                <div class="flex flex-col justify-center mt-4">
+                                    <button id="PayOnlineButton"
+                                        class="self-center outline-none pay h-12 bg-orange-600 text-white mb-3 hover:bg-orange-700 rounded-lg w-1/2 cursor-pointer transition-all">
+                                        Pay
+                                    </button>
+
+                                    <script>
 
 
-        });
+                                        $(document).ready(function () {
+                                            $("#PayOnlineButton").click(function () {
+                                                console.log("clicked");
+                                                const user = <%- JSON.stringify(user) %>;
+                                                const holderName = $('#CardHolderNameInput').val();
+                                                const creditCardNumber = $('#CardNumberInput').val();
+                                                const expiry = $('#ExpiryInput').val();
+                                                const cVV = $('#CVVInput').val();
+                                                const origin = $('#originId').val();
+                                                const destination = $('#destinationId').val();
+                                                const tripDate = new Date($('#TripDate').val().toString()).toISOString();
+                                                const errorLabel = $('#ErrorLabel');
+                                                const payedAmount = 10000;
+
+
+                                                console.log(tripDate)
+
+                                                console.log(new Date($('#TripDate').val().toString()).toISOString())
 
 
 
 
-    });        
-    // Event listener for the edit button click
-        $('#btnPurchase').click(function () {
-                location.href = `/tickets/purchase`;
+                                                data = {
+                                                    creditCardNumber,
+                                                    holderName,
+                                                    payedAmount,
+                                                    origin,
+                                                    destination,
+                                                    tripDate
+                                                }
 
-        });
-</script>
+                                                console.log(data);
 
-</script>
-    <h1 id="pageTitle"></h1>
-    <div class="btn-container">
-        <button id="btnRefund" class="btn" >Refund Ticket</button>
-        <button id="btnPurchase" class="btn">Purchase Ticket Online</button>
-    </div>
-    <br/>
-    <div class="table-container bg-white p-5">
+                                                //TODO handle if any of the inputs is empty
+                                                // for (let i in data) {
+                                                //     if (i !== "") {
+                                                //         errorLabel.css("visibility", "visible")
+                                                //         errorLabel.text(i, "is missing!")
+                                                //         $('#CurrentPassword').text("")
+                                                //         $('#NewPassword').text("");
+                                                //         return
+                                                //     }
+                                                // }
 
-    </table>
-</div>
-</div>
-</body>
+                                                // console.log(user);
+
+                                                errorLabel.css("visibility", "hidden")
+
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: '/api/v1/payment/ticket',
+                                                    data,
+                                                    success: function (serverResponse) {
+                                                        if (serverResponse) {
+                                                            alert(`success: ${serverResponse.num_of_tickets}`);
+                                                            console.log("success")
+                                                        }
+                                                    },
+                                                    error: function (errorResponse) {
+                                                        if (errorResponse) {
+                                                            alert(`error: ${errorResponse.responseText}`);
+                                                            console.log("error")
+                                                        }
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    </script>
+
+                                    <button type="button" id="ClosePayOnline"
+                                        class="self-center focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                                        Cancel
+                                    </button>
+                                    <script>
+                                        const dialog = document.querySelector(
+                                            "#PayOnline"
+                                        );
+                                        const closeButton = document.querySelector(
+                                            "#ClosePayOnline"
+                                        );
+                                        closeButton.addEventListener("click", () => {
+                                            dialog.close();
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                for (const el of document.querySelectorAll(
+                                    "[placeholder][data-slots]"
+                                )) {
+                                    const pattern = el.getAttribute("placeholder"),
+                                        slots = new Set(el.dataset.slots || "_"),
+                                        prev = ((j) =>
+                                            Array.from(pattern, (c, i) =>
+                                                slots.has(c) ? (j = i + 1) : j
+                                            ))(0),
+                                        first = [...pattern].findIndex((c) => slots.has(c)),
+                                        accept = new RegExp(el.dataset.accept || "\\d", "g"),
+                                        clean = (input) => {
+                                            input = input.match(accept) || [];
+                                            return Array.from(pattern, (c) =>
+                                                input[0] === c || slots.has(c)
+                                                    ? input.shift() || c
+                                                    : c
+                                            );
+                                        },
+                                        format = () => {
+                                            const [i, j] = [el.selectionStart, el.selectionEnd].map(
+                                                (i) => {
+                                                    i = clean(el.value.slice(0, i)).findIndex((c) =>
+                                                        slots.has(c)
+                                                    );
+                                                    return i < 0
+                                                        ? prev[prev.length - 1]
+                                                        : back
+                                                            ? prev[i - 1] || first
+                                                            : i;
+                                                }
+                                            );
+                                            el.value = clean(el.value).join``;
+                                            el.setSelectionRange(i, j);
+                                            back = false;
+                                        };
+                                    let back = false;
+                                    el.addEventListener(
+                                        "keydown",
+                                        (e) => (back = e.key === "Backspace")
+                                    );
+                                    el.addEventListener("input", format);
+                                    el.addEventListener("focus", format);
+                                    el.addEventListener(
+                                        "blur",
+                                        () => el.value === pattern && (el.value = "")
+                                    );
+                                }
+                            });
+
+                            var pay = document.querySelector(".pay");
+                            var allinputs = document.querySelectorAll(".input_text input");
+                            pay.addEventListener("click", function () {
+                                allinputs.forEach((e) => {
+                                    e.classList.remove("warning");
+                                    if (e.value.length < 1) {
+                                        e.classList.add("warning");
+                                    }
+                                });
+                            });
+
+                            allinputs.forEach((all) => {
+                                all.addEventListener("keyup", function () {
+                                    if (all.value.length < 1) {
+                                        all.classList.add("warning");
+                                    } else {
+                                        all.classList.remove("warning");
+                                    }
+                                });
+                            });
+                        </script>
+                    </dialog>
+
+
+
+
+                    <button type="button" onclick="PayBySubscription.showModal()"
+                        class="w-1/2 h-20 my-6 rounded rounded-lg bg-orange-700 text-l font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-orange-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-orange-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-orange-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)](59,113,202,0.5)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                        data-te-ripple-init>
+                        Pay by Subscription
+                    </button>
+
+
+                    <dialog class="rounded-2xl" id="PayBySubscription">
+                        <div class="flex justify-center items-center scrollbar-hide">
+                            <div class="w-80 bg-white p-3 rounded-lg">
+                                <p class="text-xl font-semibold">Payment Details</p>
+                                <div class="mt-8 flex gap-5">
+                                    <div class="input_text relative w-full">
+                                        <input id="originSubscriptionId" type="text"
+                                            class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b" />
+                                        <span class="absolute left-0 text-sm -top-4">origin ID</span>
+                                        <i class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i>
+                                    </div>
+
+                                    <div class="input_text relative w-full">
+                                        <input id="DestinationSubscriptionId" type="text"
+                                            class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b" />
+                                        <span class="absolute left-0 text-sm -top-4">Destination ID</span>
+                                        <i class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i>
+                                    </div>
+                                </div>
+                                <div class="mt-8 flex gap-5">
+                                    <div class="input_text relative w-full">
+                                        <input id="SubscriptionId" type="text"
+                                            class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b" />
+                                        <span class="absolute left-0 text-sm -top-4">Subscription ID</span>
+                                        <i class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i>
+                                    </div>
+                                </div>
+
+                                <div class="mt-8 flex gap-5">
+                                    <div class="input_text relative w-full">
+                                        <input id="TripDateSubscription" type="date"
+                                            class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b"
+                                            placeholder="dd-mm-yyyy" />
+                                        <span class="absolute left-0 text-sm -top-4">Trip Date</span>
+                                    </div>
+                                </div>
+
+                                
+
+                                <p id="ErrorLabel" style="visibility: hidden"
+                                    class="text-lg text-center mt-4 text-red-700 font-semibold">
+                                </p>
+                                <div class="flex flex-col justify-center mt-4">
+                                    <button id="PayForSubscriptionButton"
+                                        class="self-center outline-none pay h-12 bg-orange-600 text-white mb-3 hover:bg-orange-700 rounded-lg w-1/2 cursor-pointer transition-all">
+                                        Pay
+                                    </button>
+
+                                    <script>
+
+
+                                        $(document).ready(function () {
+                                            $("#PayForSubscriptionButton").click(function () {
+                                                console.log("clicked");
+                                                const userid = <%- JSON.stringify(user['userid']) %>;
+                                                const origin = $('#originSubscriptionId').val();
+                                                const destination = $('#DestinationSubscriptionId').val();
+                                                const tripdate = new Date($('#TripDateSubscription').val());
+                                                const errorLabel = $('#ErrorLabel');
+                                                const subid = $('#SubscriptionId').val();
+
+
+
+                                                data = {
+                                                    origin,
+                                                    destination,
+                                                    userid,
+                                                    subid,
+                                                    tripdate
+                                                }
+
+                                                console.log(data);
+
+                                                //TODO handle if any of the inputs is empty
+                                                // for (let i in data) {
+                                                //     if (i !== "") {
+                                                //         errorLabel.css("visibility", "visible")
+                                                //         errorLabel.text(i, "is missing!")
+                                                //         $('#CurrentPassword').text("")
+                                                //         $('#NewPassword').text("");
+                                                //         return
+                                                //     }
+                                                // }
+
+                                                // console.log(user);
+
+                                                errorLabel.css("visibility", "hidden")
+
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: '/api/v1/tickets/purchase/subscription',
+                                                    data,
+                                                    success: function (serverResponse) {
+                                                        if (serverResponse) {
+                                                            alert(`success: ${serverResponse.num_of_tickets}`);
+                                                            console.log("success")
+                                                        }
+                                                    },
+                                                    error: function (errorResponse) {
+                                                        if (errorResponse) {
+                                                            alert(`error: ${errorResponse.responseText}`);
+                                                            console.log("error")
+                                                        }
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    </script>
+
+                                    <button type="button" id="ClosePayBySubscription"
+                                        class="self-center focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                                        Cancel
+                                    </button>
+                                    <script>
+                                          $(document).ready(function () {
+                                            const PayForSubscriptionButton = document.querySelector(
+                                                "#PayBySubscription"
+                                            );
+                                            const ClosePayBySubscription = document.querySelector(
+                                                "#ClosePayBySubscription"
+                                            );
+                                            ClosePayBySubscription.addEventListener("click", () => {
+                                                PayForSubscriptionButton.close();
+                                            });
+                                    });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                for (const el of document.querySelectorAll(
+                                    "[placeholder][data-slots]"
+                                )) {
+                                    const pattern = el.getAttribute("placeholder"),
+                                        slots = new Set(el.dataset.slots || "_"),
+                                        prev = ((j) =>
+                                            Array.from(pattern, (c, i) =>
+                                                slots.has(c) ? (j = i + 1) : j
+                                            ))(0),
+                                        first = [...pattern].findIndex((c) => slots.has(c)),
+                                        accept = new RegExp(el.dataset.accept || "\\d", "g"),
+                                        clean = (input) => {
+                                            input = input.match(accept) || [];
+                                            return Array.from(pattern, (c) =>
+                                                input[0] === c || slots.has(c)
+                                                    ? input.shift() || c
+                                                    : c
+                                            );
+                                        },
+                                        format = () => {
+                                            const [i, j] = [el.selectionStart, el.selectionEnd].map(
+                                                (i) => {
+                                                    i = clean(el.value.slice(0, i)).findIndex((c) =>
+                                                        slots.has(c)
+                                                    );
+                                                    return i < 0
+                                                        ? prev[prev.length - 1]
+                                                        : back
+                                                            ? prev[i - 1] || first
+                                                            : i;
+                                                }
+                                            );
+                                            el.value = clean(el.value).join``;
+                                            el.setSelectionRange(i, j);
+                                            back = false;
+                                        };
+                                    let back = false;
+                                    el.addEventListener(
+                                        "keydown",
+                                        (e) => (back = e.key === "Backspace")
+                                    );
+                                    el.addEventListener("input", format);
+                                    el.addEventListener("focus", format);
+                                    el.addEventListener(
+                                        "blur",
+                                        () => el.value === pattern && (el.value = "")
+                                    );
+                                }
+                            });
+
+                            var pay = document.querySelector(".pay");
+                            var allinputs = document.querySelectorAll(".input_text input");
+                            pay.addEventListener("click", function () {
+                                allinputs.forEach((e) => {
+                                    e.classList.remove("warning");
+                                    if (e.value.length < 1) {
+                                        e.classList.add("warning");
+                                    }
+                                });
+                            });
+
+                            allinputs.forEach((all) => {
+                                all.addEventListener("keyup", function () {
+                                    if (all.value.length < 1) {
+                                        all.classList.add("warning");
+                                    } else {
+                                        all.classList.remove("warning");
+                                    }
+                                });
+                            });
+                        </script>
+                    </dialog>
+                </div>
+            </section>
+
+
+        </body>
 
 
 

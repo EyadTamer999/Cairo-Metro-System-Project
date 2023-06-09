@@ -6,7 +6,7 @@
 -- DROP TABLE IF EXISTS se_project.enrollments;
 --- Note in pgadmin columns name will be lowerCase
 --so either change them from pgadmin or change in the code to lower
-CREATE TABLE IF NOT EXISTS users
+CREATE TABLE IF NOT EXISTS se_project.users
 (
     id        SERIAL  NOT NULL,
     firstname text    NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users
     roleid    integer NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );
-CREATE TABLE IF NOT EXISTS sessions
+CREATE TABLE IF NOT EXISTS se_project.sessions
 (
     id        SERIAL    NOT NULL,
     userid    integer   NOT NULL,
@@ -24,14 +24,14 @@ CREATE TABLE IF NOT EXISTS sessions
     expiresat timestamp NOT NULL,
     CONSTRAINT sessions_pkey PRIMARY KEY (id)
 );
-CREATE TABLE IF NOT EXISTS roles
+CREATE TABLE IF NOT EXISTS se_project.roles
 (
     id   SERIAL NOT NULL,
     role text   NOT NULL,
     CONSTRAINT roles_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS zones
+CREATE TABLE IF NOT EXISTS se_project.zones
 (
     id       SERIAL  NOT NULL,
     zonetype text    NOT NULL, -- 9 stations/ 10-16/16
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS zones
     CONSTRAINT zones_pkey PRIMARY KEY (id)
 
 );
-CREATE TABLE IF NOT EXISTS subscription
+CREATE TABLE IF NOT EXISTS se_project.subscription
 (
     id          SERIAL  NOT NULL,
     subtype     text    NOT NULL, --annual --month -- quarterly
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS subscription
     FOREIGN KEY (zoneid) REFERENCES se_project.zones
 
 );
-CREATE TABLE IF NOT EXISTS tickets
+CREATE TABLE IF NOT EXISTS se_project.tickets
 (
     id          SERIAL    NOT NULL,
     origin      text      NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS se_project.rides
     FOREIGN KEY (ticketid) REFERENCES se_project.tickets,
     CONSTRAINT rides_pkey PRIMARY KEY (id)
 );
-CREATE TABLE IF NOT EXISTS transactions
+CREATE TABLE IF NOT EXISTS se_project.transactions
 (
     id           SERIAL  NOT NULL,
     amount       FLOAT NOT NULL, --should be FLOATs
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS transactions
     FOREIGN KEY (userid) REFERENCES se_project.users,
     CONSTRAINT transactions_pkey PRIMARY KEY (id)
 );
-CREATE TABLE IF NOT EXISTS refund_requests
+CREATE TABLE IF NOT EXISTS se_project.refund_requests
 (
     id           SERIAL  NOT NULL,
     status       text    NOT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS refund_requests
     FOREIGN KEY (ticketid) REFERENCES se_project.tickets,
     CONSTRAINT refund_requests_pkey PRIMARY KEY (id)
 );
-CREATE TABLE IF NOT EXISTS senior_requests
+CREATE TABLE IF NOT EXISTS se_project.senior_requests
 (
     id         SERIAL  NOT NULL,
     status     text    NOT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS senior_requests
     FOREIGN KEY (userid) REFERENCES se_project.users,
     CONSTRAINT senior_requests_pkey PRIMARY KEY (id)
 );
-CREATE TABLE IF NOT EXISTS stations
+CREATE TABLE IF NOT EXISTS se_project.stations
 (
     id              SERIAL NOT NULL,
     stationname     text   NOT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS stations
     stationstatus   text   not null, -- new created or not
     CONSTRAINT stations_pkey PRIMARY KEY (id)
 );
-CREATE TABLE IF NOT EXISTS routes
+CREATE TABLE IF NOT EXISTS se_project.routes
 (
     id            SERIAL  NOT NULL,
     routename     text    Not null,
