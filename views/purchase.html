@@ -259,8 +259,8 @@
                                                     data,
                                                     success: function (serverResponse) {
                                                         if (serverResponse) {
-                                                            alert(`success: ${serverResponse.num_of_tickets}`);
-                                                            console.log("success")
+                                                            const responseString = JSON.stringify(serverResponse, null, 2);
+                                                            alert(`Success:\n${responseString}`);                                                            console.log("success")
                                                         }
                                                     },
                                                     error: function (errorResponse) {
@@ -472,7 +472,8 @@
                                                     data,
                                                     success: function (serverResponse) {
                                                         if (serverResponse) {
-                                                            alert(`success: ${serverResponse.num_of_tickets}`);
+                                                         const responseString = JSON.stringify(serverResponse, null, 2);
+                                                            alert(`Success:\n${responseString}`);
                                                             console.log("success")
                                                         }
                                                     },
