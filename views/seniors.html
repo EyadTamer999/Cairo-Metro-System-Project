@@ -13,12 +13,12 @@
             text-align: center;
             margin-top: 2rem;
         }
-        
+
         .btn-container {
             display: flex;
             align-items: center;
         }
-        
+
         .btn {
             padding: 0.5rem 1rem;
             background-color: #4f46e5;
@@ -28,18 +28,18 @@
             cursor: pointer;
             margin-right: 1rem;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         th, td {
             padding: 0.5rem;
             text-align: left;
             border-bottom: 1px solid #ccc;
         }
-        
+
         .selected {
             background-color: #4f46e5;
             color: #ffffff;
@@ -68,17 +68,16 @@
             selectRow(seniorId);
         });
 
-        // Event listener for the Accept/Reject button click
+
         $('#btnAcceptReject').click(function () {
-            const requestId = selectedSeniorId;
+            const requestId = $('#RequestID').val();
             const data = {
-                requestId // should it be included or leave body empty
-            };
+                requestId
+            }
 
             $.ajax({
                 type: "PUT",
-                url: `/api/v1/requests/seniors/${requestId}`,
-                data,
+                url: `/api/v1/requests/senior/${requestId}`,
                 success: function (response) {
                     alert(`Handled: ${response}`);
                 },
@@ -87,12 +86,11 @@
                 }
             });
         });
-
-
     });
 </script>
 <div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
-    <nav id="navbar" class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
+    <nav id="navbar"
+         class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
         <ul class="flex-1 text-center">
             <li class="list-none inline-block px-5">
                 <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
@@ -137,6 +135,7 @@
     <h1 id="pageTitle"></h1>
 
     <div class="btn-container">
+        <label for="RequestID"></label><input id="RequestID">
         <button id="btnAcceptReject" class="btn">Handle</button>
 
     </div>
