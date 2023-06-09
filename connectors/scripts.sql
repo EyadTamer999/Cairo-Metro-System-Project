@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS se_project.creditcarddetails
 (
     id SERIAL NOT NULL,
     holder_name text NOT NULL,
-    creditcardnumber INTEGER NOT Null,
+    creditcardnumber TEXT NOT Null,
     userid INTEGER NOT Null,
     FOREIGN KEY( userid ) REFERENCES se_project.users,
     CONSTRAINT cc_pkey PRIMARY KEY (id)
