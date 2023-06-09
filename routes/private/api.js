@@ -307,23 +307,21 @@ module.exports = function (app) {
     app.post("/api/v1/payment/subscription",
         async (req, res) => {
             try {
-                
                 const creditCardNumber = req.body.creditCardNumber;
                 const holderName = req.body.holderName;
                 let payedAmount = req.body.payedAmount;
                 const subType = req.body.subType;
                 const zoneId = req.body.zoneId;
-
                 const num_of_tickets = get_num_of_tickets(subType);
                 const user = await getUser(req);
                 const uid = user.userid;
                 const existZone = await db.select("*").from("se_project.zones")
                     .where({ id: zoneId });
 
-
                 if (user.isSenior) {
                     payedAmount = payedAmount * 0.9;
                 }
+                
                 if (isEmpty(existZone)) {
                     return res.status(400).send("Zone does not exist");
                 } else if (creditCardNumber === null) {
