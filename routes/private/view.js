@@ -153,4 +153,15 @@ module.exports = function (app) {
                      const tickets = await db("se_project.tickets").select("*").where({userid : user.userid});
                     return res.render('prices.html',{...user, tickets});
                 });
+
+                app.get('/user_requests/refund', async function (req, res) {
+                    const user = await getUser(req);
+                    const refund_requests = await db.select('*').from('se_project.refund_requests').where({ userid: user.userid });
+                    return res.render('refund.html', { ...user, refund_requests });
+                });
+            
+                app.get('/user_requests', async function (req, res) {
+                    const user = await getUser(req);
+                    return res.render('user_requests.html', { ...user });
+                });
 };
