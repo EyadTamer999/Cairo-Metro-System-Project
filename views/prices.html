@@ -92,14 +92,18 @@
         }
         
         .btn {
-            padding: 0.5rem 1rem;
-            background-color: #e56b46 ;
+            padding: 5rem 5rem; 
+            background-color: #e56b46;
             color: #ffffff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            margin-right: 1rem;
-        }
+            margin: 0 auto; 
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            font-size: 2rem; 
+            }
     </style>
 </head>
 <body>
@@ -129,38 +133,54 @@
         
 </script>
 
-<script>
-    // Get the current URL
-    const url = window.location.href;
 
-    document.getElementById("entityName").placeholder = placeholderText;
-
-    //get entity ID from the URL
-    const entityId = url.substring(url.lastIndexOf('/') + 1);
-
-    document.getElementById("entityId").innerText = entityId;
-
-    //page title
-    document.getElementById("pageTitle").innerText = `Edit ${entityType.charAt(0).toUpperCase() + entityType.slice(1)}`;
-</script>
-
-
-<h1 id="pageTitle">Check Price</h1>
 
 <br/>
 <div class="ticket-info-container bg-white p-5">
-    <h2 class="ticket-info">Selected Ticket Information:</h2>
 
+    <div class="btn-container">
+        <button id="CheckPrice" class="btn" >Check Price</button>
+        </div>
 </div>
 </div>
 <script>
-    // Retrieve the selected ticket's origin and destination from the previous page
-    const selectedOrigin = localStorage.getItem('selectedOrigin');
-    const selectedDestination = localStorage.getItem('selectedDestination');
+        const url = window.location.href;
 
-    // Display the selected ticket's origin and destination in the appropriate places
-    document.getElementById('selectedOrigin').textContent = selectedOrigin;
-    document.getElementById('selectedDestination').textContent = selectedDestination;
+
+   //get entity ID from the URL
+   const urlParts = url.split('/');
+  const destinationid = urlParts[urlParts.length - 1];
+  const originid = urlParts[urlParts.length - 2];
+
 </script>
+<script>
+        // document.getElementById("entityId").innerText = entityId;
+
+    $(document).ready(function () {
+             $("#CheckPrice").click(function () {
+
+
+                const data = {}; 
+
+                $.ajax({
+                    type: "GET",
+                    url: `/api/v1/tickets/price/${originid}/${destinationid}`,
+                    data,
+                    success: function (serverResponse) {
+                        if (serverResponse) {
+                            alert(`success: ${serverResponse}`);                        }
+                    },
+                    error: function (errorResponse) {
+                        if (errorResponse) {
+                            alert(`Error : ${errorResponse.responseText}`);
+                            console.log("error")
+                        }
+                    }
+                });
+            });
+         });
+</script>
+
+
 </body>
 </html>

@@ -121,9 +121,10 @@ module.exports = function (app) {
     app.get('/tickets', async function (req, res) {
         const user = await getUser(req);
         const tickets = await db.select('*').from('se_project.tickets').where({ userid: user.userid });
+        const stations = await db.select('*').from('se_project.stations');
         // console.log(JSON.stringify(user));
         // console.log(tickets);
-        return res.render('tickets.html', { ...user, tickets });
+        return res.render('tickets.html', { ...user, tickets, stations });
     });
 
 
@@ -148,9 +149,9 @@ module.exports = function (app) {
                     return res.render('simulate.html',{...user, rides});
                 });
 
-                app.get('/prices', async (req, res) =>{
+                app.get('/prices/:originid/:destinationid', async (req, res) =>{
                     const user = await getUser(req);
-                     const tickets = await db("se_project.tickets").select("*").where({userid : user.userid});
+                    const tickets = await db("se_project.tickets").select("*").where({userid : user.userid});
                     return res.render('prices.html',{...user, tickets});
                 });
 
