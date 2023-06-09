@@ -714,14 +714,11 @@
 
           <dialog class="" id="PasswordModal">
             <div class="container flex flex-col">
-              <button id="closePasswordModal" type="reset"
-                class="rounded-3xl bg-blue-500 text-bold text-2xl justify-self-end self-end mx-2 my-2 px-2 py-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x"
+              <button id="closePasswordModal" type="reset" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 rounded-3xl bg-blue-500 text-bold text-2xl justify-self-end self-end mx-2 my-2 px-2 py-1"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x"
                   viewBox="0 0 16 16">
                   <path
                     d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                </svg>
-              </button>
+                </svg></button>
               <script>
                 $(document).ready(function () {
                   const dialog = document.querySelector("#PasswordModal");
@@ -735,6 +732,7 @@
               </script>
 
               <form class="flex flex-col container" method="dialog">
+               <h1 class="font-bold text-2xl my-3">Reset Password</h1> 
                 <div class="relative mb-3">
                   <input type="text"
                     class="peer m-0 block h-[58px] w-full rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-6 py-4 text-lg font-normal leading-tight text-neutral-700 transition duration-200 ease-linear placeholder:text-transparent focus:border-primary focus:pb-[0.625rem] focus:pt-[1.625rem] focus:text-neutral-700 focus:outline-none peer-focus:text-primary [&:not(:placeholder-shown)]:pb-[0.625rem] [&:not(:placeholder-shown)]:pt-[1.625rem]"
@@ -756,10 +754,10 @@
                   Please Enter your current password and new password
                 </p>
                 <div class="container flex-row">
-                  <button id="SubmitPassword" class="bg-blue-500 mr-4 px-1 py-1 mx-2 my-2">
+                  <button id="SubmitPassword" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 mr-4 px-1 py-1 mx-2 my-2">
                     Submit
                   </button>
-                  <button class="bg-red-500 mr-4 px-1 py-1 mx-2 my-2">
+                  <button class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 mr-4 px-1 py-1 mx-2 my-2">
                     Cancel
                   </button>
                 </div>
