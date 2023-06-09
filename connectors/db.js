@@ -19,6 +19,7 @@ const config = {
     }
 };
 
+
 // //use this for deployment
 // const config = {
 //     client: 'pg',
