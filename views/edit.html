@@ -13,12 +13,12 @@
             text-align: center;
             margin-top: 2rem;
         }
-        
+
         .btn-container {
             display: flex;
             align-items: center;
         }
-        
+
         .btn {
             padding: 0.5rem 1rem;
             background-color: #4f46e5;
@@ -28,20 +28,51 @@
             cursor: pointer;
             margin-right: 1rem;
         }
-        
+
     </style>
-<script>
-    $(document).ready(function () {
-        const sessionToken = document.cookie.includes('session_token');
-        if (!sessionToken) {
-            location.href = '/';
-        }
-    });
-</script>
+    <script>
+        // add station button
+        $(document).ready(function () {
+
+            $(document).ready(function () {
+                const sessionToken = document.cookie.includes('session_token');
+                if (!sessionToken) {
+                    location.href = '/';
+                }
+            });
+
+
+            //todo change el buttons to add thea name of the chosen station
+            $("#updateButton").click(function () {
+                const stationNameInput = $('#AddStation').val();
+                const data = {
+                    stationNameInput
+                };
+
+                $.ajax({
+                    type: "PUT",
+                    url: '/api/v1/station',
+                    data,
+                    success: function (serverResponse) {
+                        if (serverResponse) {
+                            alert(`Added successfully`);
+                        }
+                    },
+                    error: function (errorResponse) {
+                        if (errorResponse) {
+                            alert(`Error Adding : ${errorResponse.responseText}`);
+                            console.log("error")
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <div class="container bg-indigo-100 min-h-screen bg-center bg-cover min-w-full px-28 py-5 relative">
-    <nav id="navbar" class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
+    <nav id="navbar"
+         class="flex items-center bg-indigo-500 bg-opacity-50 rounded-2xl px-2 h-fit shadow-2xl duration-300">
         <ul class="flex-1 text-center">
             <li class="list-none inline-block px-5">
                 <a href="#Home" class="no-underline text-3xl text-black px-7 duration-300 hover:text-4xl">Home</a>
@@ -84,40 +115,40 @@
         </script>
     </nav>
 
-<head>
-    <title>Edit Entity</title>
-    <style>
-        #updateButton {
-            padding: 0.5rem 2rem;
-            background-color: #4f46e5;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 1rem;
-            margin-right: 0.5rem;
-            display: inline-block;
-            width: 120px; 
-        }
-    
-        #deleteButton {
-            padding: 0.5rem 1rem;
-            background-color: #d63031;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 1rem;
-            display: inline-block;
-            min-width: 120px; 
-        }
-    </style>
-    
-</head>
-<body>
+    <head>
+        <title>Edit Entity</title>
+        <style>
+            #updateButton {
+                padding: 0.5rem 2rem;
+                background-color: #4f46e5;
+                color: #ffffff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-top: 1rem;
+                margin-right: 0.5rem;
+                display: inline-block;
+                width: 120px;
+            }
+
+            #deleteButton {
+                padding: 0.5rem 1rem;
+                background-color: #d63031;
+                color: #ffffff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-top: 1rem;
+                display: inline-block;
+                min-width: 120px;
+            }
+        </style>
+
+    </head>
+    <body>
     <h1 id="pageTitle"></h1>
 
-    
+
     <p id="editingEntity">Editing <span id="entityType"></span> ID: <span id="entityId"></span></p>
 
     <div>
@@ -129,7 +160,7 @@
         <button id="updateButton">Update</button>
         <button id="deleteButton">Delete</button>
     </div>
-    
+
 
     <script>
         // Get the current URL
@@ -176,7 +207,7 @@
         }
 
         document.getElementById("entityName").placeholder = placeholderText;
- 
+
         //get entity ID from the URL
         const entityId = url.substring(url.lastIndexOf('/') + 1);
 
@@ -185,7 +216,6 @@
         //page title
         document.getElementById("pageTitle").innerText = `Edit ${entityType.charAt(0).toUpperCase() + entityType.slice(1)}`;
     </script>
-
 
 
     <script>
@@ -240,14 +270,14 @@
                     error: function (errorResponse) {
                         if (errorResponse) {
                             alert(`Error updating : ${errorResponse.responseText}`);
-                                console.log("error")
+                            console.log("error")
                         }
                     }
                 });
             });
         });
 
-//delete button
+        //delete button
         $(document).ready(function () {
             $("#deleteButton").click(function () {
                 const entityType = $("#entityType").text();
@@ -255,8 +285,7 @@
                 const entityName = $('#entityName').val();
                 console.log("ENTITY ID",`${entityId}`)
 
-                const data = {
-                };  //no data? or should we add id
+                const data = {};  //no data? or should we add id
 
                 let url;
                 if (entityType === "stations") {
@@ -265,9 +294,11 @@
                   //  /api/v1/station/:stationId
                 } else if (entityType === "routes") {
                     url = `/api/v1/route/${entityId}`;
+                  
                 } 
                 else if (entityType === "zones") {
                     url = `/api/v1/zone/${entityId}`;
+
                 }
 
                 $.ajax({
@@ -282,7 +313,7 @@
                     error: function (errorResponse) {
                         if (errorResponse) {
                             alert(`Error deleting : ${errorResponse.responseText}`);
-                                console.log("error")
+                            console.log("error")
                         }
                     }
                 });
@@ -293,6 +324,5 @@
     </script>
 
 
-
-</body>
+    </body>
 </html>
