@@ -384,16 +384,16 @@
                                 <p class="text-xl font-semibold">Payment Details</p>
                                 <div class="mt-8 flex gap-5">
                                     <div class="input_text relative w-full">
-                                        <input id="originSubscriptionId" type="text"
+                                        <input id="originSubscription" type="text"
                                             class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b" />
-                                        <span class="absolute left-0 text-sm -top-4">origin ID</span>
+                                        <span class="absolute left-0 text-sm -top-4">Origin Name</span>
                                         <i class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i>
                                     </div>
 
                                     <div class="input_text relative w-full">
-                                        <input id="DestinationSubscriptionId" type="text"
+                                        <input id="DestinationSubscription" type="text"
                                             class="h-12 pl-7 outline-none px-2 focus:border-blue-900 transition-all w-full border-b" />
-                                        <span class="absolute left-0 text-sm -top-4">Destination ID</span>
+                                        <span class="absolute left-0 text-sm -top-4">Destination Name</span>
                                         <i class="absolute left-2 top-4 text-gray-400 fa fa-lock"></i>
                                     </div>
                                 </div>
@@ -433,9 +433,9 @@
                                             $("#PayForSubscriptionButton").click(function () {
                                                 console.log("clicked");
                                                 const userid = <%- JSON.stringify(user['userid']) %>;
-                                                const origin = $('#originSubscriptionId').val();
-                                                const destination = $('#DestinationSubscriptionId').val();
-                                                const tripdate = new Date($('#TripDateSubscription').val());
+                                                const origin = $('#originSubscription').val();
+                                                const destination = $('#DestinationSubscription').val();
+                                                const tripdate = new Date($('#TripDateSubscription').val()).toDateString();
                                                 const errorLabel = $('#ErrorLabel');
                                                 const subid = $('#SubscriptionId').val();
 

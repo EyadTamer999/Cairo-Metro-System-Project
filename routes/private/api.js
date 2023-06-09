@@ -92,17 +92,8 @@ module.exports = function (app) {
                 .from('se_project.subscription')
                 .where("userid", '=', userid)
 
-            
             const subid = userSubscription[0]['id']
-
-            console.log(subid)
             //userSubscription is in an array, so we need to access that array first then access id
-            // console.log(userSubscription[0]['id'])
-            // console.log(subid)
-
-
-            // console.log(userSubscription)
-            // console.log(isEmpty(userSubscription))
 
             if (isEmpty(userSubscription)) {
                 //tru = empty therefore no subscription, false = not empty
@@ -151,20 +142,11 @@ module.exports = function (app) {
                     tripdate: tripdate
                 })
 
-                
-
-                console.log(newPaymentBySubscription);
-
                 const ticket_cost = 0;//TODO call CheckPrice
                 const origin_id = await db.select("id").from('se_project.stations').where('stationname', origin);
                 const des_id = await db.select("id").from('se_project.stations').where('stationname', destination);
                 const origin_id_int = origin_id[0]['id'];
                 const des_id_int = des_id[0]['id'];
-
-
-                console.log(des_id_int);
-
-                console.log(origin_id_int);
 
                 if (!isEmpty(origin_id) && !isEmpty(des_id)) {
                     const potential_routs_data = await db.select("*").from('se_project.routes').where('tostationid', des_id_int).where('fromstationid', origin_id_int);//ret2
@@ -218,23 +200,24 @@ module.exports = function (app) {
                         .where('tripdate', '<', up_date_bound);
                     //TODO ret4 not finished  .where('published_date', '<', 2000)
 
-                    //  { tripdate >= currentdate}
+                    //  { tripdate >= currentdate}   
                     //1-full ticket price, check price
-                    //2-route
-                    //3-transfer stations,
+                    //2-route 
+                    //3-transfer stations, 
                     //4-upcoming ride on the date of the ticket
 
 
-                    //  { tripdate >= currentdate}
+                    //  { tripdate >= currentdate}   
                     //1-full ticket price, check price
-                    //2-route
-                    //3-transfer stations,
+                    //2-route 
+                    //3-transfer stations, 
                     //4-upcoming ride on the date of the ticket
 
-                    const ret = { ticket_cost, potential_routs_data, transfer_stations, upcome_rides };//and add the pricecheck price ,upcome_rides
+                    const ret = { ticket_cost, potential_routs_data, transfer_stations, upcome_rides };//and add the pricecheck price ,upcome_rides 
                     return res.status(201).json(ret);
 
-                } else {
+                }
+                else {
                     return res.status(400).send("origin or destination is invalid station");
 
                 }
@@ -244,6 +227,7 @@ module.exports = function (app) {
             return res.status(400).send(err.message);
         }
     });
+
 
 
     //reset password for admin and user PUT
