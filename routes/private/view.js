@@ -135,7 +135,7 @@ module.exports = function (app) {
         // console.log(JSON.stringify(user));
         // console.log(tickets);
 
-        return res.render('purchase.html', {...user});
+        return res.render('purchase.html', {user});
     });
 
                 app.get('/rides', async (req, res) =>{

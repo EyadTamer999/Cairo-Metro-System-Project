@@ -151,7 +151,18 @@ module.exports = function (app) {
                 if (!isEmpty(origin_id) && !isEmpty(des_id)) {
                     const potential_routs_data = await db.select("*").from('se_project.routes').where('tostationid', des_id_int).where('fromstationid', origin_id_int);//ret2
 
-                    let ticket_cost = await Get_price(origin_id_int, des_id_int);
+                    let ticket_cost = 0;
+
+
+
+                    const ret2 = await db('se_project.transactions').insert({
+                        amount: ticket_cost,
+                        userid: userid,
+                        purchasedid: ticketid[0]['id'],
+                        purchasetype: "subscription"
+
+                    }).returning("*");
+
 
 
                     const t = "transfer";
@@ -326,12 +337,12 @@ module.exports = function (app) {
                     }).returning("*");
 
 
-                    const id_trip = Number(ret1[0]["id"]);
+                    const id_trip = Number(ret1[0]["id"]).toString();
 
                     const ret2 = await db('se_project.transactions').insert({
                         amount: payedAmount,
                         userid: uid,
-                        purchasedid: toString(id_trip),
+                        purchasedid: id_trip,
                         purchasetype: "subscription"
 
                     }).returning("*");
@@ -667,16 +678,18 @@ module.exports = function (app) {
                     //refund with online payment
                     const purchaseid = await db("se_project.transactions")
                         .where({ userid: existRequest.userid })
-                        .returning("purchasedid");
+                        .returning("*");
 
                     const refundamount = await db("se_project.transactions")
                         .where({ userid: existRequest.userid })
-                        .returning("amount");
-
+                        .returning("*");
+                    const amount = parseInt(refundamount.amount);
+                    const useAmount = (-1) * amount
+                    console.log((purchaseid.id).toString())
                     await db('se_project.transactions').insert({
-                        amount: (-refundamount),
+                        amount: useAmount,
                         userid: existRequest.userid,
-                        purchasedid: purchaseid,
+                        purchasedid: (purchaseid.id).toString(),
                         purchasetype: "transactions"
                     })
                         .returning('*');
@@ -689,11 +702,11 @@ module.exports = function (app) {
 
             } else {
                 //refund with online payment
-                const purchasedIid = await db("se_project.transaction")
+                const purchasedIid = await db("se_project.transactions")
                     .where({ userid: existRequest.userid })
                     .returning("purchasedid");
 
-                const refundamount = await db("se_project.transaction")
+                const refundamount = await db("se_project.transactions")
                     .where({ userid: existRequest.userid })
                     .returning("amount");
 
@@ -1462,13 +1475,16 @@ module.exports = function (app) {
                     .first();
                 let matrix = await create2dmatrix();
                 let distMatrix = await floydWarshall(matrix);
-                const distance = distMatrix[originid][destinationid];
+                console.log(distMatrix);
+                const distance = await distMatrix[originid][destinationid];
+                // console.log("distance", )
                 let price;
+
                 switch (true) {
                     case distance <= 9:
                         price = 5;
                         break;
-                    case distance > 9 && distance <= 16:
+                    case (distance > 9) && (distance < 16):
                         price = 7;
                         break;
                     default:
