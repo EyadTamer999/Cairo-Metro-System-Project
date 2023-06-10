@@ -23,7 +23,7 @@ Note:
 | :----------- | :--------- |
 | Tailwindcss  | Node.js    |
 | HTML         | Express.js |
-|              | Postgres   |
+| jQuery       | Postgres   |
 
 ## Usage
 
