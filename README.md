@@ -9,7 +9,7 @@ Note:
 - All functionallites are working as the project was evaluated to be 475.5/460, exceeding the needed requirements.
 ## Screenshots
 
-![Landing Page](Images\Screenshot 2023-06-10 213911.png)
+![Landing Page]("Images\Screenshot 2023-06-10 213911.png")
 ![Products Page](Images\Screenshot 2023-06-10 214017.png)
 ![Login Page](Images\Screenshot 2023-06-10 214839.png)
 
@@ -58,9 +58,9 @@ $ npm start   # start the server
 
 <table>
     <td align="center"><a href="https://github.com/EyadTamer999"><sub><b>Eyad H.</b></sub></a><br /><a href="https://github.com/EyadTamer999/Cairo-Metro-System-Project/commits?author=EyadTamer999" title="Commits">📖</a></td>
-    <td align="center"><a href="https://github.com/emansalehkhalil"><sub><b>Mohammed Y.</b></sub></a><br /><a href="https://github.com/EyadTamer999/Cairo-Metro-System-Project/commits?author=EyadTamer999" title="Commits">📖</a></td>
-    <td align="center"><a href="https://github.com/ssary"><sub><b>Mohammed E.</b></sub></a><br /><a href="https://github.com/EyadTamer999/Cairo-Metro-System-Project/commits?author=EyadTamer999" title="Commits">📖</a></td>
-    <td align="center"><a href="https://github.com/YoussefElbasha"><sub><b>Mahmoud O.</b></sub></a><br /><a href="https://github.com/EyadTamer999/Cairo-Metro-System-Project/commits?author=EyadTamer999" title="Commits">📖</a></td>
-    <td align="center"><a href="https://github.com/YoussefElbasha"><sub><b>Abdullah K.</b></sub></a><br /><a href="https://github.com/EyadTamer999/Cairo-Metro-System-Project/commits?author=EyadTamer999" title="Commits">📖</a></td>
-    <td align="center"><a href="https://github.com/YoussefElbasha"><sub><b>Mariam S.</b></sub></a><br /><a href="https://github.com/EyadTamer999/Cairo-Metro-System-Project/commits?author=EyadTamer999" title="Commits">📖</a></td>
+    <td align="center"><a href="https://github.com/AboElWa7awe7"><sub><b>Mohammed Y.</b></sub></a><br /><a href="https://github.com/EyadTamer999/Cairo-Metro-System-Project/commits?author=AboElWa7awe7" title="Commits">📖</a></td>
+    <td align="center"><a href="https://github.com/ManOnFire40 "><sub><b>Mohammed E.</b></sub></a><br /><a href="https://github.com/EyadTamer999/Cairo-Metro-System-Project/commits?author=ManOnFire40" title="Commits">📖</a></td>
+    <td align="center"><a href="https://github.com/Mahmouddd21"><sub><b>Mahmoud O.</b></sub></a><br /><a href="https://github.com/EyadTamer999/Cairo-Metro-System-Project/commits?author=Mahmouddd21" title="Commits">📖</a></td>
+    <td align="center"><a href="https://github.com/Akmas14"><sub><b>Abdullah K.</b></sub></a><br /><a href="https://github.com/EyadTamer999/Cairo-Metro-System-Project/commits?author=Akmas14" title="Commits">📖</a></td>
+    <td align="center"><a href="https://github.com/standsuser"><sub><b>Mariam S.</b></sub></a><br /><a href="https://github.com/EyadTamer999/Cairo-Metro-System-Project/commits?author=standsuser" title="Commits">📖</a></td>
 </table>
