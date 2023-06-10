@@ -7,9 +7,13 @@ Our website is meticulously designed to cater to your every need, offering a con
 Note: 
 - This project was built in 2 weeks, given more time it could've looked way better.
 - All functionallites are working as the project was evaluated to be 475.5/460, exceeding the needed requirements.
+- Future Plans 
+    - Implement React
+    - Polish UI/UX
+
 ## Screenshots
 
-![Landing Page]("Images\Screenshot 2023-06-10 213911.png")
+![Landing Page](Images\Screenshot 2023-06-10 213911.png)
 ![Products Page](Images\Screenshot 2023-06-10 214017.png)
 ![Login Page](Images\Screenshot 2023-06-10 214839.png)
 
@@ -20,8 +24,6 @@ Note:
 | Tailwindcss  | Node.js    |
 | HTML         | Express.js |
 |              | Postgres   |
-|              |            |
-|              |            |
 
 ## Usage
 
